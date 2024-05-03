@@ -3,5 +3,9 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
     "hardhat": "^2.22.3"
+  },
+  "dependencies": {
+    "@chainlink/contracts": "^1.1.0",
+    "solmate": "^6.2.0"
   }
 }
