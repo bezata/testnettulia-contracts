@@ -1,0 +1,168 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "calculateClaimableInterest",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "deregisterVault",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "distributeInterest",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "vault",
+						"type": "address"
+					}
+				],
+				"name": "registerPoolVault",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Interface for the VaultManager contract.",
+			"kind": "dev",
+			"methods": {
+				"calculateClaimableInterest(address,address)": {
+					"params": {
+						"pool": "Address of the pool for which to calculate interest.",
+						"user": "Address of the user (borrower) claiming interest."
+					},
+					"returns": {
+						"_0": "amount The calculated interest amount."
+					}
+				},
+				"deregisterVault(address)": {
+					"params": {
+						"pool": "Address of the pool."
+					}
+				},
+				"distributeInterest(address,address,uint256)": {
+					"params": {
+						"amount": "Amount of interest to be distributed.",
+						"pool": "Address of the pool initiating the interest payout.",
+						"to": "Recipient of the interest payment."
+					}
+				},
+				"registerPoolVault(address,address)": {
+					"params": {
+						"pool": "Address of the pool.",
+						"vault": "Address of the vault associated with the pool."
+					}
+				}
+			},
+			"title": "IVaultManager",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"calculateClaimableInterest(address,address)": {
+					"notice": "Calculates the claimable interest for a user based on the pool's loan configuration."
+				},
+				"deregisterVault(address)": {
+					"notice": "Deregisters a pool's vault upon loan closure."
+				},
+				"distributeInterest(address,address,uint256)": {
+					"notice": "Distributes accrued interest from a vault to a specified recipient."
+				},
+				"registerPoolVault(address,address)": {
+					"notice": "Registers a pool's vault upon creation."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/interfaces/IVaultManager.sol": "IVaultManager"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/contracts/interfaces/IVaultManager.sol": {
+			"keccak256": "0x5a025ecef74f49112c2479fc967e3c7761412348dc6ad129e7b79667a09cd699",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fae75e94df0a7ade68c3fc89ad8091784574e3005eb8a7044c6c9d29330117b7",
+				"dweb:/ipfs/QmWjzKcKC8sHHdagpLQtw58bLD1TDaMHqheW8jMfw3vNwe"
+			]
+		}
+	},
+	"version": 1
+}

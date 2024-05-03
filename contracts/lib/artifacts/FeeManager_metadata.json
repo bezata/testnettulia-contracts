@@ -1,0 +1,242 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "initialtuliaPoolFeeRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "initialflashPoolFeeRate",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newFeeRate",
+						"type": "uint256"
+					}
+				],
+				"name": "flashPoolFeeRateUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "newFeeRate",
+						"type": "uint256"
+					}
+				],
+				"name": "tuliaPoolFeeRateUpdated",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "MAX_FEE_RATE",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "flashPoolFeeRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getflashPoolFeeRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "gettuliaPoolFeeRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "newFeeRate",
+						"type": "uint256"
+					}
+				],
+				"name": "setflashPoolFeeRate",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "newFeeRate",
+						"type": "uint256"
+					}
+				],
+				"name": "settuliaPoolFeeRate",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "tuliaPoolFeeRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"events": {
+				"flashPoolFeeRateUpdated(uint256)": {
+					"params": {
+						"newFeeRate": "The new flashPool fee rate that has been set"
+					}
+				},
+				"tuliaPoolFeeRateUpdated(uint256)": {
+					"params": {
+						"newFeeRate": "The new tuliaPool fee rate that has been set"
+					}
+				}
+			},
+			"kind": "dev",
+			"methods": {
+				"getflashPoolFeeRate()": {
+					"returns": {
+						"_0": "The flashPool fee rate in basis points"
+					}
+				},
+				"gettuliaPoolFeeRate()": {
+					"returns": {
+						"_0": "The tuliaPool fee rate in basis points"
+					}
+				},
+				"setflashPoolFeeRate(uint256)": {
+					"params": {
+						"newFeeRate": "The new flashPool fee rate in basis points"
+					}
+				},
+				"settuliaPoolFeeRate(uint256)": {
+					"params": {
+						"newFeeRate": "The new tuliaPool fee rate in basis points"
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"events": {
+				"flashPoolFeeRateUpdated(uint256)": {
+					"notice": "Event emitted when the flashPool fee rate is updated"
+				},
+				"tuliaPoolFeeRateUpdated(uint256)": {
+					"notice": "Event emitted when the tuliaPool fee rate is updated"
+				}
+			},
+			"kind": "user",
+			"methods": {
+				"getflashPoolFeeRate()": {
+					"notice": "Get the current flashPool fee rate"
+				},
+				"gettuliaPoolFeeRate()": {
+					"notice": "Get the current tuliaPool fee rate"
+				},
+				"setflashPoolFeeRate(uint256)": {
+					"notice": "Set the flashPool fee rate"
+				},
+				"settuliaPoolFeeRate(uint256)": {
+					"notice": "Set the tuliaPool fee rate"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/lib/EmissionManager.sol": "FeeManager"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/contracts/interfaces/IFeeManager.sol": {
+			"keccak256": "0xfb4947229a6667185236729142241f9a40c8cb2d316a8e1710d44ba07a92cd27",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b14648cd3ff808d78e4139c8b2968db331fbf7e282bdba86c5171967754cb52a",
+				"dweb:/ipfs/QmRQ4M9Yzi6eKGPPRL4q8wLaUuvkWYfRY5ZmNk7L2BXoFM"
+			]
+		},
+		"contracts/contracts/lib/EmissionManager.sol": {
+			"keccak256": "0xb7281c2d7360648b36ab6740055f74e885311e4fbb365891c662eeb160047dcd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8b474e6203ada93b3df215673e031dd3b3aeb071a79da727ac86155c5b6ddfca",
+				"dweb:/ipfs/QmNd36PVHv7w11HvJCLZES6if7eLJnaddFqWWNExUsSMqb"
+			]
+		}
+	},
+	"version": 1
+}

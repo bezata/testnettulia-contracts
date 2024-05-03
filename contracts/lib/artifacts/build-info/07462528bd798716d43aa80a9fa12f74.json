@@ -1,0 +1,5131 @@
+{
+	"id": "07462528bd798716d43aa80a9fa12f74",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.20",
+	"solcLongVersion": "0.8.20+commit.a1b79de6",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"viaIR": true,
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/contracts/lib/EmissionManager.sol": {
+				"content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\nimport \"../interfaces/IFeeManager.sol\";\r\n\r\ncontract FeeManager is IFeeManager {\r\n    uint256 public tuliaPoolFeeRate;\r\n    uint256 public flashPoolFeeRate;\r\n    uint256 public constant MAX_FEE_RATE = 500; // Maximum fee rate of 5.00%, expressed in basis points\r\n\r\n    constructor(uint256 initialtuliaPoolFeeRate, uint256 initialflashPoolFeeRate) {\r\n        require(initialtuliaPoolFeeRate <= MAX_FEE_RATE, \"Initial tuliaPool fee rate is too high\");\r\n        require(initialflashPoolFeeRate <= MAX_FEE_RATE, \"Initial flashPool fee rate is too high\");\r\n        tuliaPoolFeeRate = initialtuliaPoolFeeRate;\r\n        flashPoolFeeRate = initialflashPoolFeeRate;\r\n    }\r\n\r\n    /// @inheritdoc IFeeManager\r\n    function gettuliaPoolFeeRate() public view override returns (uint256) {\r\n        return tuliaPoolFeeRate;\r\n    }\r\n\r\n    /// @inheritdoc IFeeManager\r\n    function settuliaPoolFeeRate(uint256 newFeeRate) public override {\r\n        require(newFeeRate <= MAX_FEE_RATE, \"New tuliaPool fee rate is too high\");\r\n        tuliaPoolFeeRate = newFeeRate;\r\n        emit tuliaPoolFeeRateUpdated(newFeeRate);\r\n    }\r\n\r\n    /// @inheritdoc IFeeManager\r\n    function getflashPoolFeeRate() public view override returns (uint256) {\r\n        return flashPoolFeeRate;\r\n    }\r\n\r\n    /// @inheritdoc IFeeManager\r\n    function setflashPoolFeeRate(uint256 newFeeRate) public override {\r\n        require(newFeeRate <= MAX_FEE_RATE, \"New flashPool fee rate is too high\");\r\n        flashPoolFeeRate = newFeeRate;\r\n        emit flashPoolFeeRateUpdated(newFeeRate);\r\n    }\r\n}\r\n"
+			},
+			"contracts/contracts/interfaces/IFeeManager.sol": {
+				"content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ninterface IFeeManager {\r\n    /// @notice Get the current tuliaPool fee rate\r\n    /// @return The tuliaPool fee rate in basis points\r\n    function gettuliaPoolFeeRate() external view returns (uint256);\r\n\r\n    /// @notice Set the tuliaPool fee rate\r\n    /// @param newFeeRate The new tuliaPool fee rate in basis points\r\n    function settuliaPoolFeeRate(uint256 newFeeRate) external;\r\n\r\n    /// @notice Get the current flashPool fee rate\r\n    /// @return The flashPool fee rate in basis points\r\n    function getflashPoolFeeRate() external view returns (uint256);\r\n\r\n    /// @notice Set the flashPool fee rate\r\n    /// @param newFeeRate The new flashPool fee rate in basis points\r\n    function setflashPoolFeeRate(uint256 newFeeRate) external;\r\n\r\n    /// @notice Event emitted when the tuliaPool fee rate is updated\r\n    /// @param newFeeRate The new tuliaPool fee rate that has been set\r\n    event tuliaPoolFeeRateUpdated(uint256 newFeeRate);\r\n\r\n    /// @notice Event emitted when the flashPool fee rate is updated\r\n    /// @param newFeeRate The new flashPool fee rate that has been set\r\n    event flashPoolFeeRateUpdated(uint256 newFeeRate);\r\n}\r\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/contracts/interfaces/IFeeManager.sol": {
+				"IFeeManager": {
+					"abi": [
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "flashPoolFeeRateUpdated",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "tuliaPoolFeeRateUpdated",
+							"type": "event"
+						},
+						{
+							"inputs": [],
+							"name": "getflashPoolFeeRate",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [],
+							"name": "gettuliaPoolFeeRate",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "setflashPoolFeeRate",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "settuliaPoolFeeRate",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"events": {
+							"flashPoolFeeRateUpdated(uint256)": {
+								"params": {
+									"newFeeRate": "The new flashPool fee rate that has been set"
+								}
+							},
+							"tuliaPoolFeeRateUpdated(uint256)": {
+								"params": {
+									"newFeeRate": "The new tuliaPool fee rate that has been set"
+								}
+							}
+						},
+						"kind": "dev",
+						"methods": {
+							"getflashPoolFeeRate()": {
+								"returns": {
+									"_0": "The flashPool fee rate in basis points"
+								}
+							},
+							"gettuliaPoolFeeRate()": {
+								"returns": {
+									"_0": "The tuliaPool fee rate in basis points"
+								}
+							},
+							"setflashPoolFeeRate(uint256)": {
+								"params": {
+									"newFeeRate": "The new flashPool fee rate in basis points"
+								}
+							},
+							"settuliaPoolFeeRate(uint256)": {
+								"params": {
+									"newFeeRate": "The new tuliaPool fee rate in basis points"
+								}
+							}
+						},
+						"version": 1
+					},
+					"evm": {
+						"assembly": "",
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"gasEstimates": null,
+						"legacyAssembly": null,
+						"methodIdentifiers": {
+							"getflashPoolFeeRate()": "053e755b",
+							"gettuliaPoolFeeRate()": "26d03cd9",
+							"setflashPoolFeeRate(uint256)": "369058bb",
+							"settuliaPoolFeeRate(uint256)": "24d8af8d"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"flashPoolFeeRateUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"tuliaPoolFeeRateUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"getflashPoolFeeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gettuliaPoolFeeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"setflashPoolFeeRate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"settuliaPoolFeeRate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"flashPoolFeeRateUpdated(uint256)\":{\"params\":{\"newFeeRate\":\"The new flashPool fee rate that has been set\"}},\"tuliaPoolFeeRateUpdated(uint256)\":{\"params\":{\"newFeeRate\":\"The new tuliaPool fee rate that has been set\"}}},\"kind\":\"dev\",\"methods\":{\"getflashPoolFeeRate()\":{\"returns\":{\"_0\":\"The flashPool fee rate in basis points\"}},\"gettuliaPoolFeeRate()\":{\"returns\":{\"_0\":\"The tuliaPool fee rate in basis points\"}},\"setflashPoolFeeRate(uint256)\":{\"params\":{\"newFeeRate\":\"The new flashPool fee rate in basis points\"}},\"settuliaPoolFeeRate(uint256)\":{\"params\":{\"newFeeRate\":\"The new tuliaPool fee rate in basis points\"}}},\"version\":1},\"userdoc\":{\"events\":{\"flashPoolFeeRateUpdated(uint256)\":{\"notice\":\"Event emitted when the flashPool fee rate is updated\"},\"tuliaPoolFeeRateUpdated(uint256)\":{\"notice\":\"Event emitted when the tuliaPool fee rate is updated\"}},\"kind\":\"user\",\"methods\":{\"getflashPoolFeeRate()\":{\"notice\":\"Get the current flashPool fee rate\"},\"gettuliaPoolFeeRate()\":{\"notice\":\"Get the current tuliaPool fee rate\"},\"setflashPoolFeeRate(uint256)\":{\"notice\":\"Set the flashPool fee rate\"},\"settuliaPoolFeeRate(uint256)\":{\"notice\":\"Set the tuliaPool fee rate\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/contracts/interfaces/IFeeManager.sol\":\"IFeeManager\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/contracts/interfaces/IFeeManager.sol\":{\"keccak256\":\"0xfb4947229a6667185236729142241f9a40c8cb2d316a8e1710d44ba07a92cd27\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b14648cd3ff808d78e4139c8b2968db331fbf7e282bdba86c5171967754cb52a\",\"dweb:/ipfs/QmRQ4M9Yzi6eKGPPRL4q8wLaUuvkWYfRY5ZmNk7L2BXoFM\"]}},\"version\":1}",
+					"storageLayout": {
+						"storage": [],
+						"types": null
+					},
+					"userdoc": {
+						"events": {
+							"flashPoolFeeRateUpdated(uint256)": {
+								"notice": "Event emitted when the flashPool fee rate is updated"
+							},
+							"tuliaPoolFeeRateUpdated(uint256)": {
+								"notice": "Event emitted when the tuliaPool fee rate is updated"
+							}
+						},
+						"kind": "user",
+						"methods": {
+							"getflashPoolFeeRate()": {
+								"notice": "Get the current flashPool fee rate"
+							},
+							"gettuliaPoolFeeRate()": {
+								"notice": "Get the current tuliaPool fee rate"
+							},
+							"setflashPoolFeeRate(uint256)": {
+								"notice": "Set the flashPool fee rate"
+							},
+							"settuliaPoolFeeRate(uint256)": {
+								"notice": "Set the tuliaPool fee rate"
+							}
+						},
+						"version": 1
+					}
+				}
+			},
+			"contracts/contracts/lib/EmissionManager.sol": {
+				"FeeManager": {
+					"abi": [
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "initialtuliaPoolFeeRate",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "initialflashPoolFeeRate",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "nonpayable",
+							"type": "constructor"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "flashPoolFeeRateUpdated",
+							"type": "event"
+						},
+						{
+							"anonymous": false,
+							"inputs": [
+								{
+									"indexed": false,
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "tuliaPoolFeeRateUpdated",
+							"type": "event"
+						},
+						{
+							"inputs": [],
+							"name": "MAX_FEE_RATE",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [],
+							"name": "flashPoolFeeRate",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [],
+							"name": "getflashPoolFeeRate",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [],
+							"name": "gettuliaPoolFeeRate",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "setflashPoolFeeRate",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "uint256",
+									"name": "newFeeRate",
+									"type": "uint256"
+								}
+							],
+							"name": "settuliaPoolFeeRate",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [],
+							"name": "tuliaPoolFeeRate",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"events": {
+							"flashPoolFeeRateUpdated(uint256)": {
+								"params": {
+									"newFeeRate": "The new flashPool fee rate that has been set"
+								}
+							},
+							"tuliaPoolFeeRateUpdated(uint256)": {
+								"params": {
+									"newFeeRate": "The new tuliaPool fee rate that has been set"
+								}
+							}
+						},
+						"kind": "dev",
+						"methods": {
+							"getflashPoolFeeRate()": {
+								"returns": {
+									"_0": "The flashPool fee rate in basis points"
+								}
+							},
+							"gettuliaPoolFeeRate()": {
+								"returns": {
+									"_0": "The tuliaPool fee rate in basis points"
+								}
+							},
+							"setflashPoolFeeRate(uint256)": {
+								"params": {
+									"newFeeRate": "The new flashPool fee rate in basis points"
+								}
+							},
+							"settuliaPoolFeeRate(uint256)": {
+								"params": {
+									"newFeeRate": "The new tuliaPool fee rate in basis points"
+								}
+							}
+						},
+						"version": 1
+					},
+					"evm": {
+						"assembly": "    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n  0x80\n  jumpi(tag_5, callvalue)\n  0x1f\n  bytecodeSize\n  codesize\n  dup2\n  swap1\n  sub\n  swap2\n  dup3\n  add\n  not(0x1f)\n  and\n  dup4\n  add\n  swap2\n  sub(shl(0x40, 0x01), 0x01)\n  dup4\n  gt\n  dup5\n  dup5\n  lt\n  or\n  tag_3\n  jumpi\n  dup1\n  dup5\n  swap3\n  0x40\n  swap5\n  dup6\n  mstore\n  dup4\n  codecopy\n  dup2\n  add\n  sub\n  slt\n  tag_5\n  jumpi\n  0x20\n  dup2\n  mload\n  swap2\n  add\n  mload\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  swap1\n  0x01f4\n    /* \"contracts/contracts/lib/EmissionManager.sol\":425:464  initialtuliaPoolFeeRate <= MAX_FEE_RATE */\n  dup1\n  dup3\n  gt\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  tag_7\n  jumpi\n    /* \"contracts/contracts/lib/EmissionManager.sol\":526:565  initialflashPoolFeeRate <= MAX_FEE_RATE */\n  dup3\n  gt\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  tag_9\n  jumpi\n  0x00\n  sstore\n    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n  0x01\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  sstore\n    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n  mload(0x40)\n  dataSize(sub_0)\n  swap1\n  dup2\n  dataOffset(sub_0)\n  dup3\n  codecopy\n  return\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\ntag_9:\n    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n  mload(0x40)\n  shl(0xe5, 0x461bcd)\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  dup2\n  mstore\n    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n  0x20\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  0x04\n  dup3\n  add\n  mstore\n  0x26\n  0x24\n  dup3\n  add\n  mstore\n  0x496e697469616c20666c617368506f6f6c20666565207261746520697320746f\n  0x44\n  dup3\n  add\n  mstore\n  shl(0xd3, 0x0de40d0d2ced)\n  0x64\n  dup3\n  add\n  mstore\n  0x84\n  swap1\n  revert\ntag_7:\n    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n  mload(0x40)\n  shl(0xe5, 0x461bcd)\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  dup2\n  mstore\n    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n  0x20\n    /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n  0x04\n  dup3\n  add\n  mstore\n  0x26\n  0x24\n  dup3\n  add\n  mstore\n  0x496e697469616c2074756c6961506f6f6c20666565207261746520697320746f\n  0x44\n  dup3\n  add\n  mstore\n  shl(0xd3, 0x0de40d0d2ced)\n  0x64\n  dup3\n  add\n  mstore\n  0x84\n  swap1\n  revert\n    /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\ntag_5:\n  0x00\n  dup1\n  revert\ntag_3:\n  mstore(0x00, shl(0xe0, 0x4e487b71))\n  mstore(0x04, 0x41)\n  revert(0x00, 0x24)\nstop\n\nsub_0: assembly {\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      0x80\n      0x40\n      dup2\n      dup2\n      mstore\n      jumpi(tag_1, iszero(lt(calldatasize, 0x04)))\n      0x00\n      dup1\n      revert\n    tag_1:\n      0x00\n      swap2\n      dup3\n      calldataload\n      0xe0\n      shr\n      swap1\n      dup2\n      0x01b3e0a4\n      eq\n      tag_3\n      jumpi\n      pop\n      dup1\n      0x053e755b\n      eq\n      tag_5\n      jumpi\n      dup1\n      0x203f3149\n      eq\n      tag_11\n      jumpi\n      dup1\n      0x24d8af8d\n      eq\n      tag_9\n      jumpi\n      dup1\n      0x26d03cd9\n      eq\n      tag_11\n      jumpi\n      dup1\n      0x369058bb\n      eq\n      tag_13\n      jumpi\n      0x92f6576e\n      eq\n      tag_15\n      jumpi\n      0x00\n      dup1\n      revert\n    tag_15:\n      jumpi(tag_19, callvalue)\n      dup2\n      add(calldatasize, not(0x03))\n      slt\n      tag_19\n      jumpi\n      0x20\n      swap1\n      mload\n        /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n      0x01f4\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      dup2\n      mstore\n      return\n    tag_19:\n      pop\n      dup1\n      revert\n    tag_13:\n      pop\n      jumpi(tag_19, callvalue)\n      jumpi(tag_19, slt(add(not(0x03), calldatasize), 0x20))\n      calldataload(0x04)\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1442:1468  newFeeRate <= MAX_FEE_RATE */\n      swap1\n        /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n      0x01f4\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1442:1468  newFeeRate <= MAX_FEE_RATE */\n      dup3\n      gt\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      tag_25\n      jumpi\n      dup2\n      0x20\n      swap2\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1563:1598  flashPoolFeeRateUpdated(newFeeRate) */\n      0x93785b15ebbc916d52986b4f3f53b719a4895974f421918b77407c81cd9dfbc8\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      swap4\n      0x01\n      sstore\n      mload\n      swap1\n      dup2\n      mstore\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1563:1598  flashPoolFeeRateUpdated(newFeeRate) */\n      log1\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      dup1\n      return\n    tag_25:\n      mload\n      shl(0xe5, 0x461bcd)\n      dup2\n      mstore\n      0x20\n      0x04\n      dup3\n      add\n      mstore\n      0x22\n      0x24\n      dup3\n      add\n      mstore\n      0x4e657720666c617368506f6f6c20666565207261746520697320746f6f206869\n      0x44\n      dup3\n      add\n      mstore\n      shl(0xf3, 0x0ced)\n      0x64\n      dup3\n      add\n      mstore\n      0x84\n      swap1\n      revert\n    tag_11:\n      pop\n      jumpi(tag_19, callvalue)\n      dup2\n      add(calldatasize, not(0x03))\n      slt\n      tag_19\n      jumpi\n      0x20\n      swap2\n      sload\n      swap1\n      mload\n      swap1\n      dup2\n      mstore\n      return\n    tag_9:\n      pop\n      jumpi(tag_19, callvalue)\n      jumpi(tag_19, slt(add(not(0x03), calldatasize), 0x20))\n      calldataload(0x04)\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1000:1026  newFeeRate <= MAX_FEE_RATE */\n      swap1\n        /* \"contracts/contracts/lib/EmissionManager.sol\":260:263  500 */\n      0x01f4\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1000:1026  newFeeRate <= MAX_FEE_RATE */\n      dup3\n      gt\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      tag_35\n      jumpi\n      dup2\n      0x20\n      swap2\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1121:1156  tuliaPoolFeeRateUpdated(newFeeRate) */\n      0x7319226f48bdce05a3e89ab188c3a70245772b46d6ffedcb9d05b6786bfaa8fc\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      swap4\n      dup6\n      sstore\n      mload\n      swap1\n      dup2\n      mstore\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1121:1156  tuliaPoolFeeRateUpdated(newFeeRate) */\n      log1\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      dup1\n      return\n    tag_35:\n      mload\n      shl(0xe5, 0x461bcd)\n      dup2\n      mstore\n      0x20\n      0x04\n      dup3\n      add\n      mstore\n      0x22\n      0x24\n      dup3\n      add\n      mstore\n      0x4e65772074756c6961506f6f6c20666565207261746520697320746f6f206869\n      0x44\n      dup3\n      add\n      mstore\n      shl(0xf3, 0x0ced)\n      0x64\n      dup3\n      add\n      mstore\n      0x84\n      swap1\n      revert\n    tag_5:\n      pop\n      jumpi(tag_19, callvalue)\n      dup2\n      add(calldatasize, not(0x03))\n      slt\n      tag_19\n      jumpi\n      0x20\n      swap1\n        /* \"contracts/contracts/lib/EmissionManager.sol\":1293:1309  flashPoolFeeRate */\n      0x01\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      sload\n      swap1\n      mload\n      swap1\n      dup2\n      mstore\n      return\n    tag_3:\n      dup4\n      swap1\n      jumpi(tag_19, callvalue)\n      dup2\n      add(calldatasize, not(0x03))\n      slt\n      tag_19\n      jumpi\n      0x20\n      swap1\n        /* \"contracts/contracts/lib/EmissionManager.sol\":183:214  uint256 public flashPoolFeeRate */\n      0x01\n        /* \"contracts/contracts/lib/EmissionManager.sol\":103:1609  contract FeeManager is IFeeManager {... */\n      sload\n      dup2\n      mstore\n      return\n\n    auxdata: 0xa264697066735822122028c7a96b5ffa20b840f3f4ea755ca888e86120401ab9b6a027de8006da59a94064736f6c63430008140033\n}\n",
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "60803461011157601f61037c38819003918201601f19168301916001600160401b038311848410176101155780849260409485528339810103126101115760208151910151906101f48082116100bd578211610069575f55600155604051610252908161012a8239f35b60405162461bcd60e51b815260206004820152602660248201527f496e697469616c20666c617368506f6f6c20666565207261746520697320746f6044820152650de40d0d2ced60d31b6064820152608490fd5b60405162461bcd60e51b815260206004820152602660248201527f496e697469616c2074756c6961506f6f6c20666565207261746520697320746f6044820152650de40d0d2ced60d31b6064820152608490fd5b5f80fd5b634e487b7160e01b5f52604160045260245ffdfe608060408181526004361015610013575f80fd5b5f91823560e01c90816301b3e0a41461020057508063053e755b146101e2578063203f31491461012957806324d8af8d1461014557806326d03cd914610129578063369058bb1461008b576392f6576e1461006c575f80fd5b34610087578160031936011261008757602090516101f48152f35b5080fd5b503461008757602036600319011261008757600435906101f482116100db57816020917f93785b15ebbc916d52986b4f3f53b719a4895974f421918b77407c81cd9dfbc89360015551908152a180f35b5162461bcd60e51b815260206004820152602260248201527f4e657720666c617368506f6f6c20666565207261746520697320746f6f2068696044820152610ced60f31b6064820152608490fd5b5034610087578160031936011261008757602091549051908152f35b503461008757602036600319011261008757600435906101f4821161019457816020917f7319226f48bdce05a3e89ab188c3a70245772b46d6ffedcb9d05b6786bfaa8fc93855551908152a180f35b5162461bcd60e51b815260206004820152602260248201527f4e65772074756c6961506f6f6c20666565207261746520697320746f6f2068696044820152610ced60f31b6064820152608490fd5b50346100875781600319360112610087576020906001549051908152f35b8390346100875781600319360112610087576020906001548152f3fea264697066735822122028c7a96b5ffa20b840f3f4ea755ca888e86120401ab9b6a027de8006da59a94064736f6c63430008140033",
+							"opcodes": "PUSH1 0x80 CALLVALUE PUSH2 0x111 JUMPI PUSH1 0x1F PUSH2 0x37C CODESIZE DUP2 SWAP1 SUB SWAP2 DUP3 ADD PUSH1 0x1F NOT AND DUP4 ADD SWAP2 PUSH1 0x1 PUSH1 0x1 PUSH1 0x40 SHL SUB DUP4 GT DUP5 DUP5 LT OR PUSH2 0x115 JUMPI DUP1 DUP5 SWAP3 PUSH1 0x40 SWAP5 DUP6 MSTORE DUP4 CODECOPY DUP2 ADD SUB SLT PUSH2 0x111 JUMPI PUSH1 0x20 DUP2 MLOAD SWAP2 ADD MLOAD SWAP1 PUSH2 0x1F4 DUP1 DUP3 GT PUSH2 0xBD JUMPI DUP3 GT PUSH2 0x69 JUMPI PUSH0 SSTORE PUSH1 0x1 SSTORE PUSH1 0x40 MLOAD PUSH2 0x252 SWAP1 DUP2 PUSH2 0x12A DUP3 CODECOPY RETURN JUMPDEST PUSH1 0x40 MLOAD PUSH3 0x461BCD PUSH1 0xE5 SHL DUP2 MSTORE PUSH1 0x20 PUSH1 0x4 DUP3 ADD MSTORE PUSH1 0x26 PUSH1 0x24 DUP3 ADD MSTORE PUSH32 0x496E697469616C20666C617368506F6F6C20666565207261746520697320746F PUSH1 0x44 DUP3 ADD MSTORE PUSH6 0xDE40D0D2CED PUSH1 0xD3 SHL PUSH1 0x64 DUP3 ADD MSTORE PUSH1 0x84 SWAP1 REVERT JUMPDEST PUSH1 0x40 MLOAD PUSH3 0x461BCD PUSH1 0xE5 SHL DUP2 MSTORE PUSH1 0x20 PUSH1 0x4 DUP3 ADD MSTORE PUSH1 0x26 PUSH1 0x24 DUP3 ADD MSTORE PUSH32 0x496E697469616C2074756C6961506F6F6C20666565207261746520697320746F PUSH1 0x44 DUP3 ADD MSTORE PUSH6 0xDE40D0D2CED PUSH1 0xD3 SHL PUSH1 0x64 DUP3 ADD MSTORE PUSH1 0x84 SWAP1 REVERT JUMPDEST PUSH0 DUP1 REVERT JUMPDEST PUSH4 0x4E487B71 PUSH1 0xE0 SHL PUSH0 MSTORE PUSH1 0x41 PUSH1 0x4 MSTORE PUSH1 0x24 PUSH0 REVERT INVALID PUSH1 0x80 PUSH1 0x40 DUP2 DUP2 MSTORE PUSH1 0x4 CALLDATASIZE LT ISZERO PUSH2 0x13 JUMPI PUSH0 DUP1 REVERT JUMPDEST PUSH0 SWAP2 DUP3 CALLDATALOAD PUSH1 0xE0 SHR SWAP1 DUP2 PUSH4 0x1B3E0A4 EQ PUSH2 0x200 JUMPI POP DUP1 PUSH4 0x53E755B EQ PUSH2 0x1E2 JUMPI DUP1 PUSH4 0x203F3149 EQ PUSH2 0x129 JUMPI DUP1 PUSH4 0x24D8AF8D EQ PUSH2 0x145 JUMPI DUP1 PUSH4 0x26D03CD9 EQ PUSH2 0x129 JUMPI DUP1 PUSH4 0x369058BB EQ PUSH2 0x8B JUMPI PUSH4 0x92F6576E EQ PUSH2 0x6C JUMPI PUSH0 DUP1 REVERT JUMPDEST CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP1 MLOAD PUSH2 0x1F4 DUP2 MSTORE RETURN JUMPDEST POP DUP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI PUSH1 0x20 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH2 0x87 JUMPI PUSH1 0x4 CALLDATALOAD SWAP1 PUSH2 0x1F4 DUP3 GT PUSH2 0xDB JUMPI DUP2 PUSH1 0x20 SWAP2 PUSH32 0x93785B15EBBC916D52986B4F3F53B719A4895974F421918B77407C81CD9DFBC8 SWAP4 PUSH1 0x1 SSTORE MLOAD SWAP1 DUP2 MSTORE LOG1 DUP1 RETURN JUMPDEST MLOAD PUSH3 0x461BCD PUSH1 0xE5 SHL DUP2 MSTORE PUSH1 0x20 PUSH1 0x4 DUP3 ADD MSTORE PUSH1 0x22 PUSH1 0x24 DUP3 ADD MSTORE PUSH32 0x4E657720666C617368506F6F6C20666565207261746520697320746F6F206869 PUSH1 0x44 DUP3 ADD MSTORE PUSH2 0xCED PUSH1 0xF3 SHL PUSH1 0x64 DUP3 ADD MSTORE PUSH1 0x84 SWAP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP2 SLOAD SWAP1 MLOAD SWAP1 DUP2 MSTORE RETURN JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI PUSH1 0x20 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH2 0x87 JUMPI PUSH1 0x4 CALLDATALOAD SWAP1 PUSH2 0x1F4 DUP3 GT PUSH2 0x194 JUMPI DUP2 PUSH1 0x20 SWAP2 PUSH32 0x7319226F48BDCE05A3E89AB188C3A70245772B46D6FFEDCB9D05B6786BFAA8FC SWAP4 DUP6 SSTORE MLOAD SWAP1 DUP2 MSTORE LOG1 DUP1 RETURN JUMPDEST MLOAD PUSH3 0x461BCD PUSH1 0xE5 SHL DUP2 MSTORE PUSH1 0x20 PUSH1 0x4 DUP3 ADD MSTORE PUSH1 0x22 PUSH1 0x24 DUP3 ADD MSTORE PUSH32 0x4E65772074756C6961506F6F6C20666565207261746520697320746F6F206869 PUSH1 0x44 DUP3 ADD MSTORE PUSH2 0xCED PUSH1 0xF3 SHL PUSH1 0x64 DUP3 ADD MSTORE PUSH1 0x84 SWAP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP1 PUSH1 0x1 SLOAD SWAP1 MLOAD SWAP1 DUP2 MSTORE RETURN JUMPDEST DUP4 SWAP1 CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP1 PUSH1 0x1 SLOAD DUP2 MSTORE RETURN INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x28 0xC7 0xA9 PUSH12 0x5FFA20B840F3F4EA755CA888 0xE8 PUSH2 0x2040 BYTE 0xB9 0xB6 LOG0 0x27 0xDE DUP1 MOD 0xDA MSIZE 0xA9 BLOCKHASH PUSH5 0x736F6C6343 STOP ADDMOD EQ STOP CALLER ",
+							"sourceMap": "103:1506:1:-:0;;;;;;;;;;;;;-1:-1:-1;;103:1506:1;;;;-1:-1:-1;;;;;103:1506:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;260:3;;425:39;;;260:3;;526:39;;260:3;;-1:-1:-1;260:3:1;103:1506;260:3;103:1506;;;;;;;;;260:3;103:1506;;-1:-1:-1;;;260:3:1;;103:1506;260:3;;;;;;;;;;;;;;-1:-1:-1;;;260:3:1;;;;;;;;103:1506;;-1:-1:-1;;;260:3:1;;103:1506;260:3;;;;;;;;;;;;;;-1:-1:-1;;;260:3:1;;;;;;;103:1506;-1:-1:-1;103:1506:1;;;;;;-1:-1:-1;103:1506:1;;;;;-1:-1:-1;103:1506:1"
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "608060408181526004361015610013575f80fd5b5f91823560e01c90816301b3e0a41461020057508063053e755b146101e2578063203f31491461012957806324d8af8d1461014557806326d03cd914610129578063369058bb1461008b576392f6576e1461006c575f80fd5b34610087578160031936011261008757602090516101f48152f35b5080fd5b503461008757602036600319011261008757600435906101f482116100db57816020917f93785b15ebbc916d52986b4f3f53b719a4895974f421918b77407c81cd9dfbc89360015551908152a180f35b5162461bcd60e51b815260206004820152602260248201527f4e657720666c617368506f6f6c20666565207261746520697320746f6f2068696044820152610ced60f31b6064820152608490fd5b5034610087578160031936011261008757602091549051908152f35b503461008757602036600319011261008757600435906101f4821161019457816020917f7319226f48bdce05a3e89ab188c3a70245772b46d6ffedcb9d05b6786bfaa8fc93855551908152a180f35b5162461bcd60e51b815260206004820152602260248201527f4e65772074756c6961506f6f6c20666565207261746520697320746f6f2068696044820152610ced60f31b6064820152608490fd5b50346100875781600319360112610087576020906001549051908152f35b8390346100875781600319360112610087576020906001548152f3fea264697066735822122028c7a96b5ffa20b840f3f4ea755ca888e86120401ab9b6a027de8006da59a94064736f6c63430008140033",
+							"opcodes": "PUSH1 0x80 PUSH1 0x40 DUP2 DUP2 MSTORE PUSH1 0x4 CALLDATASIZE LT ISZERO PUSH2 0x13 JUMPI PUSH0 DUP1 REVERT JUMPDEST PUSH0 SWAP2 DUP3 CALLDATALOAD PUSH1 0xE0 SHR SWAP1 DUP2 PUSH4 0x1B3E0A4 EQ PUSH2 0x200 JUMPI POP DUP1 PUSH4 0x53E755B EQ PUSH2 0x1E2 JUMPI DUP1 PUSH4 0x203F3149 EQ PUSH2 0x129 JUMPI DUP1 PUSH4 0x24D8AF8D EQ PUSH2 0x145 JUMPI DUP1 PUSH4 0x26D03CD9 EQ PUSH2 0x129 JUMPI DUP1 PUSH4 0x369058BB EQ PUSH2 0x8B JUMPI PUSH4 0x92F6576E EQ PUSH2 0x6C JUMPI PUSH0 DUP1 REVERT JUMPDEST CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP1 MLOAD PUSH2 0x1F4 DUP2 MSTORE RETURN JUMPDEST POP DUP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI PUSH1 0x20 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH2 0x87 JUMPI PUSH1 0x4 CALLDATALOAD SWAP1 PUSH2 0x1F4 DUP3 GT PUSH2 0xDB JUMPI DUP2 PUSH1 0x20 SWAP2 PUSH32 0x93785B15EBBC916D52986B4F3F53B719A4895974F421918B77407C81CD9DFBC8 SWAP4 PUSH1 0x1 SSTORE MLOAD SWAP1 DUP2 MSTORE LOG1 DUP1 RETURN JUMPDEST MLOAD PUSH3 0x461BCD PUSH1 0xE5 SHL DUP2 MSTORE PUSH1 0x20 PUSH1 0x4 DUP3 ADD MSTORE PUSH1 0x22 PUSH1 0x24 DUP3 ADD MSTORE PUSH32 0x4E657720666C617368506F6F6C20666565207261746520697320746F6F206869 PUSH1 0x44 DUP3 ADD MSTORE PUSH2 0xCED PUSH1 0xF3 SHL PUSH1 0x64 DUP3 ADD MSTORE PUSH1 0x84 SWAP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP2 SLOAD SWAP1 MLOAD SWAP1 DUP2 MSTORE RETURN JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI PUSH1 0x20 CALLDATASIZE PUSH1 0x3 NOT ADD SLT PUSH2 0x87 JUMPI PUSH1 0x4 CALLDATALOAD SWAP1 PUSH2 0x1F4 DUP3 GT PUSH2 0x194 JUMPI DUP2 PUSH1 0x20 SWAP2 PUSH32 0x7319226F48BDCE05A3E89AB188C3A70245772B46D6FFEDCB9D05B6786BFAA8FC SWAP4 DUP6 SSTORE MLOAD SWAP1 DUP2 MSTORE LOG1 DUP1 RETURN JUMPDEST MLOAD PUSH3 0x461BCD PUSH1 0xE5 SHL DUP2 MSTORE PUSH1 0x20 PUSH1 0x4 DUP3 ADD MSTORE PUSH1 0x22 PUSH1 0x24 DUP3 ADD MSTORE PUSH32 0x4E65772074756C6961506F6F6C20666565207261746520697320746F6F206869 PUSH1 0x44 DUP3 ADD MSTORE PUSH2 0xCED PUSH1 0xF3 SHL PUSH1 0x64 DUP3 ADD MSTORE PUSH1 0x84 SWAP1 REVERT JUMPDEST POP CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP1 PUSH1 0x1 SLOAD SWAP1 MLOAD SWAP1 DUP2 MSTORE RETURN JUMPDEST DUP4 SWAP1 CALLVALUE PUSH2 0x87 JUMPI DUP2 PUSH1 0x3 NOT CALLDATASIZE ADD SLT PUSH2 0x87 JUMPI PUSH1 0x20 SWAP1 PUSH1 0x1 SLOAD DUP2 MSTORE RETURN INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x28 0xC7 0xA9 PUSH12 0x5FFA20B840F3F4EA755CA888 0xE8 PUSH2 0x2040 BYTE 0xB9 0xB6 LOG0 0x27 0xDE DUP1 MOD 0xDA MSIZE 0xA9 BLOCKHASH PUSH5 0x736F6C6343 STOP ADDMOD EQ STOP CALLER ",
+							"sourceMap": "103:1506:1:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;260:3;103:1506;;;;;;;;;;;;;;-1:-1:-1;;103:1506:1;;;;;;1442:26;260:3;1442:26;;103:1506;;;;;1563:35;103:1506;;;;;;;1563:35;103:1506;;;;-1:-1:-1;;;103:1506:1;;;;;;;;;;;;;;;;;-1:-1:-1;;;103:1506:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;103:1506:1;;;;;;1000:26;260:3;1000:26;;103:1506;;;;;1121:35;103:1506;;;;;;;1121:35;103:1506;;;;-1:-1:-1;;;103:1506:1;;;;;;;;;;;;;;;;;-1:-1:-1;;;103:1506:1;;;;;;;;;;;;;;;;;;;;;;1293:16;103:1506;;;;;;;;;;;;;;;;;;;;;;;183:31;103:1506;;;"
+						},
+						"gasEstimates": {
+							"creation": {
+								"codeDepositCost": "118800",
+								"executionCost": "infinite",
+								"totalCost": "infinite"
+							},
+							"external": {
+								"MAX_FEE_RATE()": "292",
+								"flashPoolFeeRate()": "2264",
+								"getflashPoolFeeRate()": "2293",
+								"gettuliaPoolFeeRate()": "2356",
+								"setflashPoolFeeRate(uint256)": "23427",
+								"settuliaPoolFeeRate(uint256)": "23383",
+								"tuliaPoolFeeRate()": "2312"
+							}
+						},
+						"legacyAssembly": {
+							".code": [
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "80"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "CALLVALUE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH [tag]",
+									"source": 1,
+									"value": "5"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "JUMPI",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "1F"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSHSIZE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "CODESIZE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP2",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SWAP1",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SUB",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SWAP2",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "1F"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "NOT",
+									"source": -1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "AND",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP4",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SWAP2",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "1"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "1"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "40"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "SHL",
+									"source": -1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "SUB",
+									"source": -1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP4",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "GT",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP5",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP5",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "LT",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "OR",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH [tag]",
+									"source": 1,
+									"value": "3"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "JUMPI",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP1",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP5",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SWAP3",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "40"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SWAP5",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP6",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP4",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "CODECOPY",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP2",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SUB",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SLT",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH [tag]",
+									"source": 1,
+									"value": "5"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "JUMPI",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "20"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP2",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MLOAD",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SWAP2",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MLOAD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "SWAP1",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "1F4"
+								},
+								{
+									"begin": 425,
+									"end": 464,
+									"name": "DUP1",
+									"source": 1
+								},
+								{
+									"begin": 425,
+									"end": 464,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 425,
+									"end": 464,
+									"name": "GT",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH [tag]",
+									"source": 1,
+									"value": "7"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "JUMPI",
+									"source": 1
+								},
+								{
+									"begin": 526,
+									"end": 565,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 526,
+									"end": 565,
+									"name": "GT",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH [tag]",
+									"source": 1,
+									"value": "9"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "JUMPI",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "0"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "SSTORE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "1"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "SSTORE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "40"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MLOAD",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH #[$]",
+									"source": 1,
+									"value": "0000000000000000000000000000000000000000000000000000000000000000"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SWAP1",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP2",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH [$]",
+									"source": 1,
+									"value": "0000000000000000000000000000000000000000000000000000000000000000"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "CODECOPY",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "RETURN",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "tag",
+									"source": 1,
+									"value": "9"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "JUMPDEST",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "40"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MLOAD",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "461BCD"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "E5"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "SHL",
+									"source": -1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP2",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "20"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "4"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "26"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "24"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "496E697469616C20666C617368506F6F6C20666565207261746520697320746F"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "44"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "DE40D0D2CED"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "D3"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "SHL",
+									"source": -1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "64"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "84"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "SWAP1",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "REVERT",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "tag",
+									"source": 1,
+									"value": "7"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "JUMPDEST",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "40"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MLOAD",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "461BCD"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "E5"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "SHL",
+									"source": -1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP2",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "20"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "4"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "26"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "24"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "496E697469616C2074756C6961506F6F6C20666565207261746520697320746F"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "44"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "DE40D0D2CED"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "D3"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "SHL",
+									"source": -1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "64"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "DUP3",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "ADD",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "PUSH",
+									"source": 1,
+									"value": "84"
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "SWAP1",
+									"source": 1
+								},
+								{
+									"begin": 260,
+									"end": 263,
+									"name": "REVERT",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "tag",
+									"source": 1,
+									"value": "5"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "JUMPDEST",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "0"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "DUP1",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "REVERT",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "tag",
+									"source": 1,
+									"value": "3"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "JUMPDEST",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "4E487B71"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "E0"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "SHL",
+									"source": 1
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "0"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "41"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "4"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "MSTORE",
+									"source": 1
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "PUSH",
+									"source": 1,
+									"value": "24"
+								},
+								{
+									"begin": -1,
+									"end": -1,
+									"name": "PUSH",
+									"source": -1,
+									"value": "0"
+								},
+								{
+									"begin": 103,
+									"end": 1609,
+									"name": "REVERT",
+									"source": 1
+								}
+							],
+							".data": {
+								"0": {
+									".auxdata": "a264697066735822122028c7a96b5ffa20b840f3f4ea755ca888e86120401ab9b6a027de8006da59a94064736f6c63430008140033",
+									".code": [
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "80"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "40"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "4"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATASIZE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "LT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ISZERO",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "1"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "0"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "REVERT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "1"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "0"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATALOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "E0"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SHR",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "1B3E0A4"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "EQ",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "3"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "POP",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "53E755B"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "EQ",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "5"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "203F3149"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "EQ",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "11"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "24D8AF8D"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "EQ",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "9"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "26D03CD9"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "EQ",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "11"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "369058BB"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "EQ",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "13"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "92F6576E"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "EQ",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "15"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "0"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "REVERT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "15"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLVALUE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "3"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "NOT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATASIZE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MLOAD",
+											"source": 1
+										},
+										{
+											"begin": 260,
+											"end": 263,
+											"name": "PUSH",
+											"source": 1,
+											"value": "1F4"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "RETURN",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "POP",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "REVERT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "13"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "POP",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLVALUE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATASIZE",
+											"source": 1
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "3"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "NOT",
+											"source": -1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "4"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATALOAD",
+											"source": 1
+										},
+										{
+											"begin": 1442,
+											"end": 1468,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 260,
+											"end": 263,
+											"name": "PUSH",
+											"source": 1,
+											"value": "1F4"
+										},
+										{
+											"begin": 1442,
+											"end": 1468,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 1442,
+											"end": 1468,
+											"name": "GT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "25"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP2",
+											"source": 1
+										},
+										{
+											"begin": 1563,
+											"end": 1598,
+											"name": "PUSH",
+											"source": 1,
+											"value": "93785B15EBBC916D52986B4F3F53B719A4895974F421918B77407C81CD9DFBC8"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP4",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "1"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MLOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 1563,
+											"end": 1598,
+											"name": "LOG1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "RETURN",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "25"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MLOAD",
+											"source": 1
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "461BCD"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "E5"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "SHL",
+											"source": -1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "4"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "22"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "24"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "4E657720666C617368506F6F6C20666565207261746520697320746F6F206869"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "44"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "CED"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "F3"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "SHL",
+											"source": -1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "64"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "84"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "REVERT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "11"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "POP",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLVALUE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "3"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "NOT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATASIZE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MLOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "RETURN",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "9"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "POP",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLVALUE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATASIZE",
+											"source": 1
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "3"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "NOT",
+											"source": -1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "4"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATALOAD",
+											"source": 1
+										},
+										{
+											"begin": 1000,
+											"end": 1026,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 260,
+											"end": 263,
+											"name": "PUSH",
+											"source": 1,
+											"value": "1F4"
+										},
+										{
+											"begin": 1000,
+											"end": 1026,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 1000,
+											"end": 1026,
+											"name": "GT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "35"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP2",
+											"source": 1
+										},
+										{
+											"begin": 1121,
+											"end": 1156,
+											"name": "PUSH",
+											"source": 1,
+											"value": "7319226F48BDCE05A3E89AB188C3A70245772B46D6FFEDCB9D05B6786BFAA8FC"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP4",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP6",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MLOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 1121,
+											"end": 1156,
+											"name": "LOG1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "RETURN",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "35"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MLOAD",
+											"source": 1
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "461BCD"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "E5"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "SHL",
+											"source": -1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "4"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "22"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "24"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "4E65772074756C6961506F6F6C20666565207261746520697320746F6F206869"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "44"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "CED"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "PUSH",
+											"source": -1,
+											"value": "F3"
+										},
+										{
+											"begin": -1,
+											"end": -1,
+											"name": "SHL",
+											"source": -1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "64"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP3",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "84"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "REVERT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "5"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "POP",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLVALUE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "3"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "NOT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATASIZE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 1293,
+											"end": 1309,
+											"name": "PUSH",
+											"source": 1,
+											"value": "1"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MLOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "RETURN",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "tag",
+											"source": 1,
+											"value": "3"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPDEST",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP4",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLVALUE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "3"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "NOT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "CALLDATASIZE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "ADD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLT",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH [tag]",
+											"source": 1,
+											"value": "19"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "JUMPI",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "PUSH",
+											"source": 1,
+											"value": "20"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SWAP1",
+											"source": 1
+										},
+										{
+											"begin": 183,
+											"end": 214,
+											"name": "PUSH",
+											"source": 1,
+											"value": "1"
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "SLOAD",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "DUP2",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "MSTORE",
+											"source": 1
+										},
+										{
+											"begin": 103,
+											"end": 1609,
+											"name": "RETURN",
+											"source": 1
+										}
+									]
+								}
+							},
+							"sourceList": [
+								"contracts/contracts/interfaces/IFeeManager.sol",
+								"contracts/contracts/lib/EmissionManager.sol",
+								"#utility.yul"
+							]
+						},
+						"methodIdentifiers": {
+							"MAX_FEE_RATE()": "92f6576e",
+							"flashPoolFeeRate()": "01b3e0a4",
+							"getflashPoolFeeRate()": "053e755b",
+							"gettuliaPoolFeeRate()": "26d03cd9",
+							"setflashPoolFeeRate(uint256)": "369058bb",
+							"settuliaPoolFeeRate(uint256)": "24d8af8d",
+							"tuliaPoolFeeRate()": "203f3149"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"initialtuliaPoolFeeRate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"initialflashPoolFeeRate\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"flashPoolFeeRateUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"tuliaPoolFeeRateUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MAX_FEE_RATE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"flashPoolFeeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getflashPoolFeeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gettuliaPoolFeeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"setflashPoolFeeRate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFeeRate\",\"type\":\"uint256\"}],\"name\":\"settuliaPoolFeeRate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"tuliaPoolFeeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"flashPoolFeeRateUpdated(uint256)\":{\"params\":{\"newFeeRate\":\"The new flashPool fee rate that has been set\"}},\"tuliaPoolFeeRateUpdated(uint256)\":{\"params\":{\"newFeeRate\":\"The new tuliaPool fee rate that has been set\"}}},\"kind\":\"dev\",\"methods\":{\"getflashPoolFeeRate()\":{\"returns\":{\"_0\":\"The flashPool fee rate in basis points\"}},\"gettuliaPoolFeeRate()\":{\"returns\":{\"_0\":\"The tuliaPool fee rate in basis points\"}},\"setflashPoolFeeRate(uint256)\":{\"params\":{\"newFeeRate\":\"The new flashPool fee rate in basis points\"}},\"settuliaPoolFeeRate(uint256)\":{\"params\":{\"newFeeRate\":\"The new tuliaPool fee rate in basis points\"}}},\"version\":1},\"userdoc\":{\"events\":{\"flashPoolFeeRateUpdated(uint256)\":{\"notice\":\"Event emitted when the flashPool fee rate is updated\"},\"tuliaPoolFeeRateUpdated(uint256)\":{\"notice\":\"Event emitted when the tuliaPool fee rate is updated\"}},\"kind\":\"user\",\"methods\":{\"getflashPoolFeeRate()\":{\"notice\":\"Get the current flashPool fee rate\"},\"gettuliaPoolFeeRate()\":{\"notice\":\"Get the current tuliaPool fee rate\"},\"setflashPoolFeeRate(uint256)\":{\"notice\":\"Set the flashPool fee rate\"},\"settuliaPoolFeeRate(uint256)\":{\"notice\":\"Set the tuliaPool fee rate\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/contracts/lib/EmissionManager.sol\":\"FeeManager\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/contracts/interfaces/IFeeManager.sol\":{\"keccak256\":\"0xfb4947229a6667185236729142241f9a40c8cb2d316a8e1710d44ba07a92cd27\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b14648cd3ff808d78e4139c8b2968db331fbf7e282bdba86c5171967754cb52a\",\"dweb:/ipfs/QmRQ4M9Yzi6eKGPPRL4q8wLaUuvkWYfRY5ZmNk7L2BXoFM\"]},\"contracts/contracts/lib/EmissionManager.sol\":{\"keccak256\":\"0xb7281c2d7360648b36ab6740055f74e885311e4fbb365891c662eeb160047dcd\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8b474e6203ada93b3df215673e031dd3b3aeb071a79da727ac86155c5b6ddfca\",\"dweb:/ipfs/QmNd36PVHv7w11HvJCLZES6if7eLJnaddFqWWNExUsSMqb\"]}},\"version\":1}",
+					"storageLayout": {
+						"storage": [
+							{
+								"astId": 43,
+								"contract": "contracts/contracts/lib/EmissionManager.sol:FeeManager",
+								"label": "tuliaPoolFeeRate",
+								"offset": 0,
+								"slot": "0",
+								"type": "t_uint256"
+							},
+							{
+								"astId": 45,
+								"contract": "contracts/contracts/lib/EmissionManager.sol:FeeManager",
+								"label": "flashPoolFeeRate",
+								"offset": 0,
+								"slot": "1",
+								"type": "t_uint256"
+							}
+						],
+						"types": {
+							"t_uint256": {
+								"encoding": "inplace",
+								"label": "uint256",
+								"numberOfBytes": "32"
+							}
+						}
+					},
+					"userdoc": {
+						"events": {
+							"flashPoolFeeRateUpdated(uint256)": {
+								"notice": "Event emitted when the flashPool fee rate is updated"
+							},
+							"tuliaPoolFeeRateUpdated(uint256)": {
+								"notice": "Event emitted when the tuliaPool fee rate is updated"
+							}
+						},
+						"kind": "user",
+						"methods": {
+							"getflashPoolFeeRate()": {
+								"notice": "Get the current flashPool fee rate"
+							},
+							"gettuliaPoolFeeRate()": {
+								"notice": "Get the current tuliaPool fee rate"
+							},
+							"setflashPoolFeeRate(uint256)": {
+								"notice": "Set the flashPool fee rate"
+							},
+							"settuliaPoolFeeRate(uint256)": {
+								"notice": "Set the tuliaPool fee rate"
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/contracts/interfaces/IFeeManager.sol": {
+				"ast": {
+					"absolutePath": "contracts/contracts/interfaces/IFeeManager.sol",
+					"exportedSymbols": {
+						"IFeeManager": [
+							36
+						]
+					},
+					"id": 37,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [
+						{
+							"id": 1,
+							"literals": [
+								"solidity",
+								"^",
+								"0.8",
+								".0"
+							],
+							"nodeType": "PragmaDirective",
+							"src": "33:23:0"
+						},
+						{
+							"abstract": false,
+							"baseContracts": [],
+							"canonicalName": "IFeeManager",
+							"contractDependencies": [],
+							"contractKind": "interface",
+							"fullyImplemented": false,
+							"id": 36,
+							"linearizedBaseContracts": [
+								36
+							],
+							"name": "IFeeManager",
+							"nameLocation": "70:11:0",
+							"nodeType": "ContractDefinition",
+							"nodes": [
+								{
+									"documentation": {
+										"id": 2,
+										"nodeType": "StructuredDocumentation",
+										"src": "89:102:0",
+										"text": "@notice Get the current tuliaPool fee rate\n @return The tuliaPool fee rate in basis points"
+									},
+									"functionSelector": "26d03cd9",
+									"id": 7,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "gettuliaPoolFeeRate",
+									"nameLocation": "206:19:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 3,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "225:2:0"
+									},
+									"returnParameters": {
+										"id": 6,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 5,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 7,
+												"src": "251:7:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 4,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "251:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "250:9:0"
+									},
+									"scope": 36,
+									"src": "197:63:0",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 8,
+										"nodeType": "StructuredDocumentation",
+										"src": "268:108:0",
+										"text": "@notice Set the tuliaPool fee rate\n @param newFeeRate The new tuliaPool fee rate in basis points"
+									},
+									"functionSelector": "24d8af8d",
+									"id": 13,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "settuliaPoolFeeRate",
+									"nameLocation": "391:19:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 11,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 10,
+												"mutability": "mutable",
+												"name": "newFeeRate",
+												"nameLocation": "419:10:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 13,
+												"src": "411:18:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 9,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "411:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "410:20:0"
+									},
+									"returnParameters": {
+										"id": 12,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "439:0:0"
+									},
+									"scope": 36,
+									"src": "382:58:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 14,
+										"nodeType": "StructuredDocumentation",
+										"src": "448:102:0",
+										"text": "@notice Get the current flashPool fee rate\n @return The flashPool fee rate in basis points"
+									},
+									"functionSelector": "053e755b",
+									"id": 19,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "getflashPoolFeeRate",
+									"nameLocation": "565:19:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 15,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "584:2:0"
+									},
+									"returnParameters": {
+										"id": 18,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 17,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 19,
+												"src": "610:7:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 16,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "610:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "609:9:0"
+									},
+									"scope": 36,
+									"src": "556:63:0",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 20,
+										"nodeType": "StructuredDocumentation",
+										"src": "627:108:0",
+										"text": "@notice Set the flashPool fee rate\n @param newFeeRate The new flashPool fee rate in basis points"
+									},
+									"functionSelector": "369058bb",
+									"id": 25,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "setflashPoolFeeRate",
+									"nameLocation": "750:19:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 23,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 22,
+												"mutability": "mutable",
+												"name": "newFeeRate",
+												"nameLocation": "778:10:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 25,
+												"src": "770:18:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 21,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "770:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "769:20:0"
+									},
+									"returnParameters": {
+										"id": 24,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "798:0:0"
+									},
+									"scope": 36,
+									"src": "741:58:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"anonymous": false,
+									"documentation": {
+										"id": 26,
+										"nodeType": "StructuredDocumentation",
+										"src": "807:136:0",
+										"text": "@notice Event emitted when the tuliaPool fee rate is updated\n @param newFeeRate The new tuliaPool fee rate that has been set"
+									},
+									"eventSelector": "7319226f48bdce05a3e89ab188c3a70245772b46d6ffedcb9d05b6786bfaa8fc",
+									"id": 30,
+									"name": "tuliaPoolFeeRateUpdated",
+									"nameLocation": "955:23:0",
+									"nodeType": "EventDefinition",
+									"parameters": {
+										"id": 29,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 28,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "newFeeRate",
+												"nameLocation": "987:10:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 30,
+												"src": "979:18:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 27,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "979:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "978:20:0"
+									},
+									"src": "949:50:0"
+								},
+								{
+									"anonymous": false,
+									"documentation": {
+										"id": 31,
+										"nodeType": "StructuredDocumentation",
+										"src": "1007:136:0",
+										"text": "@notice Event emitted when the flashPool fee rate is updated\n @param newFeeRate The new flashPool fee rate that has been set"
+									},
+									"eventSelector": "93785b15ebbc916d52986b4f3f53b719a4895974f421918b77407c81cd9dfbc8",
+									"id": 35,
+									"name": "flashPoolFeeRateUpdated",
+									"nameLocation": "1155:23:0",
+									"nodeType": "EventDefinition",
+									"parameters": {
+										"id": 34,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 33,
+												"indexed": false,
+												"mutability": "mutable",
+												"name": "newFeeRate",
+												"nameLocation": "1187:10:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 35,
+												"src": "1179:18:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 32,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1179:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1178:20:0"
+									},
+									"src": "1149:50:0"
+								}
+							],
+							"scope": 37,
+							"src": "60:1142:0",
+							"usedErrors": [],
+							"usedEvents": [
+								30,
+								35
+							]
+						}
+					],
+					"src": "33:1171:0"
+				},
+				"id": 0
+			},
+			"contracts/contracts/lib/EmissionManager.sol": {
+				"ast": {
+					"absolutePath": "contracts/contracts/lib/EmissionManager.sol",
+					"exportedSymbols": {
+						"FeeManager": [
+							145
+						],
+						"IFeeManager": [
+							36
+						]
+					},
+					"id": 146,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [
+						{
+							"id": 38,
+							"literals": [
+								"solidity",
+								"^",
+								"0.8",
+								".0"
+							],
+							"nodeType": "PragmaDirective",
+							"src": "33:23:1"
+						},
+						{
+							"absolutePath": "contracts/contracts/interfaces/IFeeManager.sol",
+							"file": "../interfaces/IFeeManager.sol",
+							"id": 39,
+							"nameLocation": "-1:-1:-1",
+							"nodeType": "ImportDirective",
+							"scope": 146,
+							"sourceUnit": 37,
+							"src": "60:39:1",
+							"symbolAliases": [],
+							"unitAlias": ""
+						},
+						{
+							"abstract": false,
+							"baseContracts": [
+								{
+									"baseName": {
+										"id": 40,
+										"name": "IFeeManager",
+										"nameLocations": [
+											"126:11:1"
+										],
+										"nodeType": "IdentifierPath",
+										"referencedDeclaration": 36,
+										"src": "126:11:1"
+									},
+									"id": 41,
+									"nodeType": "InheritanceSpecifier",
+									"src": "126:11:1"
+								}
+							],
+							"canonicalName": "FeeManager",
+							"contractDependencies": [],
+							"contractKind": "contract",
+							"fullyImplemented": true,
+							"id": 145,
+							"linearizedBaseContracts": [
+								145,
+								36
+							],
+							"name": "FeeManager",
+							"nameLocation": "112:10:1",
+							"nodeType": "ContractDefinition",
+							"nodes": [
+								{
+									"constant": false,
+									"functionSelector": "203f3149",
+									"id": 43,
+									"mutability": "mutable",
+									"name": "tuliaPoolFeeRate",
+									"nameLocation": "160:16:1",
+									"nodeType": "VariableDeclaration",
+									"scope": 145,
+									"src": "145:31:1",
+									"stateVariable": true,
+									"storageLocation": "default",
+									"typeDescriptions": {
+										"typeIdentifier": "t_uint256",
+										"typeString": "uint256"
+									},
+									"typeName": {
+										"id": 42,
+										"name": "uint256",
+										"nodeType": "ElementaryTypeName",
+										"src": "145:7:1",
+										"typeDescriptions": {
+											"typeIdentifier": "t_uint256",
+											"typeString": "uint256"
+										}
+									},
+									"visibility": "public"
+								},
+								{
+									"constant": false,
+									"functionSelector": "01b3e0a4",
+									"id": 45,
+									"mutability": "mutable",
+									"name": "flashPoolFeeRate",
+									"nameLocation": "198:16:1",
+									"nodeType": "VariableDeclaration",
+									"scope": 145,
+									"src": "183:31:1",
+									"stateVariable": true,
+									"storageLocation": "default",
+									"typeDescriptions": {
+										"typeIdentifier": "t_uint256",
+										"typeString": "uint256"
+									},
+									"typeName": {
+										"id": 44,
+										"name": "uint256",
+										"nodeType": "ElementaryTypeName",
+										"src": "183:7:1",
+										"typeDescriptions": {
+											"typeIdentifier": "t_uint256",
+											"typeString": "uint256"
+										}
+									},
+									"visibility": "public"
+								},
+								{
+									"constant": true,
+									"functionSelector": "92f6576e",
+									"id": 48,
+									"mutability": "constant",
+									"name": "MAX_FEE_RATE",
+									"nameLocation": "245:12:1",
+									"nodeType": "VariableDeclaration",
+									"scope": 145,
+									"src": "221:42:1",
+									"stateVariable": true,
+									"storageLocation": "default",
+									"typeDescriptions": {
+										"typeIdentifier": "t_uint256",
+										"typeString": "uint256"
+									},
+									"typeName": {
+										"id": 46,
+										"name": "uint256",
+										"nodeType": "ElementaryTypeName",
+										"src": "221:7:1",
+										"typeDescriptions": {
+											"typeIdentifier": "t_uint256",
+											"typeString": "uint256"
+										}
+									},
+									"value": {
+										"hexValue": "353030",
+										"id": 47,
+										"isConstant": false,
+										"isLValue": false,
+										"isPure": true,
+										"kind": "number",
+										"lValueRequested": false,
+										"nodeType": "Literal",
+										"src": "260:3:1",
+										"typeDescriptions": {
+											"typeIdentifier": "t_rational_500_by_1",
+											"typeString": "int_const 500"
+										},
+										"value": "500"
+									},
+									"visibility": "public"
+								},
+								{
+									"body": {
+										"id": 77,
+										"nodeType": "Block",
+										"src": "406:316:1",
+										"statements": [
+											{
+												"expression": {
+													"arguments": [
+														{
+															"commonType": {
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															},
+															"id": 58,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": false,
+															"lValueRequested": false,
+															"leftExpression": {
+																"id": 56,
+																"name": "initialtuliaPoolFeeRate",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 50,
+																"src": "425:23:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"nodeType": "BinaryOperation",
+															"operator": "<=",
+															"rightExpression": {
+																"id": 57,
+																"name": "MAX_FEE_RATE",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 48,
+																"src": "452:12:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"src": "425:39:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															}
+														},
+														{
+															"hexValue": "496e697469616c2074756c6961506f6f6c20666565207261746520697320746f6f2068696768",
+															"id": 59,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": true,
+															"kind": "string",
+															"lValueRequested": false,
+															"nodeType": "Literal",
+															"src": "466:40:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_stringliteral_a0a85dbd1fa530cc37e6d0268619e5601e35caea5708292de72878579b945256",
+																"typeString": "literal_string \"Initial tuliaPool fee rate is too high\""
+															},
+															"value": "Initial tuliaPool fee rate is too high"
+														}
+													],
+													"expression": {
+														"argumentTypes": [
+															{
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															},
+															{
+																"typeIdentifier": "t_stringliteral_a0a85dbd1fa530cc37e6d0268619e5601e35caea5708292de72878579b945256",
+																"typeString": "literal_string \"Initial tuliaPool fee rate is too high\""
+															}
+														],
+														"id": 55,
+														"name": "require",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [
+															4294967278,
+															4294967278
+														],
+														"referencedDeclaration": 4294967278,
+														"src": "417:7:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+															"typeString": "function (bool,string memory) pure"
+														}
+													},
+													"id": 60,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"kind": "functionCall",
+													"lValueRequested": false,
+													"nameLocations": [],
+													"names": [],
+													"nodeType": "FunctionCall",
+													"src": "417:90:1",
+													"tryCall": false,
+													"typeDescriptions": {
+														"typeIdentifier": "t_tuple$__$",
+														"typeString": "tuple()"
+													}
+												},
+												"id": 61,
+												"nodeType": "ExpressionStatement",
+												"src": "417:90:1"
+											},
+											{
+												"expression": {
+													"arguments": [
+														{
+															"commonType": {
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															},
+															"id": 65,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": false,
+															"lValueRequested": false,
+															"leftExpression": {
+																"id": 63,
+																"name": "initialflashPoolFeeRate",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 52,
+																"src": "526:23:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"nodeType": "BinaryOperation",
+															"operator": "<=",
+															"rightExpression": {
+																"id": 64,
+																"name": "MAX_FEE_RATE",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 48,
+																"src": "553:12:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"src": "526:39:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															}
+														},
+														{
+															"hexValue": "496e697469616c20666c617368506f6f6c20666565207261746520697320746f6f2068696768",
+															"id": 66,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": true,
+															"kind": "string",
+															"lValueRequested": false,
+															"nodeType": "Literal",
+															"src": "567:40:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_stringliteral_f7945863c1d3167f47e832f16b12b6bfb930dfb9b32e1452c742de4ec50046f3",
+																"typeString": "literal_string \"Initial flashPool fee rate is too high\""
+															},
+															"value": "Initial flashPool fee rate is too high"
+														}
+													],
+													"expression": {
+														"argumentTypes": [
+															{
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															},
+															{
+																"typeIdentifier": "t_stringliteral_f7945863c1d3167f47e832f16b12b6bfb930dfb9b32e1452c742de4ec50046f3",
+																"typeString": "literal_string \"Initial flashPool fee rate is too high\""
+															}
+														],
+														"id": 62,
+														"name": "require",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [
+															4294967278,
+															4294967278
+														],
+														"referencedDeclaration": 4294967278,
+														"src": "518:7:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+															"typeString": "function (bool,string memory) pure"
+														}
+													},
+													"id": 67,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"kind": "functionCall",
+													"lValueRequested": false,
+													"nameLocations": [],
+													"names": [],
+													"nodeType": "FunctionCall",
+													"src": "518:90:1",
+													"tryCall": false,
+													"typeDescriptions": {
+														"typeIdentifier": "t_tuple$__$",
+														"typeString": "tuple()"
+													}
+												},
+												"id": 68,
+												"nodeType": "ExpressionStatement",
+												"src": "518:90:1"
+											},
+											{
+												"expression": {
+													"id": 71,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"lValueRequested": false,
+													"leftHandSide": {
+														"id": 69,
+														"name": "tuliaPoolFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 43,
+														"src": "619:16:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"nodeType": "Assignment",
+													"operator": "=",
+													"rightHandSide": {
+														"id": 70,
+														"name": "initialtuliaPoolFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 50,
+														"src": "638:23:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"src": "619:42:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"id": 72,
+												"nodeType": "ExpressionStatement",
+												"src": "619:42:1"
+											},
+											{
+												"expression": {
+													"id": 75,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"lValueRequested": false,
+													"leftHandSide": {
+														"id": 73,
+														"name": "flashPoolFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 45,
+														"src": "672:16:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"nodeType": "Assignment",
+													"operator": "=",
+													"rightHandSide": {
+														"id": 74,
+														"name": "initialflashPoolFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 52,
+														"src": "691:23:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"src": "672:42:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"id": 76,
+												"nodeType": "ExpressionStatement",
+												"src": "672:42:1"
+											}
+										]
+									},
+									"id": 78,
+									"implemented": true,
+									"kind": "constructor",
+									"modifiers": [],
+									"name": "",
+									"nameLocation": "-1:-1:-1",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 53,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 50,
+												"mutability": "mutable",
+												"name": "initialtuliaPoolFeeRate",
+												"nameLocation": "348:23:1",
+												"nodeType": "VariableDeclaration",
+												"scope": 78,
+												"src": "340:31:1",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 49,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "340:7:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 52,
+												"mutability": "mutable",
+												"name": "initialflashPoolFeeRate",
+												"nameLocation": "381:23:1",
+												"nodeType": "VariableDeclaration",
+												"scope": 78,
+												"src": "373:31:1",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 51,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "373:7:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "339:66:1"
+									},
+									"returnParameters": {
+										"id": 54,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "406:0:1"
+									},
+									"scope": 145,
+									"src": "328:394:1",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "public"
+								},
+								{
+									"baseFunctions": [
+										7
+									],
+									"body": {
+										"id": 87,
+										"nodeType": "Block",
+										"src": "833:42:1",
+										"statements": [
+											{
+												"expression": {
+													"id": 85,
+													"name": "tuliaPoolFeeRate",
+													"nodeType": "Identifier",
+													"overloadedDeclarations": [],
+													"referencedDeclaration": 43,
+													"src": "851:16:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"functionReturnParameters": 84,
+												"id": 86,
+												"nodeType": "Return",
+												"src": "844:23:1"
+											}
+										]
+									},
+									"documentation": {
+										"id": 79,
+										"nodeType": "StructuredDocumentation",
+										"src": "730:27:1",
+										"text": "@inheritdoc IFeeManager"
+									},
+									"functionSelector": "26d03cd9",
+									"id": 88,
+									"implemented": true,
+									"kind": "function",
+									"modifiers": [],
+									"name": "gettuliaPoolFeeRate",
+									"nameLocation": "772:19:1",
+									"nodeType": "FunctionDefinition",
+									"overrides": {
+										"id": 81,
+										"nodeType": "OverrideSpecifier",
+										"overrides": [],
+										"src": "806:8:1"
+									},
+									"parameters": {
+										"id": 80,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "791:2:1"
+									},
+									"returnParameters": {
+										"id": 84,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 83,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 88,
+												"src": "824:7:1",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 82,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "824:7:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "823:9:1"
+									},
+									"scope": 145,
+									"src": "763:112:1",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "public"
+								},
+								{
+									"baseFunctions": [
+										13
+									],
+									"body": {
+										"id": 110,
+										"nodeType": "Block",
+										"src": "981:183:1",
+										"statements": [
+											{
+												"expression": {
+													"arguments": [
+														{
+															"commonType": {
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															},
+															"id": 98,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": false,
+															"lValueRequested": false,
+															"leftExpression": {
+																"id": 96,
+																"name": "newFeeRate",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 91,
+																"src": "1000:10:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"nodeType": "BinaryOperation",
+															"operator": "<=",
+															"rightExpression": {
+																"id": 97,
+																"name": "MAX_FEE_RATE",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 48,
+																"src": "1014:12:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"src": "1000:26:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															}
+														},
+														{
+															"hexValue": "4e65772074756c6961506f6f6c20666565207261746520697320746f6f2068696768",
+															"id": 99,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": true,
+															"kind": "string",
+															"lValueRequested": false,
+															"nodeType": "Literal",
+															"src": "1028:36:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_stringliteral_c68e5424bc6decef8cec5095ff18f66f99eae6ebc875a857ed29c884f2504732",
+																"typeString": "literal_string \"New tuliaPool fee rate is too high\""
+															},
+															"value": "New tuliaPool fee rate is too high"
+														}
+													],
+													"expression": {
+														"argumentTypes": [
+															{
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															},
+															{
+																"typeIdentifier": "t_stringliteral_c68e5424bc6decef8cec5095ff18f66f99eae6ebc875a857ed29c884f2504732",
+																"typeString": "literal_string \"New tuliaPool fee rate is too high\""
+															}
+														],
+														"id": 95,
+														"name": "require",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [
+															4294967278,
+															4294967278
+														],
+														"referencedDeclaration": 4294967278,
+														"src": "992:7:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+															"typeString": "function (bool,string memory) pure"
+														}
+													},
+													"id": 100,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"kind": "functionCall",
+													"lValueRequested": false,
+													"nameLocations": [],
+													"names": [],
+													"nodeType": "FunctionCall",
+													"src": "992:73:1",
+													"tryCall": false,
+													"typeDescriptions": {
+														"typeIdentifier": "t_tuple$__$",
+														"typeString": "tuple()"
+													}
+												},
+												"id": 101,
+												"nodeType": "ExpressionStatement",
+												"src": "992:73:1"
+											},
+											{
+												"expression": {
+													"id": 104,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"lValueRequested": false,
+													"leftHandSide": {
+														"id": 102,
+														"name": "tuliaPoolFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 43,
+														"src": "1076:16:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"nodeType": "Assignment",
+													"operator": "=",
+													"rightHandSide": {
+														"id": 103,
+														"name": "newFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 91,
+														"src": "1095:10:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"src": "1076:29:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"id": 105,
+												"nodeType": "ExpressionStatement",
+												"src": "1076:29:1"
+											},
+											{
+												"eventCall": {
+													"arguments": [
+														{
+															"id": 107,
+															"name": "newFeeRate",
+															"nodeType": "Identifier",
+															"overloadedDeclarations": [],
+															"referencedDeclaration": 91,
+															"src": "1145:10:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															}
+														}
+													],
+													"expression": {
+														"argumentTypes": [
+															{
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															}
+														],
+														"id": 106,
+														"name": "tuliaPoolFeeRateUpdated",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 30,
+														"src": "1121:23:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_function_event_nonpayable$_t_uint256_$returns$__$",
+															"typeString": "function (uint256)"
+														}
+													},
+													"id": 108,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"kind": "functionCall",
+													"lValueRequested": false,
+													"nameLocations": [],
+													"names": [],
+													"nodeType": "FunctionCall",
+													"src": "1121:35:1",
+													"tryCall": false,
+													"typeDescriptions": {
+														"typeIdentifier": "t_tuple$__$",
+														"typeString": "tuple()"
+													}
+												},
+												"id": 109,
+												"nodeType": "EmitStatement",
+												"src": "1116:40:1"
+											}
+										]
+									},
+									"documentation": {
+										"id": 89,
+										"nodeType": "StructuredDocumentation",
+										"src": "883:27:1",
+										"text": "@inheritdoc IFeeManager"
+									},
+									"functionSelector": "24d8af8d",
+									"id": 111,
+									"implemented": true,
+									"kind": "function",
+									"modifiers": [],
+									"name": "settuliaPoolFeeRate",
+									"nameLocation": "925:19:1",
+									"nodeType": "FunctionDefinition",
+									"overrides": {
+										"id": 93,
+										"nodeType": "OverrideSpecifier",
+										"overrides": [],
+										"src": "972:8:1"
+									},
+									"parameters": {
+										"id": 92,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 91,
+												"mutability": "mutable",
+												"name": "newFeeRate",
+												"nameLocation": "953:10:1",
+												"nodeType": "VariableDeclaration",
+												"scope": 111,
+												"src": "945:18:1",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 90,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "945:7:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "944:20:1"
+									},
+									"returnParameters": {
+										"id": 94,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "981:0:1"
+									},
+									"scope": 145,
+									"src": "916:248:1",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "public"
+								},
+								{
+									"baseFunctions": [
+										19
+									],
+									"body": {
+										"id": 120,
+										"nodeType": "Block",
+										"src": "1275:42:1",
+										"statements": [
+											{
+												"expression": {
+													"id": 118,
+													"name": "flashPoolFeeRate",
+													"nodeType": "Identifier",
+													"overloadedDeclarations": [],
+													"referencedDeclaration": 45,
+													"src": "1293:16:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"functionReturnParameters": 117,
+												"id": 119,
+												"nodeType": "Return",
+												"src": "1286:23:1"
+											}
+										]
+									},
+									"documentation": {
+										"id": 112,
+										"nodeType": "StructuredDocumentation",
+										"src": "1172:27:1",
+										"text": "@inheritdoc IFeeManager"
+									},
+									"functionSelector": "053e755b",
+									"id": 121,
+									"implemented": true,
+									"kind": "function",
+									"modifiers": [],
+									"name": "getflashPoolFeeRate",
+									"nameLocation": "1214:19:1",
+									"nodeType": "FunctionDefinition",
+									"overrides": {
+										"id": 114,
+										"nodeType": "OverrideSpecifier",
+										"overrides": [],
+										"src": "1248:8:1"
+									},
+									"parameters": {
+										"id": 113,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1233:2:1"
+									},
+									"returnParameters": {
+										"id": 117,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 116,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 121,
+												"src": "1266:7:1",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 115,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1266:7:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1265:9:1"
+									},
+									"scope": 145,
+									"src": "1205:112:1",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "public"
+								},
+								{
+									"baseFunctions": [
+										25
+									],
+									"body": {
+										"id": 143,
+										"nodeType": "Block",
+										"src": "1423:183:1",
+										"statements": [
+											{
+												"expression": {
+													"arguments": [
+														{
+															"commonType": {
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															},
+															"id": 131,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": false,
+															"lValueRequested": false,
+															"leftExpression": {
+																"id": 129,
+																"name": "newFeeRate",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 124,
+																"src": "1442:10:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"nodeType": "BinaryOperation",
+															"operator": "<=",
+															"rightExpression": {
+																"id": 130,
+																"name": "MAX_FEE_RATE",
+																"nodeType": "Identifier",
+																"overloadedDeclarations": [],
+																"referencedDeclaration": 48,
+																"src": "1456:12:1",
+																"typeDescriptions": {
+																	"typeIdentifier": "t_uint256",
+																	"typeString": "uint256"
+																}
+															},
+															"src": "1442:26:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															}
+														},
+														{
+															"hexValue": "4e657720666c617368506f6f6c20666565207261746520697320746f6f2068696768",
+															"id": 132,
+															"isConstant": false,
+															"isLValue": false,
+															"isPure": true,
+															"kind": "string",
+															"lValueRequested": false,
+															"nodeType": "Literal",
+															"src": "1470:36:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_stringliteral_12136915441178eff173a2a48bc8a6da3f368f43d117376ce8c8b7be07ba01a6",
+																"typeString": "literal_string \"New flashPool fee rate is too high\""
+															},
+															"value": "New flashPool fee rate is too high"
+														}
+													],
+													"expression": {
+														"argumentTypes": [
+															{
+																"typeIdentifier": "t_bool",
+																"typeString": "bool"
+															},
+															{
+																"typeIdentifier": "t_stringliteral_12136915441178eff173a2a48bc8a6da3f368f43d117376ce8c8b7be07ba01a6",
+																"typeString": "literal_string \"New flashPool fee rate is too high\""
+															}
+														],
+														"id": 128,
+														"name": "require",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [
+															4294967278,
+															4294967278
+														],
+														"referencedDeclaration": 4294967278,
+														"src": "1434:7:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+															"typeString": "function (bool,string memory) pure"
+														}
+													},
+													"id": 133,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"kind": "functionCall",
+													"lValueRequested": false,
+													"nameLocations": [],
+													"names": [],
+													"nodeType": "FunctionCall",
+													"src": "1434:73:1",
+													"tryCall": false,
+													"typeDescriptions": {
+														"typeIdentifier": "t_tuple$__$",
+														"typeString": "tuple()"
+													}
+												},
+												"id": 134,
+												"nodeType": "ExpressionStatement",
+												"src": "1434:73:1"
+											},
+											{
+												"expression": {
+													"id": 137,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"lValueRequested": false,
+													"leftHandSide": {
+														"id": 135,
+														"name": "flashPoolFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 45,
+														"src": "1518:16:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"nodeType": "Assignment",
+													"operator": "=",
+													"rightHandSide": {
+														"id": 136,
+														"name": "newFeeRate",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 124,
+														"src": "1537:10:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_uint256",
+															"typeString": "uint256"
+														}
+													},
+													"src": "1518:29:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"id": 138,
+												"nodeType": "ExpressionStatement",
+												"src": "1518:29:1"
+											},
+											{
+												"eventCall": {
+													"arguments": [
+														{
+															"id": 140,
+															"name": "newFeeRate",
+															"nodeType": "Identifier",
+															"overloadedDeclarations": [],
+															"referencedDeclaration": 124,
+															"src": "1587:10:1",
+															"typeDescriptions": {
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															}
+														}
+													],
+													"expression": {
+														"argumentTypes": [
+															{
+																"typeIdentifier": "t_uint256",
+																"typeString": "uint256"
+															}
+														],
+														"id": 139,
+														"name": "flashPoolFeeRateUpdated",
+														"nodeType": "Identifier",
+														"overloadedDeclarations": [],
+														"referencedDeclaration": 35,
+														"src": "1563:23:1",
+														"typeDescriptions": {
+															"typeIdentifier": "t_function_event_nonpayable$_t_uint256_$returns$__$",
+															"typeString": "function (uint256)"
+														}
+													},
+													"id": 141,
+													"isConstant": false,
+													"isLValue": false,
+													"isPure": false,
+													"kind": "functionCall",
+													"lValueRequested": false,
+													"nameLocations": [],
+													"names": [],
+													"nodeType": "FunctionCall",
+													"src": "1563:35:1",
+													"tryCall": false,
+													"typeDescriptions": {
+														"typeIdentifier": "t_tuple$__$",
+														"typeString": "tuple()"
+													}
+												},
+												"id": 142,
+												"nodeType": "EmitStatement",
+												"src": "1558:40:1"
+											}
+										]
+									},
+									"documentation": {
+										"id": 122,
+										"nodeType": "StructuredDocumentation",
+										"src": "1325:27:1",
+										"text": "@inheritdoc IFeeManager"
+									},
+									"functionSelector": "369058bb",
+									"id": 144,
+									"implemented": true,
+									"kind": "function",
+									"modifiers": [],
+									"name": "setflashPoolFeeRate",
+									"nameLocation": "1367:19:1",
+									"nodeType": "FunctionDefinition",
+									"overrides": {
+										"id": 126,
+										"nodeType": "OverrideSpecifier",
+										"overrides": [],
+										"src": "1414:8:1"
+									},
+									"parameters": {
+										"id": 125,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 124,
+												"mutability": "mutable",
+												"name": "newFeeRate",
+												"nameLocation": "1395:10:1",
+												"nodeType": "VariableDeclaration",
+												"scope": 144,
+												"src": "1387:18:1",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 123,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1387:7:1",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1386:20:1"
+									},
+									"returnParameters": {
+										"id": 127,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1423:0:1"
+									},
+									"scope": 145,
+									"src": "1358:248:1",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "public"
+								}
+							],
+							"scope": 146,
+							"src": "103:1506:1",
+							"usedErrors": [],
+							"usedEvents": [
+								30,
+								35
+							]
+						}
+					],
+					"src": "33:1578:1"
+				},
+				"id": 1
+			}
+		}
+	}
+}

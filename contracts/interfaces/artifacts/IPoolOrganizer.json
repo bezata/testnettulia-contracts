@@ -1,0 +1,307 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "",
+			"opcodes": "",
+			"sourceMap": ""
+		},
+		"gasEstimates": null,
+		"methodIdentifiers": {
+			"deregisterPool(address)": "7e72c7d7",
+			"getPoolDetails(address)": "d3e90fa0",
+			"getPoolsByLender(address)": "24a44efb",
+			"getTotalPools()": "d3ffe67a",
+			"getVaultForPool(address)": "7570e389",
+			"grantFactoryAccess(address)": "5d102df7",
+			"registerManagers(address,address)": "c489579d",
+			"registerPool(address,address,address,address,address,address,uint256,uint256,uint256,uint8)": "2437769a",
+			"registerVault(address,address)": "05c4fdf9"
+		}
+	},
+	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				}
+			],
+			"name": "deregisterPool",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				}
+			],
+			"name": "getPoolDetails",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "lender",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "borrower",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "creationTime",
+							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "vault",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "loanToken",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "assetToken",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "loanAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "interestRate",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "repaymentPeriod",
+							"type": "uint256"
+						},
+						{
+							"internalType": "enum IPoolOrganizer.PoolType",
+							"name": "poolType",
+							"type": "uint8"
+						}
+					],
+					"internalType": "struct IPoolOrganizer.PoolDetails",
+					"name": "",
+					"type": "tuple"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "lender",
+					"type": "address"
+				}
+			],
+			"name": "getPoolsByLender",
+			"outputs": [
+				{
+					"internalType": "address[]",
+					"name": "",
+					"type": "address[]"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "getTotalPools",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				}
+			],
+			"name": "getVaultForPool",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "factoryAddress",
+					"type": "address"
+				}
+			],
+			"name": "grantFactoryAccess",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_vaultManager",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_rewardManager",
+					"type": "address"
+				}
+			],
+			"name": "registerManagers",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "lender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "borrower",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "vault",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "loanToken",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "assetToken",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "loanAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "interestRate",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "repaymentPeriod",
+					"type": "uint256"
+				},
+				{
+					"internalType": "enum IPoolOrganizer.PoolType",
+					"name": "poolType",
+					"type": "uint8"
+				}
+			],
+			"name": "registerPool",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "vault",
+					"type": "address"
+				}
+			],
+			"name": "registerVault",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	]
+}

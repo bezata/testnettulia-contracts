@@ -1,0 +1,435 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "_asset",
+						"type": "address"
+					},
+					{
+						"internalType": "contract IPermit2",
+						"name": "_permit2",
+						"type": "address"
+					},
+					{
+						"internalType": "contract IFeeManager",
+						"name": "_feeManager",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_flashLoanFeeRate",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "target",
+						"type": "address"
+					}
+				],
+				"name": "AddressEmptyCode",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "AddressInsufficientBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "FailedInnerCall",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "SafeERC20FailedOperation",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "asset",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "feeManager",
+				"outputs": [
+					{
+						"internalType": "contract IFeeManager",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "flashFee",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IERC3156FlashBorrower",
+						"name": "receiver",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "flashLoan",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "flashLoanFeeRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "maxFlashLoan",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "permit2",
+				"outputs": [
+					{
+						"internalType": "contract IPermit2",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "state",
+				"outputs": [
+					{
+						"internalType": "enum TuliaFlashPool.PoolState",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Implements flash loan functionalities with integrated fee management. This contract allows issuing flash loans backed by ERC20 tokens.",
+			"errors": {
+				"AddressEmptyCode(address)": [
+					{
+						"details": "There's no code at `target` (it is not a contract)."
+					}
+				],
+				"AddressInsufficientBalance(address)": [
+					{
+						"details": "The ETH balance of the account is not enough to perform the operation."
+					}
+				],
+				"FailedInnerCall()": [
+					{
+						"details": "A call to an address target failed. The target may have reverted."
+					}
+				],
+				"SafeERC20FailedOperation(address)": [
+					{
+						"details": "An operation with an ERC20 token failed."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"constructor": {
+					"params": {
+						"_asset": "The ERC20 token asset used for flash loans",
+						"_feeManager": "The contract managing the fee rates for the flash loans",
+						"_flashLoanFeeRate": "The initial fee rate for flash loans issued by this pool",
+						"_permit2": "The Permit2 contract utilized for permissioned token transfers"
+					}
+				},
+				"flashFee(address,uint256)": {
+					"params": {
+						"amount": "The amount of the loan",
+						"token": "The ERC20 token for which the fee is calculated"
+					},
+					"returns": {
+						"_0": "The calculated fee amount"
+					}
+				},
+				"flashLoan(address,address,uint256,bytes)": {
+					"params": {
+						"amount": "The amount of tokens to borrow",
+						"data": "Arbitrary data passed to the borrower's `onFlashLoan` method",
+						"receiver": "The borrower contract that must implement the IERC3156FlashBorrower interface",
+						"token": "The ERC20 token to be borrowed"
+					},
+					"returns": {
+						"_0": "true if the flash loan is paid back successfully within the same transaction"
+					}
+				},
+				"maxFlashLoan(address)": {
+					"params": {
+						"token": "The ERC20 token address for which the max loan amount is queried"
+					},
+					"returns": {
+						"_0": "The maximum amount available for a flash loan"
+					}
+				}
+			},
+			"title": "TuliaFlashPool",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"asset()": {
+					"notice": "ERC20 asset used for flash loans"
+				},
+				"constructor": {
+					"notice": "Constructs the TuliaFlashPool lending pool"
+				},
+				"feeManager()": {
+					"notice": "Contract managing the fee rates for flash loans"
+				},
+				"flashFee(address,uint256)": {
+					"notice": "Calculates the flash loan fee for a given loan amount"
+				},
+				"flashLoan(address,address,uint256,bytes)": {
+					"notice": "Initiates a flash loan transaction"
+				},
+				"flashLoanFeeRate()": {
+					"notice": "Initial fee rate for flash loans issued by this pool"
+				},
+				"maxFlashLoan(address)": {
+					"notice": "Returns the maximum loanable amount of the asset"
+				},
+				"permit2()": {
+					"notice": "Permit2 contract utilized for permissioned token transfers"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/protocol/TuliaPoolFactory.sol": "TuliaFlashPool"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol": {
+			"keccak256": "0x9f9e6dba43fe0775c400aa384375f1f503efaf733a40187169fdfc195f5ea6fa",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ff5fe5fac5e4ecbf9fcd34c42b6d58d1af150263dfe07bc6785a59329dd1e475",
+				"dweb:/ipfs/QmX1EhNKKL6n6RFrLLAYh6Uf3itkozjSHyGFs9DqwW4Rzy"
+			]
+		},
+		"@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol": {
+			"keccak256": "0x95d9eb59f21e885406d0e28b0510f9e1a0e7b4abe6636b5c966682927c65cfdd",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://a1cbff4d620ab51abe0c4ede9e4395bae53bcc3a7edd74e0eb08d7bdef155306",
+				"dweb:/ipfs/QmQcnBK28GDH4S5uXWqAcdRY1KcusXH4CxAqp87rYLir6n"
+			]
+		},
+		"@openzeppelin/contracts/security/ReentrancyGuard.sol": {
+			"keccak256": "0xa535a5df777d44e945dd24aa43a11e44b024140fc340ad0dfe42acf4002aade1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://41319e7f621f2dc3733511332c4fd032f8e32ad2aa7fd6f665c19741d9941a34",
+				"dweb:/ipfs/QmcYR3bd862GD1Bc7jwrU9bGxrhUu5na1oP964bDCu2id1"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ea104e577e63faea3b69c415637e99e755dcbf64c5833d7140c35a714d6d90c",
+				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol": {
+			"keccak256": "0x6008dabfe393240d73d7dd7688033f72740d570aa422254d29a7dce8568f3aff",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f5196ec75139918c6c7bb4251b36395e668f1fa6d206beba7e7520e74913940d",
+				"dweb:/ipfs/QmSyqjksXxmm2mCG6qRd1yuwLykypkSVBbnBnGqJRcuJMi"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+			"keccak256": "0x37bb49513c49c87c4642a891b13b63571bc87013dde806617aa1efb54605f386",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b3036b3a83b7c48f96641f2a9002b9f2dcb6a5958dd670894ada21ae8229b3d0",
+				"dweb:/ipfs/QmUNfSBdoVtjhETaUJCYcaC7pTMgbhht926tJ2uXJbiVd3"
+			]
+		},
+		"@openzeppelin/contracts/utils/Address.sol": {
+			"keccak256": "0xaf28a975a78550e45f65e559a3ad6a5ad43b9b8a37366999abd1b7084eb70721",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b7bd24e224f67f65bfadf85dc2929fa965456bb2415478bd0125471b5ce35245",
+				"dweb:/ipfs/QmRaydGr8BTHs1kvaZfsNU69pKzUAGFrvABn1KiRSbE51y"
+			]
+		},
+		"contracts/contracts/interfaces/IAllowanceTransfer.sol": {
+			"keccak256": "0x37f0ac203b6ef605c9533e1a739477e8e9dcea90710b40e645a367f8a21ace29",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e0104d72aeaec1cd66cc232e7de7b7ead08608efcc179491b8a66387614670b0",
+				"dweb:/ipfs/QmfAZDyuNC9FXXbnJUwqHNwmAK6uRrXxtWEytLsxjskPsN"
+			]
+		},
+		"contracts/contracts/interfaces/IEIP712.sol": {
+			"keccak256": "0xfdccf2b9639070803cd0e4198427fb0df3cc452ca59bd3b8a0d957a9a4254138",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f7c936ac42ce89e827db905a1544397f8bdf46db34cdb6aa1b90dea42fdb4c72",
+				"dweb:/ipfs/QmVgurxo1N31qZqkPBirw9Z7S9tLYmv6jSwQp8R8ur2cBk"
+			]
+		},
+		"contracts/contracts/interfaces/IFeeManager.sol": {
+			"keccak256": "0xfb4947229a6667185236729142241f9a40c8cb2d316a8e1710d44ba07a92cd27",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b14648cd3ff808d78e4139c8b2968db331fbf7e282bdba86c5171967754cb52a",
+				"dweb:/ipfs/QmRQ4M9Yzi6eKGPPRL4q8wLaUuvkWYfRY5ZmNk7L2BXoFM"
+			]
+		},
+		"contracts/contracts/interfaces/IPermit2.sol": {
+			"keccak256": "0xaa631cc9f53e699301d94233007110a345e6779011def484e8dd97b8fe0af771",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fc0502cf19c9c18f320a3001201e89e350393b75837f6b7971de18b2de06f30d",
+				"dweb:/ipfs/QmT9SfhdJ7VJNNrf94g4H5usyi7ShqWGx7Cqsz9jZTjX96"
+			]
+		},
+		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
+			"keccak256": "0xe6df9966f8841dc3958ee86169c89de97e7f614c81c28b9dc947b12d732df64e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3d4eafdee7f48c3be8350a94eb6edd0bfb2af2c105df65787a77174f356c0317",
+				"dweb:/ipfs/QmY1j2adeeAhNpn6cUuthemxGCdLXHTfyMh9yTKsY4mZ2d"
+			]
+		},
+		"contracts/contracts/protocol/TuliaPoolFactory.sol": {
+			"keccak256": "0xa230b7e8327df0e413bd00d1a8f55a115cfd0be8c8148bfaa8e662f100291fa3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c186aa1b8ee61d1a50377336a057e50570d8ecb41ff864089736e8272216235c",
+				"dweb:/ipfs/QmZ9tkh1HDy9JDzRSVBFiEhiRGw3quRf5fMaMr5g1Squ5f"
+			]
+		}
+	},
+	"version": 1
+}

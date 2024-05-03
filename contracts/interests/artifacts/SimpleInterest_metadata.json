@@ -1,0 +1,101 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "principal",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "calculateInterest",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"calculateInterest(uint256,uint256,uint256)": {
+					"details": "Calculate simple interest.",
+					"params": {
+						"principal": "The principal amount.",
+						"rate": "The annual interest rate (in basis points, where 10000 = 100%).",
+						"time": "The time in days for which the interest is calculated."
+					},
+					"returns": {
+						"_0": "The interest amount."
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/interests/SimpleInterest.sol": "SimpleInterest"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/contracts/interests/SimpleInterest.sol": {
+			"keccak256": "0xb9415629949b00e4cee828573a8e6849cd65967963c966f0fdf28d8e879e751b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://345bf06f1f97b37e7b38be1642340a66cb3f7dce50714f0419aa4aa62c395b33",
+				"dweb:/ipfs/QmeiTzbux7H2admPhrduzaVw2RdpEJUBJyseiSsMk5jrNL"
+			]
+		},
+		"contracts/contracts/interfaces/IInterestModel.sol": {
+			"keccak256": "0x5468edc427e44105a5ad9aec77e3aa6e2ba18096773fb0621c1dbd9a56a6df28",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8d660c45537d4991407716bdf27da05503917811afa3abee8bf4e603d74cc0e5",
+				"dweb:/ipfs/QmRi7rWXavTz9mNRNvSHwYvcgBtHwrutZzT9eVqHJqKU25"
+			]
+		}
+	},
+	"version": 1
+}

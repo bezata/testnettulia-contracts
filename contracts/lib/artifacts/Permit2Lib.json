@@ -1,0 +1,65 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea26469706673582212202a1a88a0eddc75cada716f958f8aeb0e9c0fe6e53fe827d045cfe8cb3787fd7764736f6c63430008190033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x2A BYTE DUP9 LOG0 0xED 0xDC PUSH22 0xCADA716F958F8AEB0E9C0FE6E53FE827D045CFE8CB37 DUP8 REVERT PUSH24 0x64736F6C6343000819003300000000000000000000000000 ",
+			"sourceMap": "422:7808:3:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "5f80fdfea26469706673582212202a1a88a0eddc75cada716f958f8aeb0e9c0fe6e53fe827d045cfe8cb3787fd7764736f6c63430008190033",
+			"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0x2A BYTE DUP9 LOG0 0xED 0xDC PUSH22 0xCADA716F958F8AEB0E9C0FE6E53FE827D045CFE8CB37 DUP8 REVERT PUSH24 0x64736F6C6343000819003300000000000000000000000000 ",
+			"sourceMap": "422:7808:3:-:0;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "11400",
+				"executionCost": "infinite",
+				"totalCost": "infinite"
+			},
+			"internal": {
+				"permit2(contract ERC20,address,address,uint256,uint256,uint8,bytes32,bytes32)": "infinite",
+				"simplePermit2(contract ERC20,address,address,uint256,uint256,uint8,bytes32,bytes32)": "infinite",
+				"transferFrom2(contract ERC20,address,address,uint256)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": []
+}

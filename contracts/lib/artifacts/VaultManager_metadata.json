@@ -1,0 +1,461 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "target",
+						"type": "address"
+					}
+				],
+				"name": "AddressEmptyCode",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "AddressInsufficientBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "FailedInnerCall",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "SafeERC20FailedOperation",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "InterestPaid",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "VaultDeregistered",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "calculateClaimableInterest",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "deregisterVault",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "distributeInterest",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "poolVaults",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "vault",
+						"type": "address"
+					}
+				],
+				"name": "registerPoolVault",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Manages interest payouts and interactions between TuliaPools and their respective TuliaVaults.",
+			"errors": {
+				"AddressEmptyCode(address)": [
+					{
+						"details": "There's no code at `target` (it is not a contract)."
+					}
+				],
+				"AddressInsufficientBalance(address)": [
+					{
+						"details": "The ETH balance of the account is not enough to perform the operation."
+					}
+				],
+				"FailedInnerCall()": [
+					{
+						"details": "A call to an address target failed. The target may have reverted."
+					}
+				],
+				"SafeERC20FailedOperation(address)": [
+					{
+						"details": "An operation with an ERC20 token failed."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"calculateClaimableInterest(address,address)": {
+					"params": {
+						"pool": "Address of the pool for which to calculate the interest.",
+						"user": "Address of the user (borrower)."
+					},
+					"returns": {
+						"_0": "The calculated interest amount."
+					}
+				},
+				"deregisterVault(address)": {
+					"params": {
+						"pool": "Address of the pool whose vault is to be deregistered."
+					}
+				},
+				"distributeInterest(address,address,uint256)": {
+					"params": {
+						"amount": "Amount of interest to be paid.",
+						"pool": "Address of the pool initiating the interest payout.",
+						"to": "Address to which the interest will be paid."
+					}
+				},
+				"registerPoolVault(address,address)": {
+					"params": {
+						"pool": "Address of the pool.",
+						"vault": "Address of the vault associated with the pool."
+					}
+				}
+			},
+			"title": "VaultManager",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"calculateClaimableInterest(address,address)": {
+					"notice": "Calculates the claimable interest for a user based on the loan configuration."
+				},
+				"deregisterVault(address)": {
+					"notice": "Deregisters a vault when a loan is closed."
+				},
+				"distributeInterest(address,address,uint256)": {
+					"notice": "Handles the distribution of interest to a borrower from the vault."
+				},
+				"registerPoolVault(address,address)": {
+					"notice": "Links a pool to a vault upon pool creation."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/lib/VaultManager.sol": "VaultManager"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"@openzeppelin/contracts/interfaces/IERC4626.sol": {
+			"keccak256": "0x207f64371bc0fcc5be86713aa5da109a870cc3a6da50e93b64ee881e369b593d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://548667cfa76683767c2c610b577f6c2f0675d0ce28f53c3f37b969c84a56b205",
+				"dweb:/ipfs/QmUzA1CKC6bDdULuS44wGd7PWBNLiHb6bh7oHwJBDZSLAx"
+			]
+		},
+		"@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
+			"keccak256": "0x60c65f701957fdd6faea1acb0bb45825791d473693ed9ecb34726fdfaa849dd7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ea290300e0efc4d901244949dc4d877fd46e6c5e43dc2b26620e8efab3ab803f",
+				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
+			]
+		},
+		"@openzeppelin/contracts/security/ReentrancyGuard.sol": {
+			"keccak256": "0xa535a5df777d44e945dd24aa43a11e44b024140fc340ad0dfe42acf4002aade1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://41319e7f621f2dc3733511332c4fd032f8e32ad2aa7fd6f665c19741d9941a34",
+				"dweb:/ipfs/QmcYR3bd862GD1Bc7jwrU9bGxrhUu5na1oP964bDCu2id1"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0xc3e1fa9d1987f8d349dfb4d6fe93bf2ca014b52ba335cfac30bfe71e357e6f80",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c5703ccdeb7b1d685e375ed719117e9edf2ab4bc544f24f23b0d50ec82257229",
+				"dweb:/ipfs/QmTdwkbQq7owpCiyuzE7eh5LrD2ddrBCZ5WHVsWPi1RrTS"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ea104e577e63faea3b69c415637e99e755dcbf64c5833d7140c35a714d6d90c",
+				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol": {
+			"keccak256": "0x1837547e04d5fe5334eeb77a345683c22995f1e7aa033020757ddf83a80fc72d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://40d6031bc0e6f70edceb4e63fd624fe6be09dc48f5201c7a9078c26e6a9ef95f",
+				"dweb:/ipfs/QmPTEBH7dmU3NgE6vtjMy7xEK54as9VHSgf9ojupwnvoke"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0xaa761817f6cd7892fcf158b3c776b34551cde36f48ff9703d53898bc45a94ea2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ad7c8d4d08938c8dfc43d75a148863fb324b80cf53e0a36f7e5a4ac29008850",
+				"dweb:/ipfs/QmcrhfPgVNf5mkdhQvy1pMv51TFokD3Y4Wa5WZhFqVh8UV"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol": {
+			"keccak256": "0x6008dabfe393240d73d7dd7688033f72740d570aa422254d29a7dce8568f3aff",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f5196ec75139918c6c7bb4251b36395e668f1fa6d206beba7e7520e74913940d",
+				"dweb:/ipfs/QmSyqjksXxmm2mCG6qRd1yuwLykypkSVBbnBnGqJRcuJMi"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+			"keccak256": "0x37bb49513c49c87c4642a891b13b63571bc87013dde806617aa1efb54605f386",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b3036b3a83b7c48f96641f2a9002b9f2dcb6a5958dd670894ada21ae8229b3d0",
+				"dweb:/ipfs/QmUNfSBdoVtjhETaUJCYcaC7pTMgbhht926tJ2uXJbiVd3"
+			]
+		},
+		"@openzeppelin/contracts/utils/Address.sol": {
+			"keccak256": "0xaf28a975a78550e45f65e559a3ad6a5ad43b9b8a37366999abd1b7084eb70721",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b7bd24e224f67f65bfadf85dc2929fa965456bb2415478bd0125471b5ce35245",
+				"dweb:/ipfs/QmRaydGr8BTHs1kvaZfsNU69pKzUAGFrvABn1KiRSbE51y"
+			]
+		},
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/Math.sol": {
+			"keccak256": "0x005ec64c6313f0555d59e278f9a7a5ab2db5bdc72a027f255a37c327af1ec02d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4ece9f0b9c8daca08c76b6b5405a6446b6f73b3a15fab7ff56e296cbd4a2c875",
+				"dweb:/ipfs/QmQyRpyPRL5SQuAgj6SHmbir3foX65FJjbVTTQrA2EFg6L"
+			]
+		},
+		"contracts/contracts/interfaces/IAllowanceTransfer.sol": {
+			"keccak256": "0x37f0ac203b6ef605c9533e1a739477e8e9dcea90710b40e645a367f8a21ace29",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e0104d72aeaec1cd66cc232e7de7b7ead08608efcc179491b8a66387614670b0",
+				"dweb:/ipfs/QmfAZDyuNC9FXXbnJUwqHNwmAK6uRrXxtWEytLsxjskPsN"
+			]
+		},
+		"contracts/contracts/interfaces/IEIP712.sol": {
+			"keccak256": "0xfdccf2b9639070803cd0e4198427fb0df3cc452ca59bd3b8a0d957a9a4254138",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://f7c936ac42ce89e827db905a1544397f8bdf46db34cdb6aa1b90dea42fdb4c72",
+				"dweb:/ipfs/QmVgurxo1N31qZqkPBirw9Z7S9tLYmv6jSwQp8R8ur2cBk"
+			]
+		},
+		"contracts/contracts/interfaces/IInterestModel.sol": {
+			"keccak256": "0x5468edc427e44105a5ad9aec77e3aa6e2ba18096773fb0621c1dbd9a56a6df28",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8d660c45537d4991407716bdf27da05503917811afa3abee8bf4e603d74cc0e5",
+				"dweb:/ipfs/QmRi7rWXavTz9mNRNvSHwYvcgBtHwrutZzT9eVqHJqKU25"
+			]
+		},
+		"contracts/contracts/interfaces/IPermit2.sol": {
+			"keccak256": "0xaa631cc9f53e699301d94233007110a345e6779011def484e8dd97b8fe0af771",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fc0502cf19c9c18f320a3001201e89e350393b75837f6b7971de18b2de06f30d",
+				"dweb:/ipfs/QmT9SfhdJ7VJNNrf94g4H5usyi7ShqWGx7Cqsz9jZTjX96"
+			]
+		},
+		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
+			"keccak256": "0x59ff86f25c1bc3bb33995bab912a576832e70686099fd8425804d1f158750404",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3c8a718c3608bc8e0e2a3fa6928886033a1bc389198861e6dd2dbe7b1fa5e0ef",
+				"dweb:/ipfs/QmYRb22rqgYnZhaFJpHEMCys9QMGDyZzy66JSiAxFwjHJP"
+			]
+		},
+		"contracts/contracts/interfaces/IRewardManager.sol": {
+			"keccak256": "0xe3c69239d04d61f5342b5e7fe84efa65935b5068cdfef5d276baccaf947f6f05",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1b4e5103fc8600295e4fe33a713ebcdd6d83cf38903c4e6947b03f0a88766869",
+				"dweb:/ipfs/QmRAnDKVZ6WndjDVvavBcrpkkrqUyZoSB3PYEMQVDTKiaB"
+			]
+		},
+		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
+			"keccak256": "0xe6df9966f8841dc3958ee86169c89de97e7f614c81c28b9dc947b12d732df64e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3d4eafdee7f48c3be8350a94eb6edd0bfb2af2c105df65787a77174f356c0317",
+				"dweb:/ipfs/QmY1j2adeeAhNpn6cUuthemxGCdLXHTfyMh9yTKsY4mZ2d"
+			]
+		},
+		"contracts/contracts/interfaces/IVaultManager.sol": {
+			"keccak256": "0x5a025ecef74f49112c2479fc967e3c7761412348dc6ad129e7b79667a09cd699",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://fae75e94df0a7ade68c3fc89ad8091784574e3005eb8a7044c6c9d29330117b7",
+				"dweb:/ipfs/QmWjzKcKC8sHHdagpLQtw58bLD1TDaMHqheW8jMfw3vNwe"
+			]
+		},
+		"contracts/contracts/lib/VaultManager.sol": {
+			"keccak256": "0xaf7a7e1ca66943dcff526725501a954490bc99cdd329e68c93888c447f9d5c8d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://043012b9ea5da126aa2ab99d58213a5be9fda9e8165403b08b08104f286218f3",
+				"dweb:/ipfs/QmXXGTMs6tRFJV3etmPFZfduthszGrhPPDcsK6aFzUzY1R"
+			]
+		},
+		"contracts/contracts/protocol/TuliaPool.sol": {
+			"keccak256": "0x3c60036f13f7b4c4d51b69604d312d8ec499b417d131538558785e0ed54ed6c3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ca5085735b3ac988cef1a48b6dc777f76ffd59e723f52f632d0c3ffdd732a349",
+				"dweb:/ipfs/QmNjoWb55RyJRkDHAbQMQJH34wTB1sDnrZeUhKf21mzvFr"
+			]
+		},
+		"contracts/contracts/protocol/TuliaVault.sol": {
+			"keccak256": "0xff60aa83840f8aad1edfc7eb6c7cb20398488061000975d0950ed196ac7a9999",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://dc2ecf5a4ff60c7e930a61d39cf02bf111d626e82807f112c9ece60a6efbb486",
+				"dweb:/ipfs/QmWWqBZMMp5Kx9AcuKm2gkPoQfrLmzWsqLDQqyAv75MsX5"
+			]
+		}
+	},
+	"version": 1
+}
