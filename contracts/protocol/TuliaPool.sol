@@ -13,6 +13,7 @@ import "../interfaces/IRewardManager.sol";
 
 /// @title TuliaPool
 /// @dev Manages the lifecycle of loans including creation, funding, repayment, and defaults.
+/// This contract handles all operations regarding lending processes, with integrated safety checks and state management.
 contract TuliaPool is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -21,6 +22,7 @@ contract TuliaPool is ReentrancyGuard {
     IVaultManager public vaultManager;
     IRewardManager public rewardManager;
 
+    /// @dev Struct to store all relevant loan details
     struct LoanDetails {
         address lender;
         IERC20 loanToken;
@@ -35,6 +37,7 @@ contract TuliaPool is ReentrancyGuard {
         uint256 fundedBlock;
     }
 
+    /// @dev Enum to manage the loan's current state
     enum LoanState {
         CREATED,
         PENDING,
@@ -42,8 +45,8 @@ contract TuliaPool is ReentrancyGuard {
         CLOSED,
         DEFAULTED
     }
-    LoanState public state;
 
+    LoanState public state;
     LoanDetails public loanDetails;
 
     event LoanOfferCreated(
@@ -56,7 +59,9 @@ contract TuliaPool is ReentrancyGuard {
     event LoanFunded(uint256 loanAmount);
     event RepaymentMade(uint256 amountRepaid);
     event LoanClosed();
+    event LoanDefaulted(address indexed borrower);
 
+    /// @notice Creates a new loan offer
     /// @param lender The address of the lender
     /// @param loanTokenAddress The address of the token to be loaned
     /// @param repaymentTokenAddress The token address in which repayments are to be made
@@ -114,38 +119,39 @@ contract TuliaPool is ReentrancyGuard {
         );
     }
 
-    /// @notice Activates a loan by transferring collateral from the borrower to the vault.
-    /// @param borrower The address of the borrower activating the loan.
-    /// @param collateralAmount The amount of collateral to be deposited.
-    function activateLoan(address borrower, uint256 collateralAmount)
-        external
-        nonReentrant
-    {
+    /// @notice Activates a loan by transferring collateral from the borrower to the vault and transferring the loan amount to the borrower.
+    function activateLoan() external nonReentrant {
+        address borrower = msg.sender;
+        uint256 collateralAmount = calculateRequiredCollateral();
+
         require(state == LoanState.PENDING, "Loan not ready to activate");
         require(borrower != address(0), "Invalid borrower address");
         require(borrower != loanDetails.lender, "Lender cannot be borrower");
-
-        uint256 requiredCollateral = calculateRequiredCollateral();
         require(
-            collateralAmount >= requiredCollateral,
-            "Insufficient collateral"
+            collateralAmount <=
+                IERC20(loanDetails.collateralVault.asset()).allowance(
+                    borrower,
+                    address(this)
+                ),
+            "Insufficient collateral allowance"
+        );
+        require(
+            loanDetails.loanToken.allowance(borrower, address(this)) >=
+                loanDetails.loanAmount,
+            "Insufficient loan allowance"
         );
 
-        // Increase allowance for the collateral token to the vault
-        loanDetails.loanToken.forceApprove(
+        loanDetails.loanToken.safeIncreaseAllowance(
             address(loanDetails.collateralVault),
             collateralAmount
         );
-
-        // Deposit collateral into the vault and log the activation
         loanDetails.collateralVault.deposit(collateralAmount, borrower);
-        loanDetails.borrower = borrower;
-        // Transfer tokens
-        loanDetails.loanToken.safeTransferFrom(
-            address(this),
+        loanDetails.loanToken.safeTransfer(
             borrower,
-            loanDetails.loanAmount
+            loanDetails.loanToken.balanceOf(address(this))
         );
+
+        loanDetails.borrower = borrower;
         state = LoanState.ACTIVE;
 
         emit LoanActivated(borrower, collateralAmount);
@@ -163,38 +169,81 @@ contract TuliaPool is ReentrancyGuard {
         emit LoanFunded(loanDetails.loanAmount);
     }
 
-    function repay(uint256 amount) external nonReentrant {
+    /**
+     * @notice Checks if the loan has defaulted based on repayment conditions and handles the default by claiming the collateral.
+     */
+    function checkAndHandleDefault() public {
+        require(state == LoanState.ACTIVE, "Loan is not active");
+        require(
+            block.number >=
+                loanDetails.startBlock + loanDetails.repaymentPeriod,
+            "Repayment period has not yet ended"
+        );
+
+        uint256 totalRepayment = loanDetails.loanAmount + calculateInterest();
+        uint256 currentBalance = loanDetails.repaymentToken.balanceOf(
+            loanDetails.lender
+        );
+
+        if (currentBalance < totalRepayment) {
+            state = LoanState.DEFAULTED;
+
+            // Calculate the shares of the vault that correspond to the entire balance the pool contract holds
+            uint256 sharesToRedeem = loanDetails
+                .collateralVault
+                .convertToShares(
+                    loanDetails.collateralVault.balanceOf(address(this))
+                );
+
+            // Redeem the shares for the underlying collateral to the lender
+            loanDetails.collateralVault.redeem(
+                sharesToRedeem,
+                loanDetails.lender, // Sending the collateral directly to the lender
+                address(this)
+            );
+
+            emit LoanDefaulted(loanDetails.borrower);
+            _closeLoan();
+        }
+    }
+
+    /**
+     * @notice Repays the loan and releases collateral back to the borrower.
+     */
+    function repay() external nonReentrant {
         require(state == LoanState.ACTIVE, "Loan must be active");
+
         uint256 totalRepayment = loanDetails.loanAmount + calculateInterest();
 
-        require(amount >= totalRepayment, "Insufficient amount for repayment");
+        // Ensuring the borrower has enough tokens and has allowed the contract to move them
+        require(
+            loanDetails.repaymentToken.allowance(msg.sender, address(this)) >=
+                totalRepayment,
+            "Insufficient token allowance for repayment"
+        );
+        require(
+            loanDetails.repaymentToken.balanceOf(msg.sender) >= totalRepayment,
+            "Insufficient token balance for repayment"
+        );
 
-        // Transfer repayment to the lender
+        // Transfer the repayment amount from the borrower to the lender
         loanDetails.repaymentToken.safeTransferFrom(
             msg.sender,
             loanDetails.lender,
             totalRepayment
         );
 
-        // Calculate any excess payment to be returned to the borrower
-        uint256 excessPayment = amount > totalRepayment
-            ? amount - totalRepayment
-            : 0;
-
-        if (excessPayment > 0) {
-            loanDetails.repaymentToken.safeTransfer(msg.sender, excessPayment);
-        }
-
-        // Withdraw collateral back to the borrower
-        uint256 collateralToReturn = loanDetails.collateralVault.balanceOf(
-            address(this)
+        // Handling collateral withdrawal from the ERC4626 vault
+        uint256 sharesToRedeem = loanDetails.collateralVault.convertToShares(
+            loanDetails.collateralVault.balanceOf(address(this))
         );
-        loanDetails.collateralVault.withdraw(
-            collateralToReturn,
-            loanDetails.borrower,
+        loanDetails.collateralVault.redeem(
+            sharesToRedeem,
+            msg.sender, // Sending the collateral directly back to the borrower
             address(this)
         );
 
+        // Updating the loan state to closed
         _closeLoan();
         emit RepaymentMade(totalRepayment);
     }
@@ -207,6 +256,7 @@ contract TuliaPool is ReentrancyGuard {
         emit LoanClosed();
     }
 
+    /// @notice Calculates the accrued interest based on the loan details.
     function calculateInterest() public view returns (uint256) {
         uint256 duration = block.number - loanDetails.startBlock;
         return
@@ -217,31 +267,38 @@ contract TuliaPool is ReentrancyGuard {
             );
     }
 
+    /// @notice Calculates the required collateral based on the interest and principal.
     function calculateRequiredCollateral() public view returns (uint256) {
         uint256 interestForFullTerm = calculateInterest();
         return loanDetails.loanAmount + interestForFullTerm;
     }
 
+    /// @notice Provides the block number when the loan was funded.
     function getFundedBlock() public view returns (uint256) {
         return loanDetails.fundedBlock;
     }
 
+    /// @notice Retrieves the current state of the loan.
     function getLoanState() public view returns (LoanState) {
         return state;
     }
 
+    /// @notice Retrieves the total loan amount.
     function getLoanAmount() public view returns (uint256) {
         return loanDetails.loanAmount;
     }
 
+    /// @notice Retrieves the interest rate of the loan.
     function getInterestRate() public view returns (uint256) {
         return loanDetails.interestRate;
     }
 
+    /// @notice Retrieves the amount of collateral stored for a specific user.
     function getCollateralAmount(address user) public view returns (uint256) {
-        return loanDetails.collateralVault.balanceOf(user); 
+        return loanDetails.collateralVault.balanceOf(user);
     }
 
+    /// @notice Retrieves the repayment period of the loan.
     function getRepaymentPeriod() public view returns (uint256) {
         return loanDetails.repaymentPeriod;
     }

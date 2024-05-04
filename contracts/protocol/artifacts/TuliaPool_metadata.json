@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.25+commit.b61c2a91"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -138,6 +138,19 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "borrower",
+						"type": "address"
+					}
+				],
+				"name": "LoanDefaulted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": false,
 						"internalType": "uint256",
 						"name": "loanAmount",
@@ -192,18 +205,7 @@
 				"type": "event"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "borrower",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "collateralAmount",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"name": "activateLoan",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -233,6 +235,13 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "checkAndHandleDefault",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -416,13 +425,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"name": "repay",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -469,7 +472,7 @@
 			}
 		],
 		"devdoc": {
-			"details": "Manages the lifecycle of loans including creation, funding, repayment, and defaults.",
+			"details": "Manages the lifecycle of loans including creation, funding, repayment, and defaults. This contract handles all operations regarding lending processes, with integrated safety checks and state management.",
 			"errors": {
 				"AddressEmptyCode(address)": [
 					{
@@ -514,7 +517,44 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"activateLoan()": {
+					"notice": "Activates a loan by transferring collateral from the borrower to the vault and transferring the loan amount to the borrower."
+				},
+				"calculateInterest()": {
+					"notice": "Calculates the accrued interest based on the loan details."
+				},
+				"calculateRequiredCollateral()": {
+					"notice": "Calculates the required collateral based on the interest and principal."
+				},
+				"checkAndHandleDefault()": {
+					"notice": "Checks if the loan has defaulted based on repayment conditions and handles the default by claiming the collateral."
+				},
+				"constructor": {
+					"notice": "Creates a new loan offer"
+				},
+				"getCollateralAmount(address)": {
+					"notice": "Retrieves the amount of collateral stored for a specific user."
+				},
+				"getFundedBlock()": {
+					"notice": "Provides the block number when the loan was funded."
+				},
+				"getInterestRate()": {
+					"notice": "Retrieves the interest rate of the loan."
+				},
+				"getLoanAmount()": {
+					"notice": "Retrieves the total loan amount."
+				},
+				"getLoanState()": {
+					"notice": "Retrieves the current state of the loan."
+				},
+				"getRepaymentPeriod()": {
+					"notice": "Retrieves the repayment period of the loan."
+				},
+				"repay()": {
+					"notice": "Repays the loan and releases collateral back to the borrower."
+				}
+			},
 			"version": 1
 		}
 	},
@@ -522,7 +562,7 @@
 		"compilationTarget": {
 			"contracts/contracts/protocol/TuliaPool.sol": "TuliaPool"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -664,19 +704,19 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0x59ff86f25c1bc3bb33995bab912a576832e70686099fd8425804d1f158750404",
+			"keccak256": "0xd820fcf275d71dfa3f2e0d34dd11407c168f5831685596f4a7f6074fa4ec6663",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3c8a718c3608bc8e0e2a3fa6928886033a1bc389198861e6dd2dbe7b1fa5e0ef",
-				"dweb:/ipfs/QmYRb22rqgYnZhaFJpHEMCys9QMGDyZzy66JSiAxFwjHJP"
+				"bzz-raw://20ddf5fbc3c67df648c3df1468c716f1b78a291e9c45df69ac6ccd636c1b2cdd",
+				"dweb:/ipfs/QmUA5sMAKQswnf3t6EzkjrAzoYArj6k7oCoieuaqFXP4rp"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0xbfe26aa6d2e78899ad780e237451f6aa2ce292601556fe054cd50ffc76398cb9",
+			"keccak256": "0xe3c69239d04d61f5342b5e7fe84efa65935b5068cdfef5d276baccaf947f6f05",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://15a63e1c3cce313d0c67808f173df6c89009bc65344b3c0e9afd8c97f5e25c68",
-				"dweb:/ipfs/QmfQqdeDCe2guzZDZFvSRDfXLBysmT8YFwh49PhVNyTgkF"
+				"bzz-raw://1b4e5103fc8600295e4fe33a713ebcdd6d83cf38903c4e6947b03f0a88766869",
+				"dweb:/ipfs/QmRAnDKVZ6WndjDVvavBcrpkkrqUyZoSB3PYEMQVDTKiaB"
 			]
 		},
 		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
@@ -696,11 +736,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0x527027d1a3fc212d10d1af675340d1d5df249f1a478af2fa5d0e0172a780c939",
+			"keccak256": "0x3113a17de63d8efba38bf63795d4df274be0265c6e1c2c6e39b01977953ec4e6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://84d3461830256e3297102447328dec8b3e90eeb50b23fa5de0f6729df860ae3f",
-				"dweb:/ipfs/QmQb64gthirnmF8z7cGLEKzXgaki8EYdG6hjuH4vnz5TDV"
+				"bzz-raw://d8f8f1abd2c429099499da0648d303346d1cc0d0e51557a252cec905cb59efd1",
+				"dweb:/ipfs/Qmdj2iztiLdU8V8xQU4FXTQDUSpdk4bD2ip41CbVyr92QV"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

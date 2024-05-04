@@ -311,7 +311,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/contracts/protocol/TuliaPoolFactory.sol": "TuliaFlashPool"
+			"contracts/contracts/protocol/TuliaFlashPool.sol": "TuliaFlashPool"
 		},
 		"evmVersion": "shanghai",
 		"libraries": {},
@@ -422,12 +422,12 @@
 				"dweb:/ipfs/QmY1j2adeeAhNpn6cUuthemxGCdLXHTfyMh9yTKsY4mZ2d"
 			]
 		},
-		"contracts/contracts/protocol/TuliaPoolFactory.sol": {
-			"keccak256": "0xa230b7e8327df0e413bd00d1a8f55a115cfd0be8c8148bfaa8e662f100291fa3",
+		"contracts/contracts/protocol/TuliaFlashPool.sol": {
+			"keccak256": "0x6332398d42b32ddf6ac65a47125ac1215020dd59cda2565c33646ad8c08fc199",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c186aa1b8ee61d1a50377336a057e50570d8ecb41ff864089736e8272216235c",
-				"dweb:/ipfs/QmZ9tkh1HDy9JDzRSVBFiEhiRGw3quRf5fMaMr5g1Squ5f"
+				"bzz-raw://0309220df82eaaa1ad6c17bd0be47d96286f2c6e1e2913c0f4c5c6339e714557",
+				"dweb:/ipfs/QmTUWQwySSi54RLUrPKJxrZpCPMF8x4WJHux3tyZ5XnsRH"
 			]
 		}
 	},
