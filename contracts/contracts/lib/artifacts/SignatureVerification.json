@@ -1,0 +1,84 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080806040523460175760399081601c823930815050f35b5f80fdfe5f80fdfea2646970667358221220d5520f83f07dde8298d3205e3b88577dbabcf774a105c8271c3e5123ea70b61764736f6c63430008140033",
+			"opcodes": "PUSH1 0x80 DUP1 PUSH1 0x40 MSTORE CALLVALUE PUSH1 0x17 JUMPI PUSH1 0x39 SWAP1 DUP2 PUSH1 0x1C DUP3 CODECOPY ADDRESS DUP2 POP POP RETURN JUMPDEST PUSH0 DUP1 REVERT INVALID PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xD5 MSTORE 0xF DUP4 CREATE PUSH30 0xDE8298D3205E3B88577DBABCF774A105C8271C3E5123EA70B61764736F6C PUSH4 0x43000814 STOP CALLER ",
+			"sourceMap": "112:1699:1:-:0;;;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "5f80fdfea2646970667358221220d5520f83f07dde8298d3205e3b88577dbabcf774a105c8271c3e5123ea70b61764736f6c63430008140033",
+			"opcodes": "PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xD5 MSTORE 0xF DUP4 CREATE PUSH30 0xDE8298D3205E3B88577DBABCF774A105C8271C3E5123EA70B61764736F6C PUSH4 0x43000814 STOP CALLER ",
+			"sourceMap": "112:1699:1:-:0;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "11400",
+				"executionCost": "infinite",
+				"totalCost": "infinite"
+			},
+			"internal": {
+				"verify(bytes calldata,bytes32,address)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": [
+		{
+			"inputs": [],
+			"name": "InvalidContractSignature",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidSignature",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidSignatureLength",
+			"type": "error"
+		},
+		{
+			"inputs": [],
+			"name": "InvalidSigner",
+			"type": "error"
+		}
+	]
+}

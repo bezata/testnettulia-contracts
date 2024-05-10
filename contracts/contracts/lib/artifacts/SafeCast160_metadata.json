@@ -1,0 +1,59 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "UnsafeCast",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"errors": {
+				"UnsafeCast()": [
+					{
+						"notice": "Thrown when a valude greater than type(uint160).max is cast to uint160"
+					}
+				]
+			},
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/lib/SafeCast160.sol": "SafeCast160"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/contracts/lib/SafeCast160.sol": {
+			"keccak256": "0xf8ea2ba01185b05acc1fba1d969422bdb6ca3c80e5d3646932de344d4d164afb",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://87bda5043744b7afaeaa89ea11ee9f8cac5755887a2ef8205b38bcf93244f50d",
+				"dweb:/ipfs/QmRdjkoVG63MpBDsQiQ6HrQr7sdW9b3DBM853KeCgxT4fh"
+			]
+		}
+	},
+	"version": 1
+}

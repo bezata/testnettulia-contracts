@@ -1,0 +1,97 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "InvalidContractSignature",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidSignature",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidSignatureLength",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "InvalidSigner",
+				"type": "error"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"errors": {
+				"InvalidContractSignature()": [
+					{
+						"notice": "Thrown when the recovered contract signature is incorrect"
+					}
+				],
+				"InvalidSignature()": [
+					{
+						"notice": "Thrown when the recovered signer is equal to the zero address"
+					}
+				],
+				"InvalidSignatureLength()": [
+					{
+						"notice": "Thrown when the passed in signature is not a valid length"
+					}
+				],
+				"InvalidSigner()": [
+					{
+						"notice": "Thrown when the recovered signer does not equal the claimedSigner"
+					}
+				]
+			},
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/lib/SignatureVerification.sol": "SignatureVerification"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/contracts/interfaces/IERC1271.sol": {
+			"keccak256": "0x0a546b8535127fb4a49d36d5f306fd5a8bbe6125a1852f935b9bb85a04c1acef",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4b99651e2df98e283a97c46d8d1ac4eff0d6a3618e25f7f85294472a670b541c",
+				"dweb:/ipfs/QmYRy5G8fXE8BfmyvGEbESEYZPPg3zJEFxHzR5GJZEMMTk"
+			]
+		},
+		"contracts/contracts/lib/SignatureVerification.sol": {
+			"keccak256": "0xb5cf5e3c9407dc26f95d01170dbc2c82cd5c210ecc39ad3559b314df0c0c90d0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://39a5929df7b7ad16e2a429e5e76712f95d914d1e72d8350cd3b445e84058bbb2",
+				"dweb:/ipfs/QmXBnuFKWjK3huwN9qoePSyxT9qwpdGXfpTgjApRPiQsrd"
+			]
+		}
+	},
+	"version": 1
+}

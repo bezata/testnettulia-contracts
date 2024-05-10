@@ -1,0 +1,144 @@
+{
+	"id": "5e74502c3b7027af9ce1dc959f30c45c",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.20",
+	"solcLongVersion": "0.8.20+commit.a1b79de6",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"viaIR": true,
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/contracts/permit2/PermitErrors.sol": {
+				"content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.20;\n\n/// @notice Shared errors between signature based transfers and allowance based transfers.\n\n/// @notice Thrown when validating an inputted signature that is stale\n/// @param signatureDeadline The timestamp at which a signature is no longer valid\nerror SignatureExpired(uint256 signatureDeadline);\n\n/// @notice Thrown when validating that the inputted nonce has not been used\nerror InvalidNonce();\n"
+			}
+		}
+	},
+	"output": {
+		"sources": {
+			"contracts/contracts/permit2/PermitErrors.sol": {
+				"ast": {
+					"absolutePath": "contracts/contracts/permit2/PermitErrors.sol",
+					"exportedSymbols": {
+						"InvalidNonce": [
+							9
+						],
+						"SignatureExpired": [
+							6
+						]
+					},
+					"id": 10,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [
+						{
+							"id": 1,
+							"literals": [
+								"solidity",
+								"0.8",
+								".20"
+							],
+							"nodeType": "PragmaDirective",
+							"src": "32:23:0"
+						},
+						{
+							"documentation": {
+								"id": 2,
+								"nodeType": "StructuredDocumentation",
+								"src": "149:154:0",
+								"text": "@notice Thrown when validating an inputted signature that is stale\n @param signatureDeadline The timestamp at which a signature is no longer valid"
+							},
+							"errorSelector": "cd21db4f",
+							"id": 6,
+							"name": "SignatureExpired",
+							"nameLocation": "309:16:0",
+							"nodeType": "ErrorDefinition",
+							"parameters": {
+								"id": 5,
+								"nodeType": "ParameterList",
+								"parameters": [
+									{
+										"constant": false,
+										"id": 4,
+										"mutability": "mutable",
+										"name": "signatureDeadline",
+										"nameLocation": "334:17:0",
+										"nodeType": "VariableDeclaration",
+										"scope": 6,
+										"src": "326:25:0",
+										"stateVariable": false,
+										"storageLocation": "default",
+										"typeDescriptions": {
+											"typeIdentifier": "t_uint256",
+											"typeString": "uint256"
+										},
+										"typeName": {
+											"id": 3,
+											"name": "uint256",
+											"nodeType": "ElementaryTypeName",
+											"src": "326:7:0",
+											"typeDescriptions": {
+												"typeIdentifier": "t_uint256",
+												"typeString": "uint256"
+											}
+										},
+										"visibility": "internal"
+									}
+								],
+								"src": "325:27:0"
+							},
+							"src": "303:50:0"
+						},
+						{
+							"documentation": {
+								"id": 7,
+								"nodeType": "StructuredDocumentation",
+								"src": "355:77:0",
+								"text": "@notice Thrown when validating that the inputted nonce has not been used"
+							},
+							"errorSelector": "756688fe",
+							"id": 9,
+							"name": "InvalidNonce",
+							"nameLocation": "438:12:0",
+							"nodeType": "ErrorDefinition",
+							"parameters": {
+								"id": 8,
+								"nodeType": "ParameterList",
+								"parameters": [],
+								"src": "450:2:0"
+							},
+							"src": "432:21:0"
+						}
+					],
+					"src": "32:422:0"
+				},
+				"id": 0
+			}
+		}
+	}
+}
