@@ -1,0 +1,547 @@
+{
+	"id": "c392ede77fca847bc97c778595edba8d",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.25",
+	"solcLongVersion": "0.8.25+commit.b61c2a91",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"viaIR": true,
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/contracts/interfaces/IRewardManager.sol": {
+				"content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.20;\r\n\r\ninterface IRewardManager {\r\n    /// @notice Registers a pool to be eligible for rewards, initializing its reward token.\r\n    /// @param pool The address of the pool to register.\r\n    /// @param rewardToken The ERC20 address for the reward token.\r\n    function registerPool(address pool, address rewardToken) external;\r\n\r\n    /// @notice Accrues rewards for a specific pool.\r\n    /// @param pool The address of the pool.\r\n    function accrueRewards(address pool) external;\r\n\r\n    /// @notice Claims rewards for either the lender or borrower.\r\n    /// @param pool The address of the pool.\r\n    /// @param isLender True if the lender is claiming, false if the borrower.\r\n    function claimRewards(address pool, bool isLender) external;\r\n\r\n    /// @notice Deregisters a pool.\r\n    /// @param pool The address of the pool to deregister.\r\n    function deregisterPool(address pool) external;\r\n}\r\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/contracts/interfaces/IRewardManager.sol": {
+				"IRewardManager": {
+					"abi": [
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								}
+							],
+							"name": "accrueRewards",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								},
+								{
+									"internalType": "bool",
+									"name": "isLender",
+									"type": "bool"
+								}
+							],
+							"name": "claimRewards",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								}
+							],
+							"name": "deregisterPool",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "rewardToken",
+									"type": "address"
+								}
+							],
+							"name": "registerPool",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"kind": "dev",
+						"methods": {
+							"accrueRewards(address)": {
+								"params": {
+									"pool": "The address of the pool."
+								}
+							},
+							"claimRewards(address,bool)": {
+								"params": {
+									"isLender": "True if the lender is claiming, false if the borrower.",
+									"pool": "The address of the pool."
+								}
+							},
+							"deregisterPool(address)": {
+								"params": {
+									"pool": "The address of the pool to deregister."
+								}
+							},
+							"registerPool(address,address)": {
+								"params": {
+									"pool": "The address of the pool to register.",
+									"rewardToken": "The ERC20 address for the reward token."
+								}
+							}
+						},
+						"version": 1
+					},
+					"evm": {
+						"assembly": "",
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"gasEstimates": null,
+						"legacyAssembly": null,
+						"methodIdentifiers": {
+							"accrueRewards(address)": "3d39955c",
+							"claimRewards(address,bool)": "491c011a",
+							"deregisterPool(address)": "7e72c7d7",
+							"registerPool(address,address)": "7286e5e5"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.25+commit.b61c2a91\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"accrueRewards\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"isLender\",\"type\":\"bool\"}],\"name\":\"claimRewards\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"deregisterPool\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"rewardToken\",\"type\":\"address\"}],\"name\":\"registerPool\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"accrueRewards(address)\":{\"params\":{\"pool\":\"The address of the pool.\"}},\"claimRewards(address,bool)\":{\"params\":{\"isLender\":\"True if the lender is claiming, false if the borrower.\",\"pool\":\"The address of the pool.\"}},\"deregisterPool(address)\":{\"params\":{\"pool\":\"The address of the pool to deregister.\"}},\"registerPool(address,address)\":{\"params\":{\"pool\":\"The address of the pool to register.\",\"rewardToken\":\"The ERC20 address for the reward token.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"accrueRewards(address)\":{\"notice\":\"Accrues rewards for a specific pool.\"},\"claimRewards(address,bool)\":{\"notice\":\"Claims rewards for either the lender or borrower.\"},\"deregisterPool(address)\":{\"notice\":\"Deregisters a pool.\"},\"registerPool(address,address)\":{\"notice\":\"Registers a pool to be eligible for rewards, initializing its reward token.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/contracts/interfaces/IRewardManager.sol\":\"IRewardManager\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/contracts/interfaces/IRewardManager.sol\":{\"keccak256\":\"0x38e38bb8c9a1ed7ae4bd8c5b8d92dbba1c4f3083896213ca142af8fe2e131bf4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://47de1c1a90663a49866c94a5a59e2bd91b8029899e9b549ebce16648229713ca\",\"dweb:/ipfs/QmS2RrmQuX5rPm1bJP1uhLJREvuU3aDdayLTZjuhchKgf9\"]}},\"version\":1}",
+					"storageLayout": {
+						"storage": [],
+						"types": null
+					},
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"accrueRewards(address)": {
+								"notice": "Accrues rewards for a specific pool."
+							},
+							"claimRewards(address,bool)": {
+								"notice": "Claims rewards for either the lender or borrower."
+							},
+							"deregisterPool(address)": {
+								"notice": "Deregisters a pool."
+							},
+							"registerPool(address,address)": {
+								"notice": "Registers a pool to be eligible for rewards, initializing its reward token."
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/contracts/interfaces/IRewardManager.sol": {
+				"ast": {
+					"absolutePath": "contracts/contracts/interfaces/IRewardManager.sol",
+					"exportedSymbols": {
+						"IRewardManager": [
+							30
+						]
+					},
+					"id": 31,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [
+						{
+							"id": 1,
+							"literals": [
+								"solidity",
+								"^",
+								"0.8",
+								".20"
+							],
+							"nodeType": "PragmaDirective",
+							"src": "33:24:0"
+						},
+						{
+							"abstract": false,
+							"baseContracts": [],
+							"canonicalName": "IRewardManager",
+							"contractDependencies": [],
+							"contractKind": "interface",
+							"fullyImplemented": false,
+							"id": 30,
+							"linearizedBaseContracts": [
+								30
+							],
+							"name": "IRewardManager",
+							"nameLocation": "71:14:0",
+							"nodeType": "ContractDefinition",
+							"nodes": [
+								{
+									"documentation": {
+										"id": 2,
+										"nodeType": "StructuredDocumentation",
+										"src": "93:213:0",
+										"text": "@notice Registers a pool to be eligible for rewards, initializing its reward token.\n @param pool The address of the pool to register.\n @param rewardToken The ERC20 address for the reward token."
+									},
+									"functionSelector": "7286e5e5",
+									"id": 9,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "registerPool",
+									"nameLocation": "321:12:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 7,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 4,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "342:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 9,
+												"src": "334:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 3,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "334:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 6,
+												"mutability": "mutable",
+												"name": "rewardToken",
+												"nameLocation": "356:11:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 9,
+												"src": "348:19:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 5,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "348:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "333:35:0"
+									},
+									"returnParameters": {
+										"id": 8,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "377:0:0"
+									},
+									"scope": 30,
+									"src": "312:66:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 10,
+										"nodeType": "StructuredDocumentation",
+										"src": "386:94:0",
+										"text": "@notice Accrues rewards for a specific pool.\n @param pool The address of the pool."
+									},
+									"functionSelector": "3d39955c",
+									"id": 15,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "accrueRewards",
+									"nameLocation": "495:13:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 13,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 12,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "517:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 15,
+												"src": "509:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 11,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "509:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "508:14:0"
+									},
+									"returnParameters": {
+										"id": 14,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "531:0:0"
+									},
+									"scope": 30,
+									"src": "486:46:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 16,
+										"nodeType": "StructuredDocumentation",
+										"src": "540:187:0",
+										"text": "@notice Claims rewards for either the lender or borrower.\n @param pool The address of the pool.\n @param isLender True if the lender is claiming, false if the borrower."
+									},
+									"functionSelector": "491c011a",
+									"id": 23,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "claimRewards",
+									"nameLocation": "742:12:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 21,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 18,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "763:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 23,
+												"src": "755:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 17,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "755:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 20,
+												"mutability": "mutable",
+												"name": "isLender",
+												"nameLocation": "774:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 23,
+												"src": "769:13:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_bool",
+													"typeString": "bool"
+												},
+												"typeName": {
+													"id": 19,
+													"name": "bool",
+													"nodeType": "ElementaryTypeName",
+													"src": "769:4:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_bool",
+														"typeString": "bool"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "754:29:0"
+									},
+									"returnParameters": {
+										"id": 22,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "792:0:0"
+									},
+									"scope": 30,
+									"src": "733:60:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 24,
+										"nodeType": "StructuredDocumentation",
+										"src": "801:91:0",
+										"text": "@notice Deregisters a pool.\n @param pool The address of the pool to deregister."
+									},
+									"functionSelector": "7e72c7d7",
+									"id": 29,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "deregisterPool",
+									"nameLocation": "907:14:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 27,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 26,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "930:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 29,
+												"src": "922:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 25,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "922:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "921:14:0"
+									},
+									"returnParameters": {
+										"id": 28,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "944:0:0"
+									},
+									"scope": 30,
+									"src": "898:47:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								}
+							],
+							"scope": 31,
+							"src": "61:887:0",
+							"usedErrors": [],
+							"usedEvents": []
+						}
+					],
+					"src": "33:917:0"
+				},
+				"id": 0
+			}
+		}
+	}
+}

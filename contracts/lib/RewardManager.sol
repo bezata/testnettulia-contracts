@@ -3,96 +3,127 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "../protocol/TuliaPool.sol"; 
+import "../protocol/TuliaPool.sol";
 import "../interfaces/IRewardManager.sol";
+import "../interfaces/IAdvancedAPYManager.sol";
 
-/// @title RewardManager
-/// @dev Manages rewards across all active loan pools, allowing for dynamic reward tokens.
+/**
+ * @title RewardManager
+ * @dev Manages dynamic rewards across all active loan pools, incorporating APY adjustments.
+ * This contract handles the allocation, accrual, and claiming of rewards based on loan activities and states.
+ */
 contract RewardManager is IRewardManager, ReentrancyGuard {
-
-    // Mapping from pool address to reward details
     struct RewardDetails {
         IERC20 rewardToken;
         uint256 rewardsAccrued;
+        uint256 lastRewardBlock; // Last block number when rewards were calculated
+        uint256 rewardRate; // Dynamic reward rate based on APY
+        uint256 totalInterestRewards; // Total interest rewards accrued
+        uint256 lenderClaimedRewards; // Amount of rewards already claimed by the lender
+        uint256 borrowerClaimedRewards; // Amount of rewards already claimed by the borrower
     }
-    
+
+    IAdvancedAPYManager public apyManager;
     mapping(address => RewardDetails) public rewardDetails;
-    uint256 public constant REWARD_RATE = 100; // Example rate per block
 
+    event PoolRegistered(address indexed pool);
+    event PoolDeregistered(address indexed pool);
     event RewardAccrued(address indexed pool, uint256 reward);
-    event RewardTokenSet(address indexed pool, address rewardToken);
-    event RewardClaimed(address indexed pool, uint256 reward);
-    event PoolDeregistered(address pool);
+    event RewardClaimed(address indexed pool, address claimant, uint256 reward);
 
-    /// @notice Sets the reward token for a specific pool.
-    /// @param pool The address of the TuliaPool.
-    /// @param rewardToken The reward token for this pool.
-    function setRewardToken(address pool, IERC20 rewardToken) public {
-        require(pool != address(0), "Pool address cannot be zero");
-        require(address(rewardToken) != address(0), "Reward token cannot be zero");
-        rewardDetails[pool].rewardToken = IERC20(rewardToken);
-        emit RewardTokenSet(pool, address(rewardToken));
+    /**
+     * @notice Initializes the RewardManager contract with a reference to the APYManager for reward calculations.
+     * @param _apyManager The address of the APYManager contract.
+     */
+    constructor(address _apyManager) {
+        apyManager = IAdvancedAPYManager(_apyManager);
     }
 
-    /// @notice Registers a pool to be eligible for rewards, initializing its reward token.
-    /// @param pool The address of the TuliaPool to register.
-    /// @param rewardToken The reward token for this pool.
-    function registerPool(address pool, IERC20 rewardToken) public {
-        require(pool != address(0) && address(rewardToken) != address(0), "Invalid addresses");
+    /**
+     * @notice Registers a pool to start accruing rewards, initializing the reward mechanism.
+     * @param pool The address of the pool to register.
+     * @param rewardToken The ERC20 token used as the reward token.
+     */
+    function registerPool(address pool, address rewardToken) public override {
+        require(pool != address(0) && rewardToken != address(0), "Invalid addresses");
         rewardDetails[pool] = RewardDetails({
             rewardToken: IERC20(rewardToken),
-            rewardsAccrued: 0
+            rewardsAccrued: 0,
+            lastRewardBlock: block.number,
+            rewardRate: 0,  // This will be set during the first accrual
+            totalInterestRewards: 0,
+            lenderClaimedRewards: 0,
+            borrowerClaimedRewards: 0
         });
+        emit PoolRegistered(pool);
     }
 
-    /// @notice Accrues rewards for a pool based on its loan amount since the loan was funded.
-    /// @param pool The TuliaPool instance.
-    function accrueReward(address pool) public {
-        TuliaPool tuliaPool = TuliaPool(pool);
-        require(tuliaPool.getLoanState() == TuliaPool.LoanState.PENDING, "Pool is not pending");
+    /**
+     * @notice Claims rewards for either the lender or borrower from a specific pool.
+     * @param pool The address of the TuliaPool.
+     * @param isLender True if the lender is claiming, false if the borrower.
+     */
+    function claimRewards(address pool, bool isLender) public override nonReentrant {
+        RewardDetails storage details = rewardDetails[pool];
+        TuliaPool poolContract = TuliaPool(pool);
+        address claimant = isLender ? poolContract.getLender() : poolContract.getBorrower();
 
-        uint256 reward = calculateReward(tuliaPool);
-        rewardDetails[pool].rewardsAccrued += reward;
+        require(msg.sender == claimant, "Not authorized to claim rewards");
+        uint256 claimableRewards = calculateClaimableRewards(details, isLender);
+        require(claimableRewards > 0, "No rewards to claim");
+
+        if (isLender) {
+            details.lenderClaimedRewards += claimableRewards;
+        } else {
+            details.borrowerClaimedRewards += claimableRewards;
+        }
+
+        details.rewardToken.transfer(claimant, claimableRewards);
+        emit RewardClaimed(pool, claimant, claimableRewards);
+    }
+
+    /**
+     * @notice Calculates claimable rewards for either the lender or the borrower based on their share of the interest rewards.
+     * @param details The reward details for the pool.
+     * @param isLender True if calculating for the lender, false for the borrower.
+     * @return uint256 The amount of rewards that can be claimed.
+     */
+    function calculateClaimableRewards(RewardDetails storage details, bool isLender) internal view returns (uint256) {
+        uint256 totalInterest = details.totalInterestRewards / 2; // Split evenly between borrower and lender
+        if (isLender) {
+            return totalInterest - details.lenderClaimedRewards;
+        } else {
+            uint256 nonInterestRewards = details.rewardsAccrued - details.totalInterestRewards;
+            uint256 totalBorrowerRewards = nonInterestRewards + totalInterest;
+            return totalBorrowerRewards - details.borrowerClaimedRewards;
+        }
+    }
+    
+    /// @param pool The address of the pool for which to accrue rewards.
+    function accrueRewards(address pool) public override {
+        RewardDetails storage details = rewardDetails[pool];
+        TuliaPool poolContract = TuliaPool(pool);
+        uint256 loanAmount = poolContract.getLoanAmount();
+        uint256 loanDuration = poolContract.getRepaymentPeriod();
+
+        uint256 currentAPY = apyManager.calculateAPY(loanAmount, loanDuration);
+        uint256 rewardRate = currentAPY / 10000; // Convert basis points to a percentage for calculations
+
+        uint256 blocksPassed = block.number - details.lastRewardBlock;
+        uint256 reward = blocksPassed * rewardRate;
+
+        details.rewardsAccrued += reward;
+        details.lastRewardBlock = block.number;
+        details.rewardRate = rewardRate; // Update the reward rate based on current APY
 
         emit RewardAccrued(pool, reward);
     }
-
-    /// @notice Allows a pool to claim its accrued rewards.
-    /// @param pool The TuliaPool instance claiming its rewards.
-    function claimRewards(address pool) public nonReentrant {
-        RewardDetails storage details = rewardDetails[pool];
-        uint256 reward = details.rewardsAccrued;
-        require(reward > 0, "No rewards to claim");
-
-        details.rewardsAccrued = 0;
-        details.rewardToken.transfer(pool, reward);
-        emit RewardClaimed(pool, reward);
-    }
-
-    /// @notice Retrieves the total accrued rewards for a specified pool.
-    /// @param pool The address of the TuliaPool.
-    /// @return reward The total accrued rewards for the pool.
-    function getAccruedRewards(address pool) public view returns (uint256 reward) {
-        return rewardDetails[pool].rewardsAccrued;
-    }
-
-    /// @notice Calculates the reward for a pool since the loan was funded.
-    /// @param pool The TuliaPool instance for which to calculate the reward.
-    /// @return reward The amount of reward.
-    function calculateReward(TuliaPool pool) internal view returns (uint256 reward) {
-        uint256 fundedBlock = pool.getFundedBlock();
-        if (fundedBlock == 0 || block.number <= fundedBlock) return 0;
-
-        uint256 blocksSinceFunded = block.number - fundedBlock;
-        uint256 loanAmount = pool.getLoanAmount();
-        reward = loanAmount * blocksSinceFunded * REWARD_RATE / 1e18;
-        return reward;
-    }
-
-    /// @notice Deregisters a pool when a loan is closed.
-    /// @param pool Address of the pool whose vault is to be deregistered.
-    function deregisterPool(address pool) public {
-        require(pool != address(0), "No pool registered for this address");
+    /**
+     * @notice Deregisters a pool, stopping it from accruing further rewards.
+     * @param pool The address of the pool to deregister.
+     */
+    function deregisterPool(address pool) public override {
+        require(pool != address(0), "Invalid pool address");
         delete rewardDetails[pool];
         emit PoolDeregistered(pool);
     }

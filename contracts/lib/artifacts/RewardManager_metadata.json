@@ -1,10 +1,21 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.25+commit.b61c2a91"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_apyManager",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
 			{
 				"anonymous": false,
 				"inputs": [
@@ -16,6 +27,19 @@
 					}
 				],
 				"name": "PoolDeregistered",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "PoolRegistered",
 				"type": "event"
 			},
 			{
@@ -76,19 +100,6 @@
 				"type": "event"
 			},
 			{
-				"inputs": [],
-				"name": "REWARD_RATE",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -99,6 +110,19 @@
 				"name": "accrueReward",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "apyManager",
+				"outputs": [
+					{
+						"internalType": "contract IAdvancedAPYManager",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -133,28 +157,9 @@
 						"internalType": "address",
 						"name": "pool",
 						"type": "address"
-					}
-				],
-				"name": "getAccruedRewards",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "reward",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "pool",
-						"type": "address"
 					},
 					{
-						"internalType": "contract IERC20",
+						"internalType": "address",
 						"name": "rewardToken",
 						"type": "address"
 					}
@@ -183,37 +188,29 @@
 						"internalType": "uint256",
 						"name": "rewardsAccrued",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lastRewardBlock",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rewardRate",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
 				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "pool",
-						"type": "address"
-					},
-					{
-						"internalType": "contract IERC20",
-						"name": "rewardToken",
-						"type": "address"
-					}
-				],
-				"name": "setRewardToken",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			}
 		],
 		"devdoc": {
-			"details": "Manages rewards across all active loan pools, allowing for dynamic reward tokens.",
+			"details": "Manages dynamic rewards across all active loan pools, incorporating APY adjustments.",
 			"kind": "dev",
 			"methods": {
 				"accrueReward(address)": {
 					"params": {
-						"pool": "The TuliaPool instance."
+						"pool": "The address of the TuliaPool."
 					}
 				},
 				"claimRewards(address)": {
@@ -226,24 +223,10 @@
 						"pool": "Address of the pool whose vault is to be deregistered."
 					}
 				},
-				"getAccruedRewards(address)": {
-					"params": {
-						"pool": "The address of the TuliaPool."
-					},
-					"returns": {
-						"reward": "The total accrued rewards for the pool."
-					}
-				},
 				"registerPool(address,address)": {
 					"params": {
 						"pool": "The address of the TuliaPool to register.",
-						"rewardToken": "The reward token for this pool."
-					}
-				},
-				"setRewardToken(address,address)": {
-					"params": {
-						"pool": "The address of the TuliaPool.",
-						"rewardToken": "The reward token for this pool."
+						"rewardToken": "The ERC20 address for the reward token."
 					}
 				}
 			},
@@ -254,7 +237,7 @@
 			"kind": "user",
 			"methods": {
 				"accrueReward(address)": {
-					"notice": "Accrues rewards for a pool based on its loan amount since the loan was funded."
+					"notice": "Updates and accrues rewards for a specific pool."
 				},
 				"claimRewards(address)": {
 					"notice": "Allows a pool to claim its accrued rewards."
@@ -262,14 +245,8 @@
 				"deregisterPool(address)": {
 					"notice": "Deregisters a pool when a loan is closed."
 				},
-				"getAccruedRewards(address)": {
-					"notice": "Retrieves the total accrued rewards for a specified pool."
-				},
 				"registerPool(address,address)": {
-					"notice": "Registers a pool to be eligible for rewards, initializing its reward token."
-				},
-				"setRewardToken(address,address)": {
-					"notice": "Sets the reward token for a specific pool."
+					"notice": "Registers a pool to be eligible for rewards, initializing its reward token and dynamic APY."
 				}
 			},
 			"version": 1
@@ -279,7 +256,7 @@
 		"compilationTarget": {
 			"contracts/contracts/lib/RewardManager.sol": "RewardManager"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -388,6 +365,14 @@
 				"dweb:/ipfs/QmQyRpyPRL5SQuAgj6SHmbir3foX65FJjbVTTQrA2EFg6L"
 			]
 		},
+		"contracts/contracts/interfaces/IAdvancedAPYManager.sol": {
+			"keccak256": "0x35708e297d8c6bd33536214e53e938aae51a974e1642939eed2aef0d71607ded",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8def591a1ed0331f45c810eaa44efd3b4a4aed7f8d66dd6dde60527f06657731",
+				"dweb:/ipfs/QmfJbZEqXBHM2WQmrbWgfvxYuuF8ekiyQAsxBvRZYb4zQu"
+			]
+		},
 		"contracts/contracts/interfaces/IAllowanceTransfer.sol": {
 			"keccak256": "0x37f0ac203b6ef605c9533e1a739477e8e9dcea90710b40e645a367f8a21ace29",
 			"license": "MIT",
@@ -405,11 +390,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IInterestModel.sol": {
-			"keccak256": "0x993f9ec1186394ed28eb8cde01309749a2bb3a979b6cc42eb1198c98f3e2c6ba",
+			"keccak256": "0xcb2b638d0439553f3d89e8a76239c5e2a74888a6b8220627d8ac8df38e10dd97",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://40050ef32bdb5e6abbe085e259ab524407b8cc89a3d55c5b742717176af5acbe",
-				"dweb:/ipfs/QmUriDyrg3pAanmWs8fAHqWA2tHoQV3BhuatPbWzkgMGS1"
+				"bzz-raw://4fd0676f3b641e6bcceeb9d2658b32752fde1b5767ca8a9af570bb84c97d07a1",
+				"dweb:/ipfs/QmT11N5mM22VBSR5pip85GbNWh2Q8a149SbmigMM5apivq"
 			]
 		},
 		"contracts/contracts/interfaces/IPermit2.sol": {
@@ -429,11 +414,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0xde950acc728d679ba41722264971e376b41a1dd350d81c6cc938727f714d4e93",
+			"keccak256": "0x228cd98c71abf0758ff83c256ce36277f86983cf76ebb29191f7099a17068a10",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cc21edecbd76383b39c68eb76cd6daa9ced0c36b189673615f62d7fb1078fd0a",
-				"dweb:/ipfs/QmSQMYa1Ms2hZ8BsBdbkWBpsmEEyaCjKnJz5bxqd5k4nXC"
+				"bzz-raw://789f3001b288d785d7525c992bafd84c7d12160c16d360527693d11175943cfc",
+				"dweb:/ipfs/QmafjfxwyabebSuuajYSJdyoCFZq4sveSG2pUwMnnGgPrQ"
 			]
 		},
 		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
@@ -445,27 +430,27 @@
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {
-			"keccak256": "0x44387d7672913449ea8662d5f68cb8e42248136cca3f29e0032b8e81742d691a",
+			"keccak256": "0xdd866073f1029189ab6d2f04f7cdf481fb48e9e12ef4f9cd2376778674ce1f1e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://7d228edfa12a52d3f4da968547da388d917f82719a72dc7f0426cd6e96aa7000",
-				"dweb:/ipfs/QmdjcKRPJc6c9KtT9fpAsSj7kuKDHcbmVryPfSB4GthGVP"
+				"bzz-raw://3d1aef045b26166c370937ef37a8917a00d63021343795f47c30516745e3786d",
+				"dweb:/ipfs/QmbAuF7Ufd78MYjnYKUybDtGDVFcn7e6wSNN8hEg6fGFg5"
 			]
 		},
 		"contracts/contracts/lib/RewardManager.sol": {
-			"keccak256": "0x3c5b647fab7f8cc788bc7a697d2cb9e1c30e1021ba900607406fb67df2bff54d",
+			"keccak256": "0xa896c900401557421851e3f588d04e71b2c88177e4cdc29a1b28ca7c4b2c23dd",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9a73b4a8579a115df46f24e2c24e6ff1ac68398c81bcc1864355135d1aa86cb8",
-				"dweb:/ipfs/QmUATivmwu9Nz85V66rnCzMLFVKxfoac61oHdwcME4tGBe"
+				"bzz-raw://b1216a1b7654319fac098ca8bcaaa10adfc33ac09bf44c9f0e80871fba0c3f01",
+				"dweb:/ipfs/QmTDoSrNCeY3AHKEPRNi14ug3sqG5b47DjHtADXWxfU1Q3"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0x02fc18a72fc3487df3d5240ba94120288fd860f43da60cea848dec9aef4d4188",
+			"keccak256": "0x5e9ab2402cde477e1a2e6f0ee4b1039cf84a095d5baf0d46ebf067f7108cbee0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3d6f042726c2741fd17b3f6a26a96c7e4daf786510cf61559f9977d82449f734",
-				"dweb:/ipfs/QmWM6bXs2eN2qtYPWgZWGSSdf3TcmQSXQYMWvHPzUhTpZs"
+				"bzz-raw://3c5b8a4c91bb4effd3b2b7a1498cc97486c249515ed188df1a75193ed951c129",
+				"dweb:/ipfs/QmWCYcxDY6pQaUPCTHUtaVVxH2WtL5fndB8z6FgC4bdR2T"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

@@ -1,0 +1,795 @@
+{
+	"id": "79733b238daca5788405f19bb97a96dd",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.25",
+	"solcLongVersion": "0.8.25+commit.b61c2a91",
+	"input": {
+		"language": "Solidity",
+		"settings": {
+			"viaIR": true,
+			"optimizer": {
+				"enabled": true,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			},
+			"remappings": []
+		},
+		"sources": {
+			"contracts/contracts/interfaces/IVaultManager.sol": {
+				"content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.20;\r\n\r\n\r\n/// @title IVaultManager\r\n/// @dev Interface for the VaultManager contract.\r\ninterface IVaultManager {\r\n    /// @notice Registers a pool's vault upon creation.\r\n    /// @param pool Address of the pool.\r\n    function registerPoolVault(address pool) external;\r\n\r\n    /// @notice Deregisters a pool's vault upon loan closure.\r\n    /// @param pool Address of the pool.\r\n    function deregisterVault(address pool) external;\r\n\r\n    /// @notice Distributes accrued interest from a vault to a specified recipient.\r\n    /// @param pool Address of the pool initiating the interest payout.\r\n    /// @param to Recipient of the interest payment.\r\n    function distributeInterest(address pool, address to) external;\r\n\r\n    /// @notice Calculates the claimable interest for a user based on the pool's loan configuration.\r\n    /// @param pool Address of the pool for which to calculate interest.\r\n    /// @return amount The calculated interest amount.\r\n    function calculateClaimableInterest(address pool) external view returns (uint256);\r\n\r\n    /// @notice Refunds any remaining interest to the borrower when the loan is repaid.\r\n    /// @param pool Address of the pool.\r\n    /// @param borrower Address of the borrower.\r\n    function refundRemainingInterest(address pool, address borrower) external;\r\n    \r\n    /// @notice Handle the default for the lender to get remaining interest.\r\n    /// @param pool The address of the loan pool associated with this interest payment.\r\n    /// @param lender The lender address of that pool.\r\n    function handleDefault(address pool, address lender) external;\r\n}\r\n"
+			}
+		}
+	},
+	"output": {
+		"contracts": {
+			"contracts/contracts/interfaces/IVaultManager.sol": {
+				"IVaultManager": {
+					"abi": [
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								}
+							],
+							"name": "calculateClaimableInterest",
+							"outputs": [
+								{
+									"internalType": "uint256",
+									"name": "",
+									"type": "uint256"
+								}
+							],
+							"stateMutability": "view",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								}
+							],
+							"name": "deregisterVault",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								}
+							],
+							"name": "distributeInterest",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "lender",
+									"type": "address"
+								}
+							],
+							"name": "handleDefault",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "borrower",
+									"type": "address"
+								}
+							],
+							"name": "refundRemainingInterest",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						},
+						{
+							"inputs": [
+								{
+									"internalType": "address",
+									"name": "pool",
+									"type": "address"
+								}
+							],
+							"name": "registerPoolVault",
+							"outputs": [],
+							"stateMutability": "nonpayable",
+							"type": "function"
+						}
+					],
+					"devdoc": {
+						"details": "Interface for the VaultManager contract.",
+						"kind": "dev",
+						"methods": {
+							"calculateClaimableInterest(address)": {
+								"params": {
+									"pool": "Address of the pool for which to calculate interest."
+								},
+								"returns": {
+									"_0": "amount The calculated interest amount."
+								}
+							},
+							"deregisterVault(address)": {
+								"params": {
+									"pool": "Address of the pool."
+								}
+							},
+							"distributeInterest(address,address)": {
+								"params": {
+									"pool": "Address of the pool initiating the interest payout.",
+									"to": "Recipient of the interest payment."
+								}
+							},
+							"handleDefault(address,address)": {
+								"params": {
+									"lender": "The lender address of that pool.",
+									"pool": "The address of the loan pool associated with this interest payment."
+								}
+							},
+							"refundRemainingInterest(address,address)": {
+								"params": {
+									"borrower": "Address of the borrower.",
+									"pool": "Address of the pool."
+								}
+							},
+							"registerPoolVault(address)": {
+								"params": {
+									"pool": "Address of the pool."
+								}
+							}
+						},
+						"title": "IVaultManager",
+						"version": 1
+					},
+					"evm": {
+						"assembly": "",
+						"bytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"deployedBytecode": {
+							"functionDebugData": {},
+							"generatedSources": [],
+							"immutableReferences": {},
+							"linkReferences": {},
+							"object": "",
+							"opcodes": "",
+							"sourceMap": ""
+						},
+						"gasEstimates": null,
+						"legacyAssembly": null,
+						"methodIdentifiers": {
+							"calculateClaimableInterest(address)": "51b2d521",
+							"deregisterVault(address)": "38e270ed",
+							"distributeInterest(address,address)": "d302bf76",
+							"handleDefault(address,address)": "713c00ce",
+							"refundRemainingInterest(address,address)": "56f78a1d",
+							"registerPoolVault(address)": "5228a4da"
+						}
+					},
+					"metadata": "{\"compiler\":{\"version\":\"0.8.25+commit.b61c2a91\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"calculateClaimableInterest\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"deregisterVault\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"}],\"name\":\"distributeInterest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"lender\",\"type\":\"address\"}],\"name\":\"handleDefault\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"borrower\",\"type\":\"address\"}],\"name\":\"refundRemainingInterest\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"registerPoolVault\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Interface for the VaultManager contract.\",\"kind\":\"dev\",\"methods\":{\"calculateClaimableInterest(address)\":{\"params\":{\"pool\":\"Address of the pool for which to calculate interest.\"},\"returns\":{\"_0\":\"amount The calculated interest amount.\"}},\"deregisterVault(address)\":{\"params\":{\"pool\":\"Address of the pool.\"}},\"distributeInterest(address,address)\":{\"params\":{\"pool\":\"Address of the pool initiating the interest payout.\",\"to\":\"Recipient of the interest payment.\"}},\"handleDefault(address,address)\":{\"params\":{\"lender\":\"The lender address of that pool.\",\"pool\":\"The address of the loan pool associated with this interest payment.\"}},\"refundRemainingInterest(address,address)\":{\"params\":{\"borrower\":\"Address of the borrower.\",\"pool\":\"Address of the pool.\"}},\"registerPoolVault(address)\":{\"params\":{\"pool\":\"Address of the pool.\"}}},\"title\":\"IVaultManager\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"calculateClaimableInterest(address)\":{\"notice\":\"Calculates the claimable interest for a user based on the pool's loan configuration.\"},\"deregisterVault(address)\":{\"notice\":\"Deregisters a pool's vault upon loan closure.\"},\"distributeInterest(address,address)\":{\"notice\":\"Distributes accrued interest from a vault to a specified recipient.\"},\"handleDefault(address,address)\":{\"notice\":\"Handle the default for the lender to get remaining interest.\"},\"refundRemainingInterest(address,address)\":{\"notice\":\"Refunds any remaining interest to the borrower when the loan is repaid.\"},\"registerPoolVault(address)\":{\"notice\":\"Registers a pool's vault upon creation.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/contracts/interfaces/IVaultManager.sol\":\"IVaultManager\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/contracts/interfaces/IVaultManager.sol\":{\"keccak256\":\"0xdd866073f1029189ab6d2f04f7cdf481fb48e9e12ef4f9cd2376778674ce1f1e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3d1aef045b26166c370937ef37a8917a00d63021343795f47c30516745e3786d\",\"dweb:/ipfs/QmbAuF7Ufd78MYjnYKUybDtGDVFcn7e6wSNN8hEg6fGFg5\"]}},\"version\":1}",
+					"storageLayout": {
+						"storage": [],
+						"types": null
+					},
+					"userdoc": {
+						"kind": "user",
+						"methods": {
+							"calculateClaimableInterest(address)": {
+								"notice": "Calculates the claimable interest for a user based on the pool's loan configuration."
+							},
+							"deregisterVault(address)": {
+								"notice": "Deregisters a pool's vault upon loan closure."
+							},
+							"distributeInterest(address,address)": {
+								"notice": "Distributes accrued interest from a vault to a specified recipient."
+							},
+							"handleDefault(address,address)": {
+								"notice": "Handle the default for the lender to get remaining interest."
+							},
+							"refundRemainingInterest(address,address)": {
+								"notice": "Refunds any remaining interest to the borrower when the loan is repaid."
+							},
+							"registerPoolVault(address)": {
+								"notice": "Registers a pool's vault upon creation."
+							}
+						},
+						"version": 1
+					}
+				}
+			}
+		},
+		"sources": {
+			"contracts/contracts/interfaces/IVaultManager.sol": {
+				"ast": {
+					"absolutePath": "contracts/contracts/interfaces/IVaultManager.sol",
+					"exportedSymbols": {
+						"IVaultManager": [
+							47
+						]
+					},
+					"id": 48,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [
+						{
+							"id": 1,
+							"literals": [
+								"solidity",
+								"^",
+								"0.8",
+								".20"
+							],
+							"nodeType": "PragmaDirective",
+							"src": "33:24:0"
+						},
+						{
+							"abstract": false,
+							"baseContracts": [],
+							"canonicalName": "IVaultManager",
+							"contractDependencies": [],
+							"contractKind": "interface",
+							"documentation": {
+								"id": 2,
+								"nodeType": "StructuredDocumentation",
+								"src": "63:77:0",
+								"text": "@title IVaultManager\n @dev Interface for the VaultManager contract."
+							},
+							"fullyImplemented": false,
+							"id": 47,
+							"linearizedBaseContracts": [
+								47
+							],
+							"name": "IVaultManager",
+							"nameLocation": "150:13:0",
+							"nodeType": "ContractDefinition",
+							"nodes": [
+								{
+									"documentation": {
+										"id": 3,
+										"nodeType": "StructuredDocumentation",
+										"src": "171:93:0",
+										"text": "@notice Registers a pool's vault upon creation.\n @param pool Address of the pool."
+									},
+									"functionSelector": "5228a4da",
+									"id": 8,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "registerPoolVault",
+									"nameLocation": "279:17:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 6,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 5,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "305:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 8,
+												"src": "297:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 4,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "297:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "296:14:0"
+									},
+									"returnParameters": {
+										"id": 7,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "319:0:0"
+									},
+									"scope": 47,
+									"src": "270:50:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 9,
+										"nodeType": "StructuredDocumentation",
+										"src": "328:99:0",
+										"text": "@notice Deregisters a pool's vault upon loan closure.\n @param pool Address of the pool."
+									},
+									"functionSelector": "38e270ed",
+									"id": 14,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "deregisterVault",
+									"nameLocation": "442:15:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 12,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 11,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "466:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 14,
+												"src": "458:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 10,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "458:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "457:14:0"
+									},
+									"returnParameters": {
+										"id": 13,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "480:0:0"
+									},
+									"scope": 47,
+									"src": "433:48:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 15,
+										"nodeType": "StructuredDocumentation",
+										"src": "489:206:0",
+										"text": "@notice Distributes accrued interest from a vault to a specified recipient.\n @param pool Address of the pool initiating the interest payout.\n @param to Recipient of the interest payment."
+									},
+									"functionSelector": "d302bf76",
+									"id": 22,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "distributeInterest",
+									"nameLocation": "710:18:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 20,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 17,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "737:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 22,
+												"src": "729:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 16,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "729:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 19,
+												"mutability": "mutable",
+												"name": "to",
+												"nameLocation": "751:2:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 22,
+												"src": "743:10:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 18,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "743:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "728:26:0"
+									},
+									"returnParameters": {
+										"id": 21,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "763:0:0"
+									},
+									"scope": 47,
+									"src": "701:63:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 23,
+										"nodeType": "StructuredDocumentation",
+										"src": "772:226:0",
+										"text": "@notice Calculates the claimable interest for a user based on the pool's loan configuration.\n @param pool Address of the pool for which to calculate interest.\n @return amount The calculated interest amount."
+									},
+									"functionSelector": "51b2d521",
+									"id": 30,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "calculateClaimableInterest",
+									"nameLocation": "1013:26:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 26,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 25,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "1048:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 30,
+												"src": "1040:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 24,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1040:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1039:14:0"
+									},
+									"returnParameters": {
+										"id": 29,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 28,
+												"mutability": "mutable",
+												"name": "",
+												"nameLocation": "-1:-1:-1",
+												"nodeType": "VariableDeclaration",
+												"scope": 30,
+												"src": "1077:7:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_uint256",
+													"typeString": "uint256"
+												},
+												"typeName": {
+													"id": 27,
+													"name": "uint256",
+													"nodeType": "ElementaryTypeName",
+													"src": "1077:7:0",
+													"typeDescriptions": {
+														"typeIdentifier": "t_uint256",
+														"typeString": "uint256"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1076:9:0"
+									},
+									"scope": 47,
+									"src": "1004:82:0",
+									"stateMutability": "view",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 31,
+										"nodeType": "StructuredDocumentation",
+										"src": "1094:175:0",
+										"text": "@notice Refunds any remaining interest to the borrower when the loan is repaid.\n @param pool Address of the pool.\n @param borrower Address of the borrower."
+									},
+									"functionSelector": "56f78a1d",
+									"id": 38,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "refundRemainingInterest",
+									"nameLocation": "1284:23:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 36,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 33,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "1316:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 38,
+												"src": "1308:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 32,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1308:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 35,
+												"mutability": "mutable",
+												"name": "borrower",
+												"nameLocation": "1330:8:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 38,
+												"src": "1322:16:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 34,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1322:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1307:32:0"
+									},
+									"returnParameters": {
+										"id": 37,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1348:0:0"
+									},
+									"scope": 47,
+									"src": "1275:74:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								},
+								{
+									"documentation": {
+										"id": 39,
+										"nodeType": "StructuredDocumentation",
+										"src": "1361:217:0",
+										"text": "@notice Handle the default for the lender to get remaining interest.\n @param pool The address of the loan pool associated with this interest payment.\n @param lender The lender address of that pool."
+									},
+									"functionSelector": "713c00ce",
+									"id": 46,
+									"implemented": false,
+									"kind": "function",
+									"modifiers": [],
+									"name": "handleDefault",
+									"nameLocation": "1593:13:0",
+									"nodeType": "FunctionDefinition",
+									"parameters": {
+										"id": 44,
+										"nodeType": "ParameterList",
+										"parameters": [
+											{
+												"constant": false,
+												"id": 41,
+												"mutability": "mutable",
+												"name": "pool",
+												"nameLocation": "1615:4:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 46,
+												"src": "1607:12:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 40,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1607:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											},
+											{
+												"constant": false,
+												"id": 43,
+												"mutability": "mutable",
+												"name": "lender",
+												"nameLocation": "1629:6:0",
+												"nodeType": "VariableDeclaration",
+												"scope": 46,
+												"src": "1621:14:0",
+												"stateVariable": false,
+												"storageLocation": "default",
+												"typeDescriptions": {
+													"typeIdentifier": "t_address",
+													"typeString": "address"
+												},
+												"typeName": {
+													"id": 42,
+													"name": "address",
+													"nodeType": "ElementaryTypeName",
+													"src": "1621:7:0",
+													"stateMutability": "nonpayable",
+													"typeDescriptions": {
+														"typeIdentifier": "t_address",
+														"typeString": "address"
+													}
+												},
+												"visibility": "internal"
+											}
+										],
+										"src": "1606:30:0"
+									},
+									"returnParameters": {
+										"id": 45,
+										"nodeType": "ParameterList",
+										"parameters": [],
+										"src": "1645:0:0"
+									},
+									"scope": 47,
+									"src": "1584:62:0",
+									"stateMutability": "nonpayable",
+									"virtual": false,
+									"visibility": "external"
+								}
+							],
+							"scope": 48,
+							"src": "140:1509:0",
+							"usedErrors": [],
+							"usedEvents": []
+						}
+					],
+					"src": "33:1618:0"
+				},
+				"id": 0
+			}
+		}
+	}
+}

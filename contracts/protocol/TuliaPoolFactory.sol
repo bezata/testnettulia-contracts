@@ -115,8 +115,8 @@ contract TuliaPoolFactory {
             interestModel,
             permit2,
             address(poolOrganizer),
-            address(rewardManager),
-            address(vaultManager)
+            address(vaultManager),
+            address(rewardManager)
         );
         poolOrganizer.registerPool(
             address(pool),
@@ -131,8 +131,7 @@ contract TuliaPoolFactory {
             repaymentPeriod,
             poolType
         );
-        rewardManager.registerPool(address(pool), loanTokenAddress);
-        rewardManager.setRewardToken(address(pool), loanTokenAddress);
+        poolOrganizer.grantFactoryAccess(address(pool));
         emit PoolCreated(address(pool), lender, address(vault), poolType);
         return (address(pool), address(vault));
     } else if (poolType == IPoolOrganizer.PoolType.FLASH_LOAN) {

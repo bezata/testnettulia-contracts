@@ -363,6 +363,11 @@
 						"type": "uint256"
 					},
 					{
+						"internalType": "contract IVaultManager",
+						"name": "vaultManager",
+						"type": "address"
+					},
+					{
 						"internalType": "contract IInterestModel",
 						"name": "interestModel",
 						"type": "address"
@@ -508,13 +513,13 @@
 					"notice": "Activates a loan by transferring collateral from the borrower to the vault and transferring the loan amount to the borrower."
 				},
 				"calculateInterest()": {
-					"notice": "Calculates the total interest for the full term of the loan at the specified annual interest rate."
+					"notice": "Calculates the total interest for the full term of the loan using an external interest model."
 				},
 				"calculateRequiredCollateral()": {
 					"notice": "Calculates the required collateral based on the interest and principal."
 				},
 				"checkAndHandleDefault()": {
-					"notice": "Checks if the loan has defaulted based on repayment conditions and handles the default by claiming the collateral."
+					"notice": "Checks if the loan has defaulted and handles the default."
 				},
 				"constructor": {
 					"notice": "Constructs the TuliaPool loan management contract."
@@ -538,7 +543,7 @@
 					"notice": "Retrieves the repayment period of the loan."
 				},
 				"repay()": {
-					"notice": "Repays the loan and releases collateral back to the borrower."
+					"notice": "Handles the repayment process, segregating responsibilities into modular functions."
 				}
 			},
 			"notice": "Manages the lifecycle of loans including creation, funding, repayment, and defaults.",
@@ -675,11 +680,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IInterestModel.sol": {
-			"keccak256": "0x993f9ec1186394ed28eb8cde01309749a2bb3a979b6cc42eb1198c98f3e2c6ba",
+			"keccak256": "0xcb2b638d0439553f3d89e8a76239c5e2a74888a6b8220627d8ac8df38e10dd97",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://40050ef32bdb5e6abbe085e259ab524407b8cc89a3d55c5b742717176af5acbe",
-				"dweb:/ipfs/QmUriDyrg3pAanmWs8fAHqWA2tHoQV3BhuatPbWzkgMGS1"
+				"bzz-raw://4fd0676f3b641e6bcceeb9d2658b32752fde1b5767ca8a9af570bb84c97d07a1",
+				"dweb:/ipfs/QmT11N5mM22VBSR5pip85GbNWh2Q8a149SbmigMM5apivq"
 			]
 		},
 		"contracts/contracts/interfaces/IPermit2.sol": {
@@ -723,11 +728,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xe58566f6779786c57585506c0352efd99083f51422b2f74d21b810dc3040aa71",
+			"keccak256": "0x46febd789e196266d8371999ada86acf4f2c9b6563316425fa1bf66d1dfbfff8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6e52baa7d4fc1a34d929e7bfa452f9b3803951474bf6cd37cfc0846bf0995955",
-				"dweb:/ipfs/QmStJ7uKUUR8mSGgNHaBt9mkPixz19Ya5zpx1Svndbustq"
+				"bzz-raw://d8fa5716577b824452edcd698e2e68f3340ed456df51c80bde07f9f442d2931b",
+				"dweb:/ipfs/QmceKzr6vXifsWA1NhDisqrbuVWMVt85qLiyHm3ZZtfWHM"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.25+commit.b61c2a91"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -15,11 +15,6 @@
 					{
 						"internalType": "uint256",
 						"name": "rate",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "time",
 						"type": "uint256"
 					}
 				],
@@ -36,22 +31,19 @@
 			}
 		],
 		"devdoc": {
-			"details": "A simple interest model contract implementing compound interest calculation.",
 			"kind": "dev",
 			"methods": {
-				"calculateInterest(uint256,uint256,uint256)": {
-					"details": "Calculates compound interest on a principal over a period.",
+				"calculateInterest(uint256,uint256)": {
+					"details": "Calculates compound interest on a principal over one year.",
 					"params": {
 						"principal": "The principal amount.",
-						"rate": "The annual interest rate in basis points (1 basis point = 0.01%).",
-						"time": "The time period in seconds."
+						"rate": "The annual interest rate in basis points (1 basis point = 0.01%)."
 					},
 					"returns": {
-						"_0": "The amount of compound interest accrued."
+						"_0": "The total compound interest for the year."
 					}
 				}
 			},
-			"title": "CompoundInterest",
 			"version": 1
 		},
 		"userdoc": {
@@ -64,7 +56,7 @@
 		"compilationTarget": {
 			"contracts/contracts/interests/CompoundInterest.sol": "CompoundInterest"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -86,19 +78,19 @@
 			]
 		},
 		"contracts/contracts/interests/CompoundInterest.sol": {
-			"keccak256": "0x1819bdfb7ced3b2afe64418626c9b48e687986cbcc68078b61ba3f0fcf72f48e",
+			"keccak256": "0x9a2188e435900e8d8241d2430771a72fa9b9453529226a77410225b2689f716f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3a8ed2606bef9f9e9b4e5063b2519eedbc764c6dd5e9c8dd9c0257e458606682",
-				"dweb:/ipfs/QmQkLQRpdsaAyEAQLH5sPcyKJSLzsDQ9FiNFhQnAJRMEpV"
+				"bzz-raw://30e4dfb18605160d53bb493439a0d4822119ff7e24270c23d81534f78f7d12e0",
+				"dweb:/ipfs/QmVWnrxWSpXuCPnSR1DLV5ir9ebgPS2mrBwcZUXYLxmxMA"
 			]
 		},
 		"contracts/contracts/interfaces/IInterestModel.sol": {
-			"keccak256": "0x993f9ec1186394ed28eb8cde01309749a2bb3a979b6cc42eb1198c98f3e2c6ba",
+			"keccak256": "0xcb2b638d0439553f3d89e8a76239c5e2a74888a6b8220627d8ac8df38e10dd97",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://40050ef32bdb5e6abbe085e259ab524407b8cc89a3d55c5b742717176af5acbe",
-				"dweb:/ipfs/QmUriDyrg3pAanmWs8fAHqWA2tHoQV3BhuatPbWzkgMGS1"
+				"bzz-raw://4fd0676f3b641e6bcceeb9d2658b32752fde1b5767ca8a9af570bb84c97d07a1",
+				"dweb:/ipfs/QmT11N5mM22VBSR5pip85GbNWh2Q8a149SbmigMM5apivq"
 			]
 		}
 	},

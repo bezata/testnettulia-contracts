@@ -6,11 +6,6 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -20,11 +15,6 @@
 					{
 						"internalType": "uint256",
 						"name": "rate",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "time",
 						"type": "uint256"
 					}
 				],
@@ -43,15 +33,14 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"calculateInterest(uint256,uint256,uint256)": {
-					"details": "Calculate simple interest.",
+				"calculateInterest(uint256,uint256)": {
+					"details": "Calculate simple interest for a full year upfront, based on an annual interest rate.",
 					"params": {
 						"principal": "The principal amount.",
-						"rate": "The annual interest rate (in basis points, where 10000 = 100%).",
-						"time": "The time in days for which the interest is calculated."
+						"rate": "The annual interest rate (in basis points, where 10000 = 100%)."
 					},
 					"returns": {
-						"_0": "The interest amount."
+						"_0": "The total interest for one year."
 					}
 				}
 			},
@@ -81,19 +70,19 @@
 	},
 	"sources": {
 		"contracts/contracts/interests/SimpleInterest.sol": {
-			"keccak256": "0x31137bce2cab017664e5a87f73875e80e8fd03acffe349ad7877d7419b8ced21",
+			"keccak256": "0xbf8573552993f649ae4b7d42c6ca049b2e052eef0e77fccd5337f1c7c767f359",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://12ca23426236fe01a61883a274667e7482d00f12d197c5087b182f8c34e460b3",
-				"dweb:/ipfs/QmWAdMvf6DzhW3xmXq2kgDAxg4SSzsbmR1X6Jt645S1NzK"
+				"bzz-raw://5998442e67cbcad219885c83362f615e78623c4ab916844615f00e396ee14093",
+				"dweb:/ipfs/QmeXXa4hRK5ftUp3CeT1Pd734ydWegMfC8XCQXuvYhdpkY"
 			]
 		},
 		"contracts/contracts/interfaces/IInterestModel.sol": {
-			"keccak256": "0x993f9ec1186394ed28eb8cde01309749a2bb3a979b6cc42eb1198c98f3e2c6ba",
+			"keccak256": "0xcb2b638d0439553f3d89e8a76239c5e2a74888a6b8220627d8ac8df38e10dd97",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://40050ef32bdb5e6abbe085e259ab524407b8cc89a3d55c5b742717176af5acbe",
-				"dweb:/ipfs/QmUriDyrg3pAanmWs8fAHqWA2tHoQV3BhuatPbWzkgMGS1"
+				"bzz-raw://4fd0676f3b641e6bcceeb9d2658b32752fde1b5767ca8a9af570bb84c97d07a1",
+				"dweb:/ipfs/QmT11N5mM22VBSR5pip85GbNWh2Q8a149SbmigMM5apivq"
 			]
 		}
 	},

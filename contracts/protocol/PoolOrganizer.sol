@@ -178,6 +178,7 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
             "Caller is not an admin"
         );
         grantRole(POOL_MANAGER_ROLE, factoryAddress);
+        grantRole(DEFAULT_ADMIN_ROLE, factoryAddress);
     }
 
     // Private helper functions

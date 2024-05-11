@@ -53,7 +53,6 @@
 			"deregisterVault(address)": "38e270ed",
 			"distributeInterest(address,address)": "d302bf76",
 			"handleDefault(address,address)": "713c00ce",
-			"handleInterest(address,uint256)": "d026759d",
 			"refundRemainingInterest(address,address)": "56f78a1d",
 			"registerPoolVault(address)": "5228a4da"
 		}
@@ -123,24 +122,6 @@
 				}
 			],
 			"name": "handleDefault",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "pool",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "amount",
-					"type": "uint256"
-				}
-			],
-			"name": "handleInterest",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

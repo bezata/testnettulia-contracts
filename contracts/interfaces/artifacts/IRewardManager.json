@@ -49,12 +49,10 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"accrueReward(address)": "978e08d7",
-			"claimRewards(address)": "ef5cfb8c",
+			"accrueRewards(address)": "3d39955c",
+			"claimRewards(address,bool)": "491c011a",
 			"deregisterPool(address)": "7e72c7d7",
-			"getAccruedRewards(address)": "2552aa1f",
-			"registerPool(address,address)": "7286e5e5",
-			"setRewardToken(address,address)": "e5c8c572"
+			"registerPool(address,address)": "7286e5e5"
 		}
 	},
 	"abi": [
@@ -66,7 +64,7 @@
 					"type": "address"
 				}
 			],
-			"name": "accrueReward",
+			"name": "accrueRewards",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -77,6 +75,11 @@
 					"internalType": "address",
 					"name": "pool",
 					"type": "address"
+				},
+				{
+					"internalType": "bool",
+					"name": "isLender",
+					"type": "bool"
 				}
 			],
 			"name": "claimRewards",
@@ -103,51 +106,14 @@
 					"internalType": "address",
 					"name": "pool",
 					"type": "address"
-				}
-			],
-			"name": "getAccruedRewards",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "reward",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "pool",
-					"type": "address"
 				},
 				{
-					"internalType": "contract IERC20",
+					"internalType": "address",
 					"name": "rewardToken",
 					"type": "address"
 				}
 			],
 			"name": "registerPool",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "pool",
-					"type": "address"
-				},
-				{
-					"internalType": "contract IERC20",
-					"name": "rewardToken",
-					"type": "address"
-				}
-			],
-			"name": "setRewardToken",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

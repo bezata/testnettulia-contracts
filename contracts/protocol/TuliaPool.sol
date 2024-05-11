@@ -28,6 +28,7 @@ contract TuliaPool is ReentrancyGuard {
         uint256 loanAmount; // Amount of the loan.
         uint256 interestRate; // Interest rate for the loan.
         uint256 repaymentPeriod; // Duration for repayment.
+        IVaultManager vaultManager;
         IInterestModel interestModel; // Contract calculating the interest.
         address borrower; // Borrower of the loan.
         uint256 startBlock; // Block number when the loan starts.
@@ -116,6 +117,7 @@ contract TuliaPool is ReentrancyGuard {
             loanAmount: loanAmount,
             interestRate: interestRate,
             repaymentPeriod: repaymentPeriodInDays * 1 days,
+            vaultManager: IVaultManager(vaultManager),
             interestModel: interestModel,
             borrower: address(0),
             startBlock: block.timestamp,
@@ -197,6 +199,7 @@ contract TuliaPool is ReentrancyGuard {
         loanDetails.startBlock = block.timestamp;
         state = LoanState.ACTIVE;
         uint256 collateralAmount = calculateRequiredCollateral();
+        vaultManager.registerPoolVault(address(this));
         emit LoanActivated(borrower, collateralAmount);
     }
 
@@ -209,121 +212,170 @@ contract TuliaPool is ReentrancyGuard {
         );
         loanDetails.fundedBlock = block.timestamp;
         state = LoanState.PENDING;
+        rewardManager.registerPool(address(this), address(loanDetails.loanToken));
         emit LoanFunded(loanDetails.loanAmount);
     }
 
     /**
-     * @notice Checks if the loan has defaulted based on repayment conditions and handles the default by claiming the collateral.
+     * @notice Checks if the loan has defaulted and handles the default.
      */
     function checkAndHandleDefault() public {
         require(state == LoanState.ACTIVE, "Loan is not active");
-        uint256 dueDate = loanDetails.startBlock + loanDetails.repaymentPeriod;
-
-        require(
-            block.timestamp >= dueDate,
-            "Repayment period has not yet ended"
-        );
-
-        if (block.timestamp >= dueDate) {
+        if (_isPastDue()) {
+            state = LoanState.DEFAULTED;
             _handleDefault();
         }
     }
-
-    function _handleDefault() private {
-        // Calculate the total collateral and redeem to lender as a penalty
-        uint256 collateral = loanDetails.collateralVault.balanceOf(
-            loanDetails.borrower // This is the 'owner' of the shares
-        );
-        uint256 sharesToRedeem = loanDetails.collateralVault.convertToShares(
-            collateral
-        );
-
-        loanDetails.collateralVault.redeem(
-            sharesToRedeem,
-            loanDetails.lender, // This is the 'receiver' of the assets
-            loanDetails.borrower // This is the 'owner' from whom the shares are redeemed
-        );
-        vaultManager.handleDefault(address(this), loanDetails.lender);
-        state = LoanState.DEFAULTED;
-
+    function _transitionToClosed() private {
         _closeLoan();
         emit LoanDefaulted(loanDetails.borrower);
     }
 
-    /**
-     * @notice Repays the loan and releases collateral back to the borrower.
-     */
-    function repay() external nonReentrant {
-        require(loanDetails.borrower == msg.sender,"Only borrower can repay!");
-        address borrower = msg.sender;
-        uint256 collateralAmount = loanDetails.collateralVault.balanceOf(
-            loanDetails.borrower // This is the 'owner' of the shares
-        );
-        
-        require(state != LoanState.CLOSED, "Loan in Closed State");
-        require(state != LoanState.REPAID, "Loan is already REPAID");
-        require(state != LoanState.DEFAULTED, "Loan is Defaulted");
-
-        address lender = address(loanDetails.lender);
-        uint256 totalRepayment = calculateRequiredCollateral();
-
-        require(
-            loanDetails.repaymentToken.allowance(msg.sender, address(this)) >=
-                totalRepayment,
-            "Insufficient token allowance for repayment"
-        );
-        require(
-            loanDetails.repaymentToken.balanceOf(msg.sender) >= totalRepayment,
-            "Insufficient token balance for repayment"
-        );
-
-        loanDetails.loanToken.transferFrom(
-            borrower,
-            address(this),
-            collateralAmount
-        );
-        loanDetails.repaymentToken.approve(lender, collateralAmount);
-        loanDetails.repaymentToken.transfer(lender, collateralAmount);
-
-        _releaseCollateral(address(borrower), collateralAmount);
-
-        vaultManager.refundRemainingInterest(
-            address(this),
-            loanDetails.borrower
-        );
-        state = LoanState.REPAID;
-        _closeLoan();
-        emit RepaymentMade(totalRepayment);
+    function _isPastDue() private view returns (bool) {
+        uint256 dueDate = loanDetails.startBlock + loanDetails.repaymentPeriod;
+        return block.timestamp >= dueDate;
     }
 
-    function _releaseCollateral(address borrower, uint256 collateralAmount)
-        private
-    {
-        require(
-            collateralAmount == loanDetails.loanAmount,
-            "Collateral input must be same!"
+    function _handleDefault() private {
+        _redeemCollateralToLender();
+        vaultManager.handleDefault(address(this), loanDetails.lender);
+        _transitionToClosed();
+    }
+
+    function _redeemCollateralToLender() private {
+        uint256 collateralAmount = loanDetails.collateralVault.balanceOf(
+            loanDetails.borrower
         );
         uint256 sharesToRedeem = loanDetails.collateralVault.convertToShares(
             collateralAmount
         );
-        loanDetails.collateralVault.redeem(sharesToRedeem, borrower, borrower);
+        loanDetails.collateralVault.redeem(
+            sharesToRedeem,
+            loanDetails.lender,
+            loanDetails.borrower
+        );
+    }
+
+      /**
+     * @notice Checks if the loan has defaulted and handles the default.
+     */
+    function closeDeal() public {
+        require(state == LoanState.ACTIVE, "Loan is not active");
+            state = LoanState.DEFAULTED;
+            _handleDeal();
+            _redeemCollateralToBorrower();
+            _transitionToClosed();
+        }
+
+    function _handleDeal() private {
+        _redeemCollateralToLender();
+        vaultManager.handleDefault(address(this), loanDetails.borrower);
+        _transitionToClosed();
+    }
+
+    function _redeemCollateralToBorrower() private {
+        uint256 collateralAmount = loanDetails.collateralVault.balanceOf(
+            loanDetails.borrower
+        );
+        uint256 sharesToRedeem = loanDetails.collateralVault.convertToShares(
+            collateralAmount
+        );
+        loanDetails.collateralVault.redeem(
+            sharesToRedeem,
+            loanDetails.borrower,
+            loanDetails.borrower
+        );
+    }
+
+    
+
+    /**
+     * @notice Handles the repayment process, segregating responsibilities into modular functions.
+     */
+    function repay() external nonReentrant {
+        require(
+            loanDetails.borrower == msg.sender,
+            "Only the borrower can initiate repayment."
+        );
+        require(
+            state == LoanState.ACTIVE,
+            "Loan must be active to proceed with repayment."
+        );
+
+        uint256 totalRepayment = calculateRequiredCollateral();
+        uint256 interestAmount = calculateInterest();
+        uint256 principalAmount = totalRepayment - interestAmount;
+
+        _validateRepayment(totalRepayment);
+        _transferFunds(msg.sender, principalAmount);
+        _refundRemainingInterest();
+        _releaseCollateral(principalAmount);
+        _updateLoanStateToRepaid();
+    }
+
+    /// @dev Ensures that the borrower has enough tokens approved and available for the repayment.
+    function _validateRepayment(uint256 totalRepayment) private view {
+        require(
+            loanDetails.repaymentToken.allowance(msg.sender, address(this)) >=
+                totalRepayment,
+            "Insufficient token allowance for repayment."
+        );
+        require(
+            loanDetails.repaymentToken.balanceOf(msg.sender) >= totalRepayment,
+            "Insufficient token balance for repayment."
+        );
+    }
+
+    /// @dev Transfers the principal repayment to the lender.
+    function _transferFunds(address borrower, uint256 principalAmount) private {
+        loanDetails.repaymentToken.transferFrom(
+            borrower,
+            loanDetails.lender,
+            principalAmount
+        );
+    }
+
+    /// @dev Refunds any remaining interest to the borrower after loan repayment.
+    function _refundRemainingInterest() private {
+        vaultManager.refundRemainingInterest(address(this), msg.sender);
+    }
+
+    /// @dev Releases the collateral from the vault back to the borrower.
+    function _releaseCollateral(uint256 principalAmount) private {
+        uint256 sharesToRedeem = loanDetails.collateralVault.convertToShares(
+            principalAmount
+        );
+        loanDetails.collateralVault.redeem(
+            sharesToRedeem,
+            msg.sender,
+            msg.sender
+        );
+        
+    }
+
+    /// @dev Updates the state of the loan to REPAID and handles any cleanup.
+    function _updateLoanStateToRepaid() private {
+        state = LoanState.REPAID;
+        loanDetails.repaymentToken.transfer(msg.sender,loanDetails.repaymentToken.balanceOf(address(this))); // Last check if any borrower's collateral remains before loan closed.
+        _closeLoan();
+        emit RepaymentMade(calculateRequiredCollateral());
     }
 
     function _closeLoan() internal {
         state = LoanState.CLOSED;
         poolOrganizer.deregisterPool(address(this));
         vaultManager.deregisterVault(address(this));
+        rewardManager.deregisterPool(address(this));
         emit LoanClosed();
     }
 
-    /// @notice Calculates the total interest for the full term of the loan at the specified annual interest rate.
+    /// @notice Calculates the total interest for the full term of the loan using an external interest model.
     function calculateInterest() public view returns (uint256) {
-        uint256 annualRateDecimal = (loanDetails.interestRate * 1e18) / 100;
-        uint256 termInYears = loanDetails.repaymentPeriod / 365 days;
-        uint256 fullTermInterest = ((loanDetails.loanAmount *
-            annualRateDecimal) / 1e18) * termInYears;
-
-        return fullTermInterest;
+        // Assuming interest is calculated annually on the full loan amount
+        return loanDetails.interestModel.calculateInterest(
+            loanDetails.loanAmount,
+            loanDetails.interestRate
+        );
     }
 
     /// @notice Calculates the required collateral based on the interest and principal.
@@ -332,9 +384,18 @@ contract TuliaPool is ReentrancyGuard {
         return loanDetails.loanAmount + interestForFullTerm;
     }
 
+    /// Lens
     /// @notice Provides the block timestamp when the loan was funded.
     function getFundedBlock() public view returns (uint256) {
         return loanDetails.fundedBlock;
+    }
+
+    function getLender() public view returns (address) {
+        return loanDetails.lender;
+    }
+
+    function getBorrower() public view returns (address) {
+        return loanDetails.borrower;
     }
 
     function getRepaymentToken() public view returns (IERC20) {

@@ -27,11 +27,6 @@ interface IVaultManager {
     /// @param pool Address of the pool.
     /// @param borrower Address of the borrower.
     function refundRemainingInterest(address pool, address borrower) external;
-
-    /// @notice Accepts deposit of interest for a specific loan pool.
-    /// @param pool The address of the loan pool associated with this interest payment.
-    /// @param amount The amount of interest being paid.
-    function handleInterest(address pool, uint256 amount) external;
     
     /// @notice Handle the default for the lender to get remaining interest.
     /// @param pool The address of the loan pool associated with this interest payment.

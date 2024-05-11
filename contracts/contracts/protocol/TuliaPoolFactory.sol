@@ -115,8 +115,8 @@ contract TuliaPoolFactory {
             interestModel,
             permit2,
             address(poolOrganizer),
-            address(rewardManager),
-            address(vaultManager)
+            address(vaultManager),
+            address(rewardManager)
         );
         poolOrganizer.registerPool(
             address(pool),

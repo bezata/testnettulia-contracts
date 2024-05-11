@@ -49,7 +49,7 @@
 		},
 		"gasEstimates": null,
 		"methodIdentifiers": {
-			"calculateInterest(uint256,uint256,uint256)": "05e1bd8c"
+			"calculateInterest(uint256,uint256)": "efdd7c07"
 		}
 	},
 	"abi": [
@@ -63,11 +63,6 @@
 				{
 					"internalType": "uint256",
 					"name": "rate",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "time",
 					"type": "uint256"
 				}
 			],

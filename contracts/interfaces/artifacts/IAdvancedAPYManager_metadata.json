@@ -1,0 +1,106 @@
+{
+	"compiler": {
+		"version": "0.8.25+commit.b61c2a91"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "loanAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "durationSeconds",
+						"type": "uint256"
+					}
+				],
+				"name": "calculateAPY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getCurrentAPY",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "updateAPY",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Interface for the AdvancedAPYManager contract to manage APY adjustments.",
+			"kind": "dev",
+			"methods": {
+				"getCurrentAPY()": {
+					"returns": {
+						"_0": "The current total APY in basis points."
+					}
+				}
+			},
+			"title": "IAdvancedAPYManager",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"getCurrentAPY()": {
+					"notice": "Gets the current total APY considering both base rate and additional risk premium."
+				},
+				"updateAPY()": {
+					"notice": "Updates the APY based on the latest rates from mock data feeds."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/interfaces/IAdvancedAPYManager.sol": "IAdvancedAPYManager"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/contracts/interfaces/IAdvancedAPYManager.sol": {
+			"keccak256": "0x71ad97d7631fbf29893f449d8e638311b6528d15ff3bce8dd96295b334dcc1b1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://13f8f15532e860b384f9713ba1e0dd8819e36bf0db58fdad45ab86c3d9c9214d",
+				"dweb:/ipfs/QmfK2SSXhnEGLUpUp8fcszhdRePuC3S2ce8tfE2t4rJS8z"
+			]
+		}
+	},
+	"version": 1
+}

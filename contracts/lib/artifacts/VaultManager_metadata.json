@@ -151,12 +151,12 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "lender",
+						"type": "address"
 					}
 				],
-				"name": "handleInterest",
+				"name": "handleDefault",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -251,10 +251,9 @@
 						"to": "The recipient of the interest payment."
 					}
 				},
-				"handleInterest(address,uint256)": {
+				"handleDefault(address,address)": {
 					"params": {
-						"amount": "The amount of interest being redeemed.",
-						"pool": "The address of the loan pool."
+						"pool": "The address of the loan pool which has defaulted."
 					}
 				},
 				"refundRemainingInterest(address,address)": {
@@ -285,8 +284,8 @@
 				"distributeInterest(address,address)": {
 					"notice": "Distributes accrued interest to the lender if the loan is active."
 				},
-				"handleInterest(address,uint256)": {
-					"notice": "Handles the redemption of accrued interest from the vault using the interest payment."
+				"handleDefault(address,address)": {
+					"notice": "Handles the default scenario by securing the collateral and distributing remaining interest."
 				},
 				"refundRemainingInterest(address,address)": {
 					"notice": "Refunds all remaining tokens to the borrower, ensuring any unclaimed interest is left for the lender."
@@ -428,11 +427,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IInterestModel.sol": {
-			"keccak256": "0x993f9ec1186394ed28eb8cde01309749a2bb3a979b6cc42eb1198c98f3e2c6ba",
+			"keccak256": "0xcb2b638d0439553f3d89e8a76239c5e2a74888a6b8220627d8ac8df38e10dd97",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://40050ef32bdb5e6abbe085e259ab524407b8cc89a3d55c5b742717176af5acbe",
-				"dweb:/ipfs/QmUriDyrg3pAanmWs8fAHqWA2tHoQV3BhuatPbWzkgMGS1"
+				"bzz-raw://4fd0676f3b641e6bcceeb9d2658b32752fde1b5767ca8a9af570bb84c97d07a1",
+				"dweb:/ipfs/QmT11N5mM22VBSR5pip85GbNWh2Q8a149SbmigMM5apivq"
 			]
 		},
 		"contracts/contracts/interfaces/IPermit2.sol": {
@@ -452,11 +451,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0xde950acc728d679ba41722264971e376b41a1dd350d81c6cc938727f714d4e93",
+			"keccak256": "0x38e38bb8c9a1ed7ae4bd8c5b8d92dbba1c4f3083896213ca142af8fe2e131bf4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cc21edecbd76383b39c68eb76cd6daa9ced0c36b189673615f62d7fb1078fd0a",
-				"dweb:/ipfs/QmSQMYa1Ms2hZ8BsBdbkWBpsmEEyaCjKnJz5bxqd5k4nXC"
+				"bzz-raw://47de1c1a90663a49866c94a5a59e2bd91b8029899e9b549ebce16648229713ca",
+				"dweb:/ipfs/QmS2RrmQuX5rPm1bJP1uhLJREvuU3aDdayLTZjuhchKgf9"
 			]
 		},
 		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
@@ -468,27 +467,27 @@
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {
-			"keccak256": "0xf9810df9508cae4d0e900564470694ae6d5c0f87a94f99ff934db715fe6c7952",
+			"keccak256": "0xdd866073f1029189ab6d2f04f7cdf481fb48e9e12ef4f9cd2376778674ce1f1e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://27db60e20cb0da34032832cdfae568979d4ec4a21b34ee9c38a9397ec14a9153",
-				"dweb:/ipfs/Qmf82Yd6PPXDzFUSj5npsFpt3iQEF8EyvUBvDuEWiZbA9t"
+				"bzz-raw://3d1aef045b26166c370937ef37a8917a00d63021343795f47c30516745e3786d",
+				"dweb:/ipfs/QmbAuF7Ufd78MYjnYKUybDtGDVFcn7e6wSNN8hEg6fGFg5"
 			]
 		},
 		"contracts/contracts/lib/VaultManager.sol": {
-			"keccak256": "0xe005a5be5cac7d5014b210a4211cde9d25669791dff3f84380a492dd2bccf1a1",
+			"keccak256": "0x5197c5fefd26335582bf94157e05456b29257deb316faccac8ce06751c847147",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6ecbe615cfc930d83f3a6e74e45fe6ca574c997a386bf61d3a1a6f78f7baf5ba",
-				"dweb:/ipfs/QmdJxRnF1Puxq7fr8W3pXbJJYNbXiDx1nTYhPUoKcM2a6s"
+				"bzz-raw://fa95e9e44d0cb99a63050d99118f9a866017cb83d2aa19328aba71fc6b09586f",
+				"dweb:/ipfs/Qmc9qnXr4wtSY4f2nLmuzSszj1oMyemcrAXWLxJfWJBdev"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0x9d424ca2401c26a596ed4598814bae70bf0b4e13d39fe9949760a1be26058791",
+			"keccak256": "0xf0c8e5f6aed8422c5ed0821dda222c59efc979410bdaa14bed68b46e35c965fc",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5ba82e7b2f4dd5eb4af86ff5cf5e4c21de904f1f04c10ac6cb931c66676e1872",
-				"dweb:/ipfs/Qma8V4BNiAoHkGosRqbchQQeCutRd5NGub8qkTAdhbS69L"
+				"bzz-raw://dd3b5ef1708b11cc4253ed45303e6ff63268a841e912cd63e34e19f0abef708f",
+				"dweb:/ipfs/QmPkazUWwcgeaYboLrFjxMpVZYJVGWT9UKA5wYxLeXoaCD"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

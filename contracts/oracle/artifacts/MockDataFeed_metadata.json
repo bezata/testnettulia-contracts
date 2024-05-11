@@ -1,0 +1,101 @@
+{
+	"compiler": {
+		"version": "0.8.25+commit.b61c2a91"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "getRate",
+				"outputs": [
+					{
+						"internalType": "int256",
+						"name": "",
+						"type": "int256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "int256",
+						"name": "_rate",
+						"type": "int256"
+					}
+				],
+				"name": "updateRate",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"details": "Simulates an external data feed by allowing manual updates of rates.",
+			"kind": "dev",
+			"methods": {
+				"getRate()": {
+					"returns": {
+						"_0": "The current rate."
+					}
+				},
+				"updateRate(int256)": {
+					"params": {
+						"_rate": "New rate to store."
+					}
+				}
+			},
+			"title": "MockDataFeed",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"getRate()": {
+					"notice": "Retrieves the current stored rate."
+				},
+				"updateRate(int256)": {
+					"notice": "Updates the stored rate value."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/oracle/MockDataFeed.sol": "MockDataFeed"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ea104e577e63faea3b69c415637e99e755dcbf64c5833d7140c35a714d6d90c",
+				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
+			]
+		},
+		"contracts/contracts/oracle/MockDataFeed.sol": {
+			"keccak256": "0x6d774cde8ac4b4430a763fac6b983ee84c0a13239efaad7c8e988f11b88ec662",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://292125529e459bd107ac8545a0ab1827245bfe8da746762c85ed00553d7f0b49",
+				"dweb:/ipfs/QmTVwdUJjAwXdNoD7p9svghzdkL4fAenCLQZGFzFt92Qyx"
+			]
+		}
+	},
+	"version": 1
+}

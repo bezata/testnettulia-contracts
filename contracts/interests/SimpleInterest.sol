@@ -3,26 +3,19 @@ pragma solidity ^0.8.20;
 
 import "../interfaces/IInterestModel.sol";
 
-contract SimpleInterest is  IInterestModel {
-
-    constructor() {
-
-    }
+contract SimpleInterest is IInterestModel {
     /**
-     * @dev Calculate simple interest.
+     * @dev Calculate simple interest for a full year upfront, based on an annual interest rate.
      * @param principal The principal amount.
      * @param rate The annual interest rate (in basis points, where 10000 = 100%).
-     * @param time The time in days for which the interest is calculated.
-     * @return The interest amount.
+     * @return The total interest for one year.
      */
     function calculateInterest(
         uint256 principal,
-        uint256 rate,
-        uint256 time
+        uint256 rate
     ) external pure override returns (uint256) {
-        uint256 interest = (principal * rate * time) / (365 days * 10000);
+        // Since it's for a full year, time = 365 days is implicit.
+        uint256 interest = (principal * rate) / 10000;
         return interest;
     }
-
-
 }
