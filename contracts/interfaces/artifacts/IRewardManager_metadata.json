@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.25+commit.b61c2a91"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -60,6 +60,11 @@
 						"internalType": "address",
 						"name": "rewardToken",
 						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isFlashPool",
+						"type": "bool"
 					}
 				],
 				"name": "registerPool",
@@ -87,7 +92,7 @@
 						"pool": "The address of the pool to deregister."
 					}
 				},
-				"registerPool(address,address)": {
+				"registerPool(address,address,bool)": {
 					"params": {
 						"pool": "The address of the pool to register.",
 						"rewardToken": "The ERC20 address for the reward token."
@@ -108,7 +113,7 @@
 				"deregisterPool(address)": {
 					"notice": "Deregisters a pool."
 				},
-				"registerPool(address,address)": {
+				"registerPool(address,address,bool)": {
 					"notice": "Registers a pool to be eligible for rewards, initializing its reward token."
 				}
 			},
@@ -119,7 +124,7 @@
 		"compilationTarget": {
 			"contracts/contracts/interfaces/IRewardManager.sol": "IRewardManager"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -133,11 +138,11 @@
 	},
 	"sources": {
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x38e38bb8c9a1ed7ae4bd8c5b8d92dbba1c4f3083896213ca142af8fe2e131bf4",
+			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://47de1c1a90663a49866c94a5a59e2bd91b8029899e9b549ebce16648229713ca",
-				"dweb:/ipfs/QmS2RrmQuX5rPm1bJP1uhLJREvuU3aDdayLTZjuhchKgf9"
+				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
+				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
 			]
 		}
 	},

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.25+commit.b61c2a91"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -20,7 +20,7 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
 						"name": "pool",
 						"type": "address"
@@ -33,7 +33,7 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
 						"name": "pool",
 						"type": "address"
@@ -72,6 +72,12 @@
 					},
 					{
 						"indexed": false,
+						"internalType": "address",
+						"name": "claimant",
+						"type": "address"
+					},
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "reward",
 						"type": "uint256"
@@ -81,25 +87,6 @@
 				"type": "event"
 			},
 			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": true,
-						"internalType": "address",
-						"name": "pool",
-						"type": "address"
-					},
-					{
-						"indexed": false,
-						"internalType": "address",
-						"name": "rewardToken",
-						"type": "address"
-					}
-				],
-				"name": "RewardTokenSet",
-				"type": "event"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -107,7 +94,7 @@
 						"type": "address"
 					}
 				],
-				"name": "accrueReward",
+				"name": "accrueRewards",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -131,6 +118,11 @@
 						"internalType": "address",
 						"name": "pool",
 						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isLender",
+						"type": "bool"
 					}
 				],
 				"name": "claimRewards",
@@ -162,6 +154,11 @@
 						"internalType": "address",
 						"name": "rewardToken",
 						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isFlashPool",
+						"type": "bool"
 					}
 				],
 				"name": "registerPool",
@@ -198,6 +195,26 @@
 						"internalType": "uint256",
 						"name": "rewardRate",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalInterestRewards",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lenderClaimedRewards",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "borrowerClaimedRewards",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isFlashPool",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -205,28 +222,35 @@
 			}
 		],
 		"devdoc": {
-			"details": "Manages dynamic rewards across all active loan pools, incorporating APY adjustments.",
+			"details": "Manages dynamic rewards across all active loan pools, incorporating APY adjustments. This contract handles the allocation, accrual, and claiming of rewards based on loan activities and states.",
 			"kind": "dev",
 			"methods": {
-				"accrueReward(address)": {
+				"accrueRewards(address)": {
 					"params": {
+						"pool": "The address of the pool for which to accrue rewards."
+					}
+				},
+				"claimRewards(address,bool)": {
+					"params": {
+						"isLender": "True if the lender is claiming, false if the borrower.",
 						"pool": "The address of the TuliaPool."
 					}
 				},
-				"claimRewards(address)": {
+				"constructor": {
 					"params": {
-						"pool": "The TuliaPool instance claiming its rewards."
+						"_apyManager": "The address of the APYManager contract."
 					}
 				},
 				"deregisterPool(address)": {
 					"params": {
-						"pool": "Address of the pool whose vault is to be deregistered."
+						"pool": "The address of the pool to deregister."
 					}
 				},
-				"registerPool(address,address)": {
+				"registerPool(address,address,bool)": {
 					"params": {
-						"pool": "The address of the TuliaPool to register.",
-						"rewardToken": "The ERC20 address for the reward token."
+						"isFlashPool": "Checks the pool type",
+						"pool": "The address of the pool to register.",
+						"rewardToken": "The ERC20 token used as the reward token."
 					}
 				}
 			},
@@ -236,17 +260,17 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"accrueReward(address)": {
-					"notice": "Updates and accrues rewards for a specific pool."
+				"claimRewards(address,bool)": {
+					"notice": "Claims rewards for either the lender or borrower from a specific pool."
 				},
-				"claimRewards(address)": {
-					"notice": "Allows a pool to claim its accrued rewards."
+				"constructor": {
+					"notice": "Initializes the RewardManager contract with a reference to the APYManager for reward calculations."
 				},
 				"deregisterPool(address)": {
-					"notice": "Deregisters a pool when a loan is closed."
+					"notice": "Deregisters a pool, stopping it from accruing further rewards."
 				},
-				"registerPool(address,address)": {
-					"notice": "Registers a pool to be eligible for rewards, initializing its reward token and dynamic APY."
+				"registerPool(address,address,bool)": {
+					"notice": "Registers a pool to start accruing rewards, initializing the reward mechanism."
 				}
 			},
 			"version": 1
@@ -256,7 +280,7 @@
 		"compilationTarget": {
 			"contracts/contracts/lib/RewardManager.sol": "RewardManager"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -275,6 +299,14 @@
 			"urls": [
 				"bzz-raw://548667cfa76683767c2c610b577f6c2f0675d0ce28f53c3f37b969c84a56b205",
 				"dweb:/ipfs/QmUzA1CKC6bDdULuS44wGd7PWBNLiHb6bh7oHwJBDZSLAx"
+			]
+		},
+		"@openzeppelin/contracts/interfaces/IERC5267.sol": {
+			"keccak256": "0x92aa1df62dc3d33f1656d63bede0923e0df0b706ad4137c8b10b0a8fe549fd92",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c5c0f29195ad64cbe556da8e257dac8f05f78c53f90323c0d2accf8e6922d33a",
+				"dweb:/ipfs/QmQ61TED8uaCZwcbh8KkgRSsCav7x7HbcGHwHts3U4DmUP"
 			]
 		},
 		"@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
@@ -307,6 +339,14 @@
 			"urls": [
 				"bzz-raw://0ea104e577e63faea3b69c415637e99e755dcbf64c5833d7140c35a714d6d90c",
 				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
+			]
+		},
+		"@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol": {
+			"keccak256": "0xc858a86a35701004d89022a5e98819aac46ccbdc4072fc9dd43928a676b1a2ee",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://18acebb483c512c0eaafcb437f09c839972c3f0d36f0201ea7baa2926b987dd2",
+				"dweb:/ipfs/Qmd9bf2noaDSYDtf6FMSzKu7LPhuf91jsVNmcoCuTCuGic"
 			]
 		},
 		"@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol": {
@@ -357,6 +397,62 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"@openzeppelin/contracts/utils/Nonces.sol": {
+			"keccak256": "0x0082767004fca261c332e9ad100868327a863a88ef724e844857128845ab350f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://132dce9686a54e025eb5ba5d2e48208f847a1ec3e60a3e527766d7bf53fb7f9e",
+				"dweb:/ipfs/QmXn1a2nUZMpu2z6S88UoTfMVtY2YNh86iGrzJDYmMkKeZ"
+			]
+		},
+		"@openzeppelin/contracts/utils/ShortStrings.sol": {
+			"keccak256": "0x18a7171df639a934592915a520ecb97c5bbc9675a1105607aac8a94e72bf62c6",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7478e1f13da69a2867ccd883001d836b75620362e743f196376d63ed0c422a1c",
+				"dweb:/ipfs/QmWywcQ9TNfwtoqAxbn25d8C5VrV12PrPS9UjtGe6pL2BA"
+			]
+		},
+		"@openzeppelin/contracts/utils/StorageSlot.sol": {
+			"keccak256": "0x32ba59b4b7299237c8ba56319110989d7978a039faf754793064e967e5894418",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1ae50c8b562427df610cc4540c9bf104acca7ef8e2dcae567ae7e52272281e9c",
+				"dweb:/ipfs/QmTHiadFCSJUPpRjNegc5SahmeU8bAoY8i9Aq6tVscbcKR"
+			]
+		},
+		"@openzeppelin/contracts/utils/Strings.sol": {
+			"keccak256": "0x55f102ea785d8399c0e58d1108e2d289506dde18abc6db1b7f68c1f9f9bc5792",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6e52e0a7765c943ef14e5bcf11e46e6139fa044be564881378349236bf2e3453",
+				"dweb:/ipfs/QmZEeeXoFPW47amyP35gfzomF9DixqqTEPwzBakv6cZw6i"
+			]
+		},
+		"@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
+			"keccak256": "0xeed0a08b0b091f528356cbc7245891a4c748682d4f6a18055e8e6ca77d12a6cf",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ba80ba06c8e6be852847e4c5f4492cef801feb6558ae09ed705ff2e04ea8b13c",
+				"dweb:/ipfs/QmXRJDv3xHLVQCVXg1ZvR35QS9sij5y9NDWYzMfUfAdTHF"
+			]
+		},
+		"@openzeppelin/contracts/utils/cryptography/EIP712.sol": {
+			"keccak256": "0x999f705a027ed6dc2d4e0df2cc4a509852c6bfd11de1c8161bf88832d0503fd0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0798def67258d9a3cc20b2b4da7ebf351a5cefe0abfdd665d2d81f8e32f89b21",
+				"dweb:/ipfs/QmPEvJosnPfzHNjKvCv2D3891mA2Ww8eUwkqrxBjuYdHCt"
+			]
+		},
+		"@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol": {
+			"keccak256": "0xba333517a3add42cd35fe877656fc3dfcc9de53baa4f3aabbd6d12a92e4ea435",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2ceacff44c0fdc81e48e0e0b1db87a2076d3c1fb497341de077bf1da9f6b406c",
+				"dweb:/ipfs/QmRUo1muMRAewxrKQ7TkXUtknyRoR57AyEkoPpiuZQ8FzX"
+			]
+		},
 		"@openzeppelin/contracts/utils/math/Math.sol": {
 			"keccak256": "0x005ec64c6313f0555d59e278f9a7a5ab2db5bdc72a027f255a37c327af1ec02d",
 			"license": "MIT",
@@ -365,12 +461,20 @@
 				"dweb:/ipfs/QmQyRpyPRL5SQuAgj6SHmbir3foX65FJjbVTTQrA2EFg6L"
 			]
 		},
-		"contracts/contracts/interfaces/IAdvancedAPYManager.sol": {
-			"keccak256": "0x35708e297d8c6bd33536214e53e938aae51a974e1642939eed2aef0d71607ded",
+		"@openzeppelin/contracts/utils/math/SignedMath.sol": {
+			"keccak256": "0x5f7e4076e175393767754387c962926577f1660dd9b810187b9002407656be72",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8def591a1ed0331f45c810eaa44efd3b4a4aed7f8d66dd6dde60527f06657731",
-				"dweb:/ipfs/QmfJbZEqXBHM2WQmrbWgfvxYuuF8ekiyQAsxBvRZYb4zQu"
+				"bzz-raw://7d533a1c97cd43a57cd9c465f7ee8dd0e39ae93a8fb8ff8e5303a356b081cdcc",
+				"dweb:/ipfs/QmVBEei6aTnvYNZp2CHYVNKyZS4q1KkjANfY39WVXZXVoT"
+			]
+		},
+		"contracts/contracts/interfaces/IAdvancedAPYManager.sol": {
+			"keccak256": "0x71ad97d7631fbf29893f449d8e638311b6528d15ff3bce8dd96295b334dcc1b1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://13f8f15532e860b384f9713ba1e0dd8819e36bf0db58fdad45ab86c3d9c9214d",
+				"dweb:/ipfs/QmfK2SSXhnEGLUpUp8fcszhdRePuC3S2ce8tfE2t4rJS8z"
 			]
 		},
 		"contracts/contracts/interfaces/IAllowanceTransfer.sol": {
@@ -406,19 +510,19 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0xff07442863764f9807b5d2c6dbc0c6c100ba1d5a2b7419d1b22bb8ef8c5f286e",
+			"keccak256": "0x3f77fcf711a180d4188993249f1c5d140cef6157fa7433c87f738114678a25f5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9815811df6f13f7e468af9a4a9e1880fa55a049bcedeea1324fd18f6257d6ff3",
-				"dweb:/ipfs/QmcuEBUzPs5jBHtS8jdMNvTsmcszdwk19PgrAodRroYZVd"
+				"bzz-raw://85a618b42504378a0136025e3526644421383a3aaedd33be4a38cf62e799efc3",
+				"dweb:/ipfs/QmUAc8CUvADYqVMRbjMWzcdXJgyLK76QyVCWe72HJ4MLEV"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x228cd98c71abf0758ff83c256ce36277f86983cf76ebb29191f7099a17068a10",
+			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://789f3001b288d785d7525c992bafd84c7d12160c16d360527693d11175943cfc",
-				"dweb:/ipfs/QmafjfxwyabebSuuajYSJdyoCFZq4sveSG2pUwMnnGgPrQ"
+				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
+				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
 			]
 		},
 		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
@@ -438,19 +542,19 @@
 			]
 		},
 		"contracts/contracts/lib/RewardManager.sol": {
-			"keccak256": "0xa896c900401557421851e3f588d04e71b2c88177e4cdc29a1b28ca7c4b2c23dd",
+			"keccak256": "0x005f9096fd6205ffe2bba03d1d6a891720ff98f473da331a80e4ec6ecf6c1d41",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b1216a1b7654319fac098ca8bcaaa10adfc33ac09bf44c9f0e80871fba0c3f01",
-				"dweb:/ipfs/QmTDoSrNCeY3AHKEPRNi14ug3sqG5b47DjHtADXWxfU1Q3"
+				"bzz-raw://097a0ea911ee0f55d18f5802a276101b4d602bcc4fe4d61d28f8854f6cef1fe9",
+				"dweb:/ipfs/Qmapw3AUbCSxyyb7v91wvkqvnyYBKY9Sa85K8e368cFJcm"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0x5e9ab2402cde477e1a2e6f0ee4b1039cf84a095d5baf0d46ebf067f7108cbee0",
+			"keccak256": "0xd6ccaa8c244c357fc3e1a3c7c9c2d64c1888a2c79e405f7e2184b3ae09974158",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3c5b8a4c91bb4effd3b2b7a1498cc97486c249515ed188df1a75193ed951c129",
-				"dweb:/ipfs/QmWCYcxDY6pQaUPCTHUtaVVxH2WtL5fndB8z6FgC4bdR2T"
+				"bzz-raw://32b93b45203380c764efa680a7e0b0195e5e656dfe62ee06b6c5515e7fb343ad",
+				"dweb:/ipfs/QmWJWQKbWq7s8n1gu8i88n4LLRWhV9CmNETX3hx8kdDYzc"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {
@@ -459,6 +563,14 @@
 			"urls": [
 				"bzz-raw://f74a3d9d8003d54ea7f750e998474a383ebc9747bf7e09456e66faea9e2cab47",
 				"dweb:/ipfs/QmYyAwTVuJbvPWNRED7o5wPcoi48jydvQunsqNw8fSZjEy"
+			]
+		},
+		"contracts/contracts/tokens/MockTokenCreator.sol": {
+			"keccak256": "0xb3e56d84fc2d59ef068140e7aaf462d73248976c640bbd31586726f8654cca62",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c72deca63803eb83e9361c1b35b0263d35b3f56eb3106b6837980ec64afffa62",
+				"dweb:/ipfs/QmWYSPiELgrTbCjcykLSTSfv81T4bMu271eNB84vVnNgML"
 			]
 		}
 	},

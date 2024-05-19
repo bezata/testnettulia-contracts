@@ -9,7 +9,6 @@ import "../interfaces/IPoolOrganizer.sol";
 import "./TuliaVault.sol";
 import "../interfaces/IInterestModel.sol";
 import "../interfaces/IPermit2.sol";
-import "../interfaces/IFeeManager.sol";
 import "../interfaces/IRewardManager.sol";
 import "../interfaces/IVaultManager.sol";
 
@@ -18,7 +17,6 @@ import "../interfaces/IVaultManager.sol";
 contract TuliaPoolFactory {
     IPoolOrganizer public poolOrganizer;
     IPermit2 public permit2;
-    IFeeManager public feeManager;
     IRewardManager public rewardManager;
     IVaultManager public vaultManager;
     mapping(address => TuliaVault) public vaults;
@@ -34,7 +32,6 @@ contract TuliaPoolFactory {
     constructor(
         address _poolOrganizer,
         address _permit2,
-        address _feeManager,
         address _rewardManager,
         address _vaultManager
     ) {
@@ -43,10 +40,6 @@ contract TuliaPoolFactory {
             "PoolOrganizer cannot be the zero address"
         );
         require(_permit2 != address(0), "Permit2 cannot be the zero address");
-        require(
-            _feeManager != address(0),
-            "FeeManager cannot be the zero address"
-        );
         require(
             _rewardManager != address(0),
             "RewardManager cannot be the zero address"
@@ -58,7 +51,6 @@ contract TuliaPoolFactory {
 
         poolOrganizer = IPoolOrganizer(_poolOrganizer);
         permit2 = IPermit2(_permit2);
-        feeManager = IFeeManager(_feeManager);
         rewardManager = IRewardManager(_rewardManager);
         vaultManager = IVaultManager(_vaultManager);
     }
@@ -138,9 +130,9 @@ contract TuliaPoolFactory {
         TuliaFlashPool flashPool = new TuliaFlashPool(
             IERC20(loanTokenAddress),
             permit2,
-            feeManager,
             optionalFlashLoanFeeRate
         );
+        rewardManager.registerPool(address(this),address(loanTokenAddress), true);
         poolOrganizer.registerPool(
             address(flashPool),
             lender,
@@ -154,6 +146,7 @@ contract TuliaPoolFactory {
             0,
             poolType
         );
+        poolOrganizer.grantFactoryAccess(address(flashPool));
         emit PoolCreated(address(flashPool), lender, address(0), poolType);
         return (address(flashPool), address(0));
     }

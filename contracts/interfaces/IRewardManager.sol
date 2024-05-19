@@ -5,7 +5,7 @@ interface IRewardManager {
     /// @notice Registers a pool to be eligible for rewards, initializing its reward token.
     /// @param pool The address of the pool to register.
     /// @param rewardToken The ERC20 address for the reward token.
-    function registerPool(address pool, address rewardToken) external;
+    function registerPool(address pool, address rewardToken, bool isFlashPool) external;
 
     /// @notice Accrues rewards for a specific pool.
     /// @param pool The address of the pool.

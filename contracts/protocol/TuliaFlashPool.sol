@@ -6,46 +6,36 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
 import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
 import "../interfaces/IPermit2.sol";
-import "../interfaces/IFeeManager.sol";  
+import "../interfaces/IRewardManager.sol";
 
 /// @title TuliaFlashPool
 /// @dev Implements flash loan functionalities with integrated fee management.
 /// This contract allows issuing flash loans backed by ERC20 tokens.
 contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
-
-
+      
+    /// @notice RewardManager when lender waiting.  
+    IRewardManager public rewardManager;
     /// @notice ERC20 asset used for flash loans
     IERC20 public asset;
 
     /// @notice Permit2 contract utilized for permissioned token transfers
     IPermit2 public permit2;
 
-    /// @notice Contract managing the fee rates for flash loans
-    IFeeManager public feeManager;
-
     /// @notice Initial fee rate for flash loans issued by this pool
     uint256 public flashLoanFeeRate;
-
-    /// @notice Enum representing the state of the pool
-    enum PoolState { IDLE, AWAITING_BORROWER, ACTIVE }
-    PoolState public state;
 
     /// @notice Constructs the TuliaFlashPool lending pool
     /// @param _asset The ERC20 token asset used for flash loans
     /// @param _permit2 The Permit2 contract utilized for permissioned token transfers
-    /// @param _feeManager The contract managing the fee rates for the flash loans
     /// @param _flashLoanFeeRate The initial fee rate for flash loans issued by this pool
     constructor(
         IERC20 _asset, 
         IPermit2 _permit2, 
-        IFeeManager _feeManager,
         uint256 _flashLoanFeeRate
     ) {
         asset = _asset;
         permit2 = _permit2;
-        feeManager = _feeManager;
         flashLoanFeeRate = _flashLoanFeeRate;
-        state = PoolState.IDLE;
     }
 
     /// @notice Returns the maximum loanable amount of the asset
@@ -62,8 +52,7 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
     function flashFee(address token, uint256 amount) public view override returns (uint256) {
         require(token == address(asset), "Unsupported token");
         uint256 userFee = (amount * flashLoanFeeRate) / 10000;
-        uint256 protocolFee = (amount * feeManager.getflashPoolFeeRate()) / 10000;
-        return userFee + protocolFee;
+        return userFee;
     }
 
     /// @notice Initiates a flash loan transaction
@@ -95,7 +84,6 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
         bytes calldata data
     ) internal returns (bool) {
         require(token == address(asset), "Unsupported token");
-        require(state == PoolState.IDLE, "Flash loan not available");
 
         uint256 totalFee = flashFee(token, amount);
         uint256 balanceBefore = asset.balanceOf(address(this));
@@ -111,8 +99,8 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
         asset.transferFrom(address(receiver), address(this), amountOwed);
 
         require(asset.balanceOf(address(this)) >= balanceBefore, "Flash loan repayment failed");
-        state = PoolState.IDLE;
-
+        rewardManager.deregisterPool(address(this));
         return true;
     }
+
 }

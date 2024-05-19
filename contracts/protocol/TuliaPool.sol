@@ -212,7 +212,8 @@ contract TuliaPool is ReentrancyGuard {
         );
         loanDetails.fundedBlock = block.timestamp;
         state = LoanState.PENDING;
-        rewardManager.registerPool(address(this), address(loanDetails.loanToken));
+        rewardManager.registerPool(address(this), address(loanDetails.loanToken), false);
+        poolOrganizer.markPoolAsFunded(address(this));
         emit LoanFunded(loanDetails.loanAmount);
     }
 

@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../protocol/TuliaPool.sol";
 import "../interfaces/IRewardManager.sol";
 import "../interfaces/IAdvancedAPYManager.sol";
+import "../tokens/MockTokenCreator.sol";
+
 
 /**
  * @title RewardManager
@@ -21,6 +23,7 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
         uint256 totalInterestRewards; // Total interest rewards accrued
         uint256 lenderClaimedRewards; // Amount of rewards already claimed by the lender
         uint256 borrowerClaimedRewards; // Amount of rewards already claimed by the borrower
+        bool isFlashPool;
     }
 
     IAdvancedAPYManager public apyManager;
@@ -43,17 +46,19 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @notice Registers a pool to start accruing rewards, initializing the reward mechanism.
      * @param pool The address of the pool to register.
      * @param rewardToken The ERC20 token used as the reward token.
+     * @param isFlashPool Checks the pool type
      */
-    function registerPool(address pool, address rewardToken) public override {
+    function registerPool(address pool, address rewardToken, bool isFlashPool) public override {
         require(pool != address(0) && rewardToken != address(0), "Invalid addresses");
         rewardDetails[pool] = RewardDetails({
             rewardToken: IERC20(rewardToken),
             rewardsAccrued: 0,
             lastRewardBlock: block.number,
-            rewardRate: 0,  // This will be set during the first accrual
+            rewardRate: 0,  
             totalInterestRewards: 0,
             lenderClaimedRewards: 0,
-            borrowerClaimedRewards: 0
+            borrowerClaimedRewards: 0,
+            isFlashPool: isFlashPool
         });
         emit PoolRegistered(pool);
     }
@@ -69,7 +74,7 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
         address claimant = isLender ? poolContract.getLender() : poolContract.getBorrower();
 
         require(msg.sender == claimant, "Not authorized to claim rewards");
-        uint256 claimableRewards = calculateClaimableRewards(details, isLender);
+        uint256 claimableRewards = calculateClaimableRewards(details, isLender, pool);
         require(claimableRewards > 0, "No rewards to claim");
 
         if (isLender) {
@@ -78,7 +83,7 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
             details.borrowerClaimedRewards += claimableRewards;
         }
 
-        details.rewardToken.transfer(claimant, claimableRewards);
+        MockTokenCreator(address(details.rewardToken)).mint(claimant, claimableRewards);
         emit RewardClaimed(pool, claimant, claimableRewards);
     }
 
@@ -88,14 +93,15 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @param isLender True if calculating for the lender, false for the borrower.
      * @return uint256 The amount of rewards that can be claimed.
      */
-    function calculateClaimableRewards(RewardDetails storage details, bool isLender) internal view returns (uint256) {
-        uint256 totalInterest = details.totalInterestRewards / 2; // Split evenly between borrower and lender
+    function calculateClaimableRewards(RewardDetails storage details, bool isLender, address pool)  internal view returns (uint256) {
+        uint256 totalInterest = details.totalInterestRewards;
+        uint256 nonInterestRewards = details.rewardsAccrued - totalInterest;
         if (isLender) {
-            return totalInterest - details.lenderClaimedRewards;
+            uint256 lenderTotalRewards = TuliaPool(pool).getLoanState() == TuliaPool.LoanState.ACTIVE ? (nonInterestRewards + totalInterest / 2) : nonInterestRewards;
+            return lenderTotalRewards - details.lenderClaimedRewards;
         } else {
-            uint256 nonInterestRewards = details.rewardsAccrued - details.totalInterestRewards;
-            uint256 totalBorrowerRewards = nonInterestRewards + totalInterest;
-            return totalBorrowerRewards - details.borrowerClaimedRewards;
+            uint256 borrowerTotalRewards = nonInterestRewards / 2;
+            return borrowerTotalRewards - details.borrowerClaimedRewards;
         }
     }
     
@@ -104,7 +110,7 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
         RewardDetails storage details = rewardDetails[pool];
         TuliaPool poolContract = TuliaPool(pool);
         uint256 loanAmount = poolContract.getLoanAmount();
-        uint256 loanDuration = poolContract.getRepaymentPeriod();
+        uint256 loanDuration = details.isFlashPool ? 30 days : poolContract.getRepaymentPeriod();
 
         uint256 currentAPY = apyManager.calculateAPY(loanAmount, loanDuration);
         uint256 rewardRate = currentAPY / 10000; // Convert basis points to a percentage for calculations

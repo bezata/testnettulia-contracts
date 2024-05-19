@@ -52,7 +52,7 @@
 			"accrueRewards(address)": "3d39955c",
 			"claimRewards(address,bool)": "491c011a",
 			"deregisterPool(address)": "7e72c7d7",
-			"registerPool(address,address)": "7286e5e5"
+			"registerPool(address,address,bool)": "77ff76e7"
 		}
 	},
 	"abi": [
@@ -111,6 +111,11 @@
 					"internalType": "address",
 					"name": "rewardToken",
 					"type": "address"
+				},
+				{
+					"internalType": "bool",
+					"name": "isFlashPool",
+					"type": "bool"
 				}
 			],
 			"name": "registerPool",

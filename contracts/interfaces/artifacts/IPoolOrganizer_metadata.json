@@ -84,6 +84,11 @@
 								"internalType": "enum IPoolOrganizer.PoolType",
 								"name": "poolType",
 								"type": "uint8"
+							},
+							{
+								"internalType": "bool",
+								"name": "funded",
+								"type": "bool"
 							}
 						],
 						"internalType": "struct IPoolOrganizer.PoolDetails",
@@ -154,6 +159,19 @@
 					}
 				],
 				"name": "grantFactoryAccess",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "markPoolAsFunded",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -260,12 +278,117 @@
 		],
 		"devdoc": {
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"deregisterPool(address)": {
+					"params": {
+						"pool": "The address of the pool to deregister"
+					}
+				},
+				"getPoolDetails(address)": {
+					"params": {
+						"pool": "The address of the pool"
+					},
+					"returns": {
+						"_0": "The details of the specified pool"
+					}
+				},
+				"getPoolsByLender(address)": {
+					"params": {
+						"lender": "The address of the lender"
+					},
+					"returns": {
+						"_0": "An array of pool addresses"
+					}
+				},
+				"getTotalPools()": {
+					"returns": {
+						"_0": "The total number of registered pools"
+					}
+				},
+				"getVaultForPool(address)": {
+					"params": {
+						"pool": "The address of the pool"
+					},
+					"returns": {
+						"_0": "The address of the linked vault"
+					}
+				},
+				"grantFactoryAccess(address)": {
+					"params": {
+						"factoryAddress": "The address of the factory to be granted access"
+					}
+				},
+				"markPoolAsFunded(address)": {
+					"params": {
+						"pool": "The address of the pool to mark as funded"
+					}
+				},
+				"registerManagers(address,address)": {
+					"params": {
+						"_rewardManager": "The address of the RewardManager contract",
+						"_vaultManager": "The address of the VaultManager contract"
+					}
+				},
+				"registerPool(address,address,address,address,address,address,address,uint256,uint256,uint256,uint8)": {
+					"params": {
+						"assetToken": "The token used as collateral",
+						"borrower": "The address of the borrower",
+						"interestRate": "The interest rate of the loan",
+						"lender": "The address of the lender",
+						"loanAmount": "The amount of the loan",
+						"loanToken": "The token to be loaned",
+						"pool": "The address of the pool contract",
+						"poolType": "The type of the pool (standard or flash loan)",
+						"repaymentPeriod": "The loan repayment period",
+						"repaymentToken": "The token used for loan repayment",
+						"vault": "The address of the vault associated with the pool"
+					}
+				},
+				"registerVault(address,address)": {
+					"params": {
+						"pool": "The address of the pool",
+						"vault": "The address of the vault"
+					}
+				}
+			},
+			"title": "IPoolOrganizer interface",
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"deregisterPool(address)": {
+					"notice": "Deregisters a pool"
+				},
+				"getPoolDetails(address)": {
+					"notice": "Retrieves detailed information about a specific pool"
+				},
+				"getPoolsByLender(address)": {
+					"notice": "Retrieves all pool addresses associated with a specific lender"
+				},
+				"getTotalPools()": {
+					"notice": "Gets the total number of registered pools"
+				},
+				"getVaultForPool(address)": {
+					"notice": "Retrieves the associated vault address for a given pool"
+				},
+				"grantFactoryAccess(address)": {
+					"notice": "Grants factory access to manage pools"
+				},
+				"markPoolAsFunded(address)": {
+					"notice": "Marks a pool as funded"
+				},
+				"registerManagers(address,address)": {
+					"notice": "Registers manager contracts for managing vaults and rewards"
+				},
+				"registerPool(address,address,address,address,address,address,address,uint256,uint256,uint256,uint8)": {
+					"notice": "Registers a new pool"
+				},
+				"registerVault(address,address)": {
+					"notice": "Registers a vault for a specific pool"
+				}
+			},
+			"notice": "Interface for the Pool Organizer contract managing pools, vaults, and rewards.",
 			"version": 1
 		}
 	},
@@ -295,11 +418,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0xff07442863764f9807b5d2c6dbc0c6c100ba1d5a2b7419d1b22bb8ef8c5f286e",
+			"keccak256": "0x3f77fcf711a180d4188993249f1c5d140cef6157fa7433c87f738114678a25f5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9815811df6f13f7e468af9a4a9e1880fa55a049bcedeea1324fd18f6257d6ff3",
-				"dweb:/ipfs/QmcuEBUzPs5jBHtS8jdMNvTsmcszdwk19PgrAodRroYZVd"
+				"bzz-raw://85a618b42504378a0136025e3526644421383a3aaedd33be4a38cf62e799efc3",
+				"dweb:/ipfs/QmUAc8CUvADYqVMRbjMWzcdXJgyLK76QyVCWe72HJ4MLEV"
 			]
 		}
 	},

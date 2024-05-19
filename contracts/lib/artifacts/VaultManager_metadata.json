@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.25+commit.b61c2a91"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -301,7 +301,7 @@
 		"compilationTarget": {
 			"contracts/contracts/lib/VaultManager.sol": "VaultManager"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -443,19 +443,19 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0xff07442863764f9807b5d2c6dbc0c6c100ba1d5a2b7419d1b22bb8ef8c5f286e",
+			"keccak256": "0x3f77fcf711a180d4188993249f1c5d140cef6157fa7433c87f738114678a25f5",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9815811df6f13f7e468af9a4a9e1880fa55a049bcedeea1324fd18f6257d6ff3",
-				"dweb:/ipfs/QmcuEBUzPs5jBHtS8jdMNvTsmcszdwk19PgrAodRroYZVd"
+				"bzz-raw://85a618b42504378a0136025e3526644421383a3aaedd33be4a38cf62e799efc3",
+				"dweb:/ipfs/QmUAc8CUvADYqVMRbjMWzcdXJgyLK76QyVCWe72HJ4MLEV"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x38e38bb8c9a1ed7ae4bd8c5b8d92dbba1c4f3083896213ca142af8fe2e131bf4",
+			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://47de1c1a90663a49866c94a5a59e2bd91b8029899e9b549ebce16648229713ca",
-				"dweb:/ipfs/QmS2RrmQuX5rPm1bJP1uhLJREvuU3aDdayLTZjuhchKgf9"
+				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
+				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
 			]
 		},
 		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
@@ -483,11 +483,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xf0c8e5f6aed8422c5ed0821dda222c59efc979410bdaa14bed68b46e35c965fc",
+			"keccak256": "0xd6ccaa8c244c357fc3e1a3c7c9c2d64c1888a2c79e405f7e2184b3ae09974158",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://dd3b5ef1708b11cc4253ed45303e6ff63268a841e912cd63e34e19f0abef708f",
-				"dweb:/ipfs/QmPkazUWwcgeaYboLrFjxMpVZYJVGWT9UKA5wYxLeXoaCD"
+				"bzz-raw://32b93b45203380c764efa680a7e0b0195e5e656dfe62ee06b6c5515e7fb343ad",
+				"dweb:/ipfs/QmWJWQKbWq7s8n1gu8i88n4LLRWhV9CmNETX3hx8kdDYzc"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

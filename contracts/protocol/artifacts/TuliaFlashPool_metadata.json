@@ -18,11 +18,6 @@
 						"type": "address"
 					},
 					{
-						"internalType": "contract IFeeManager",
-						"name": "_feeManager",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "_flashLoanFeeRate",
 						"type": "uint256"
@@ -37,19 +32,6 @@
 				"outputs": [
 					{
 						"internalType": "contract IERC20",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "feeManager",
-				"outputs": [
-					{
-						"internalType": "contract IFeeManager",
 						"name": "",
 						"type": "address"
 					}
@@ -162,12 +144,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "state",
+				"name": "rewardManager",
 				"outputs": [
 					{
-						"internalType": "enum TuliaFlashPool.PoolState",
+						"internalType": "contract IRewardManager",
 						"name": "",
-						"type": "uint8"
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -181,7 +163,6 @@
 				"constructor": {
 					"params": {
 						"_asset": "The ERC20 token asset used for flash loans",
-						"_feeManager": "The contract managing the fee rates for the flash loans",
 						"_flashLoanFeeRate": "The initial fee rate for flash loans issued by this pool",
 						"_permit2": "The Permit2 contract utilized for permissioned token transfers"
 					}
@@ -227,9 +208,6 @@
 				"constructor": {
 					"notice": "Constructs the TuliaFlashPool lending pool"
 				},
-				"feeManager()": {
-					"notice": "Contract managing the fee rates for flash loans"
-				},
 				"flashFee(address,uint256)": {
 					"notice": "Calculates the flash loan fee for a given loan amount"
 				},
@@ -244,6 +222,9 @@
 				},
 				"permit2()": {
 					"notice": "Permit2 contract utilized for permissioned token transfers"
+				},
+				"rewardManager()": {
+					"notice": "RewardManager when lender waiting.  "
 				}
 			},
 			"version": 1
@@ -314,20 +295,20 @@
 				"dweb:/ipfs/QmVgurxo1N31qZqkPBirw9Z7S9tLYmv6jSwQp8R8ur2cBk"
 			]
 		},
-		"contracts/contracts/interfaces/IFeeManager.sol": {
-			"keccak256": "0xd3a019f1b3b4eb295ddc2a6e9b9c2e07a2b8f12139fb3039d9b934b33a22ee23",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://b7530941128b5f64b88d33d9014ee4a59a96e2a888112e7d5daaf9c799cfbdd6",
-				"dweb:/ipfs/Qme7LKGgJVFRquhNFiULT1VP1fBbwkyMUfLymoShm5sV72"
-			]
-		},
 		"contracts/contracts/interfaces/IPermit2.sol": {
 			"keccak256": "0xaa631cc9f53e699301d94233007110a345e6779011def484e8dd97b8fe0af771",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://fc0502cf19c9c18f320a3001201e89e350393b75837f6b7971de18b2de06f30d",
 				"dweb:/ipfs/QmT9SfhdJ7VJNNrf94g4H5usyi7ShqWGx7Cqsz9jZTjX96"
+			]
+		},
+		"contracts/contracts/interfaces/IRewardManager.sol": {
+			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
+				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
 			]
 		},
 		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
@@ -339,11 +320,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0x4759a4686f2867579cde61d612da5504a29ab7ca58d740674d031410174a9d29",
+			"keccak256": "0x23337713df1570853ac2f9b7cfa86213017239477fb770af599f952cb1e71f31",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://36103c38786723edfa7a440a46b911f77ca404f43ba2c950bcb5af97b411ae7c",
-				"dweb:/ipfs/QmY9dALHu91rqmNLvfKjqhRDtfGJX2y5xXn2BgD61yioJ3"
+				"bzz-raw://f75a80f21d0d2c87c04c598f40793cad5c94949f7b628e950ab689ca9e20333a",
+				"dweb:/ipfs/QmUN5ceiHc2eNNkHNJcEp9oS86pbVzZFbCxdkGcGfqBWUv"
 			]
 		}
 	},

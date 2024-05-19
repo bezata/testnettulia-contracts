@@ -55,6 +55,7 @@
 			"getTotalPools()": "d3ffe67a",
 			"getVaultForPool(address)": "7570e389",
 			"grantFactoryAccess(address)": "5d102df7",
+			"markPoolAsFunded(address)": "1f2f2e14",
 			"registerManagers(address,address)": "c489579d",
 			"registerPool(address,address,address,address,address,address,address,uint256,uint256,uint256,uint8)": "43756020",
 			"registerVault(address,address)": "05c4fdf9"
@@ -140,6 +141,11 @@
 							"internalType": "enum IPoolOrganizer.PoolType",
 							"name": "poolType",
 							"type": "uint8"
+						},
+						{
+							"internalType": "bool",
+							"name": "funded",
+							"type": "bool"
 						}
 					],
 					"internalType": "struct IPoolOrganizer.PoolDetails",
@@ -210,6 +216,19 @@
 				}
 			],
 			"name": "grantFactoryAccess",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				}
+			],
+			"name": "markPoolAsFunded",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
