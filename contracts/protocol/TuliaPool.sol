@@ -361,7 +361,6 @@ contract TuliaPool is ReentrancyGuard {
     /// @notice Calculates the total interest for the full term of the loan using an external interest model.
     /// @return The total interest amount.
     function calculateInterest() public view returns (uint256) {
-        // Assuming interest is calculated annually on the full loan amount
         return loanDetails.interestModel.calculateInterest(
             loanDetails.loanAmount,
             loanDetails.interestRate
