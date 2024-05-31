@@ -7,16 +7,18 @@ import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
 import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
 import "../interfaces/IPermit2.sol";
 import "../interfaces/IRewardManager.sol";
+import "../interfaces/IPoolOrganizer.sol";
 
 /// @title TuliaFlashPool
 /// @dev Implements flash loan functionalities with integrated fee management.
 /// This contract allows issuing flash loans backed by ERC20 tokens.
 contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
-      
-    /// @notice RewardManager when lender waiting.  
+    /// @notice RewardManager when lender waiting.
     IRewardManager public rewardManager;
     /// @notice ERC20 asset used for flash loans
     IERC20 public asset;
+
+    IPoolOrganizer public poolOrganizer;
 
     /// @notice Permit2 contract utilized for permissioned token transfers
     IPermit2 public permit2;
@@ -24,13 +26,25 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
     /// @notice Initial fee rate for flash loans issued by this pool
     uint256 public flashLoanFeeRate;
 
+    /// @notice Event emitted when a flash loan is executed
+    /// @param receiver The borrower contract
+    /// @param token The ERC20 token for the loan
+    /// @param amount The loan amount
+    /// @param fee The loan fee
+    event FlashLoanExecuted(
+        address indexed receiver,
+        address indexed token,
+        uint256 amount,
+        uint256 fee
+    );
+
     /// @notice Constructs the TuliaFlashPool lending pool
     /// @param _asset The ERC20 token asset used for flash loans
     /// @param _permit2 The Permit2 contract utilized for permissioned token transfers
     /// @param _flashLoanFeeRate The initial fee rate for flash loans issued by this pool
     constructor(
-        IERC20 _asset, 
-        IPermit2 _permit2, 
+        IERC20 _asset,
+        IPermit2 _permit2,
         uint256 _flashLoanFeeRate
     ) {
         asset = _asset;
@@ -41,7 +55,12 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
     /// @notice Returns the maximum loanable amount of the asset
     /// @param token The ERC20 token address for which the max loan amount is queried
     /// @return The maximum amount available for a flash loan
-    function maxFlashLoan(address token) public view override returns (uint256) {
+    function maxFlashLoan(address token)
+        public
+        view
+        override
+        returns (uint256)
+    {
         return token == address(asset) ? asset.balanceOf(address(this)) : 0;
     }
 
@@ -49,7 +68,12 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
     /// @param token The ERC20 token for which the fee is calculated
     /// @param amount The amount of the loan
     /// @return The calculated fee amount
-    function flashFee(address token, uint256 amount) public view override returns (uint256) {
+    function flashFee(address token, uint256 amount)
+        public
+        view
+        override
+        returns (uint256)
+    {
         require(token == address(asset), "Unsupported token");
         uint256 userFee = (amount * flashLoanFeeRate) / 10000;
         return userFee;
@@ -91,16 +115,21 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
         asset.transfer(address(receiver), amount);
 
         require(
-            receiver.onFlashLoan(msg.sender, token, amount, totalFee, data) == keccak256("ERC3156FlashBorrower.onFlashLoan"),
+            receiver.onFlashLoan(msg.sender, token, amount, totalFee, data) ==
+                keccak256("ERC3156FlashBorrower.onFlashLoan"),
             "Flash loan failed"
         );
 
         uint256 amountOwed = amount + totalFee;
         asset.transferFrom(address(receiver), address(this), amountOwed);
 
-        require(asset.balanceOf(address(this)) >= balanceBefore, "Flash loan repayment failed");
+        require(
+            asset.balanceOf(address(this)) >= balanceBefore,
+            "Flash loan repayment failed"
+        );
         rewardManager.deregisterPool(address(this));
+        poolOrganizer.deregisterPool(address(this));
+        emit FlashLoanExecuted(address(receiver), token, amount, totalFee);
         return true;
     }
-
 }

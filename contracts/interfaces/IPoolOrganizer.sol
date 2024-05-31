@@ -89,5 +89,8 @@ interface IPoolOrganizer {
     /// @notice Marks a pool as funded
     /// @param pool The address of the pool to mark as funded
     function markPoolAsFunded(address pool) external;
+     
+    /// @notice Set borrower for pool
+    function setBorrowerForPool(address pool, address newBorrower) external;
 }
 

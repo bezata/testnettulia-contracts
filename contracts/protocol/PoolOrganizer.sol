@@ -22,6 +22,14 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
     mapping(address => address) public poolVaults;
     mapping(address => address[]) private borrowerPools;
 
+    /**
+     * @dev Emitted when a new pool is registered.
+     * @param pool The address of the pool.
+     * @param lender The address of the lender.
+     * @param borrower The address of the borrower.
+     * @param vault The address of the vault associated with the pool.
+     * @param poolType The type of the pool.
+     */
     event PoolRegistered(
         address indexed pool,
         address indexed lender,
@@ -29,15 +37,50 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         address vault,
         PoolType poolType
     );
+
+    /**
+     * @dev Emitted when a pool is deregistered.
+     * @param pool The address of the deregistered pool.
+     */
     event PoolDeregistered(address indexed pool);
+
+    /**
+     * @dev Emitted when managers are registered.
+     * @param vaultManager The address of the vault manager.
+     * @param rewardManager The address of the reward manager.
+     */
     event ManagerRegistered(address vaultManager, address rewardManager);
+
+    /**
+     * @dev Emitted when a vault is registered for a pool.
+     * @param pool The address of the pool.
+     * @param vault The address of the registered vault.
+     */
     event VaultRegistered(address indexed pool, address indexed vault);
 
+    /**
+     * @dev Constructor that grants the deployer the admin and pool manager roles.
+     */
     constructor() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(POOL_MANAGER_ROLE, msg.sender);
     }
 
+    /**
+     * @notice Registers a new pool with the specified details.
+     * @dev Registers a pool and emits a `PoolRegistered` event.
+     * @param pool The address of the pool.
+     * @param lender The address of the lender.
+     * @param borrower The address of the borrower.
+     * @param vault The address of the vault.
+     * @param loanToken The ERC20 token for the loan.
+     * @param assetToken The ERC20 token for the asset.
+     * @param repaymentToken The ERC20 token for the repayment.
+     * @param loanAmount The amount of the loan.
+     * @param interestRate The interest rate for the loan.
+     * @param repaymentPeriod The repayment period for the loan.
+     * @param poolType The type of the pool.
+     */
     function registerPool(
         address pool,
         address lender,
@@ -50,9 +93,12 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         uint256 interestRate,
         uint256 repaymentPeriod,
         PoolType poolType
-    ) external onlyRole(POOL_MANAGER_ROLE) {
+    ) external {
         require(pool != address(0), "Pool address cannot be zero");
-        require(poolDetails[pool].lender == address(0), "Pool already registered");
+        require(
+            poolDetails[pool].lender == address(0),
+            "Pool already registered"
+        );
 
         poolDetails[pool] = IPoolOrganizer.PoolDetails({
             lender: lender,
@@ -73,14 +119,33 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         emit PoolRegistered(pool, lender, borrower, vault, poolType);
     }
 
-    function markPoolAsFunded(address pool) external onlyRole(POOL_MANAGER_ROLE) {
+    /**
+     * @notice Marks a pool as funded.
+     * @dev Marks the specified pool as funded.
+     * @param pool The address of the pool to mark as funded.
+     */
+    function markPoolAsFunded(address pool)
+        external
+    {
         require(poolDetails[pool].lender != address(0), "Pool not registered");
         poolDetails[pool].funded = true;
     }
 
-    function getAllLenderPoolDetails(address lender) external view returns (IPoolOrganizer.PoolDetails[] memory) {
+    /**
+     * @notice Gets the details of all pools associated with a lender.
+     * @param lender The address of the lender.
+     * @return An array of pool details.
+     */
+    function getAllLenderPoolDetails(address lender)
+        external
+        view
+        returns (IPoolOrganizer.PoolDetails[] memory)
+    {
         address[] memory lenderPoolsArray = lenderPools[lender];
-        IPoolOrganizer.PoolDetails[] memory details = new IPoolOrganizer.PoolDetails[](lenderPoolsArray.length);
+        IPoolOrganizer.PoolDetails[]
+            memory details = new IPoolOrganizer.PoolDetails[](
+                lenderPoolsArray.length
+            );
 
         for (uint256 i = 0; i < lenderPoolsArray.length; i++) {
             details[i] = poolDetails[lenderPoolsArray[i]];
@@ -88,7 +153,25 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         return details;
     }
 
-    function deregisterPool(address pool) external onlyRole(POOL_MANAGER_ROLE) {
+    /**
+     * @notice Gets all pools associated with a borrower.
+     * @param borrower The address of the borrower.
+     * @return An array of pool addresses.
+     */
+    function getPoolsByBorrower(address borrower)
+        external
+        view
+        returns (address[] memory)
+    {
+        return borrowerPools[borrower];
+    }
+
+    /**
+     * @notice Deregisters a pool.
+     * @dev Deregisters the specified pool and emits a `PoolDeregistered` event.
+     * @param pool The address of the pool to deregister.
+     */
+    function deregisterPool(address pool) external {
         require(poolDetails[pool].lender != address(0), "Pool not registered");
 
         address lender = poolDetails[pool].lender;
@@ -99,9 +182,19 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         emit PoolDeregistered(pool);
     }
 
-    function setBorrowerForPool(address pool, address newBorrower) external onlyRole(POOL_MANAGER_ROLE) {
+    /**
+     * @notice Sets the borrower for a specified pool.
+     * @param pool The address of the pool.
+     * @param newBorrower The address of the new borrower.
+     */
+    function setBorrowerForPool(address pool, address newBorrower)
+        external
+    {
         require(poolDetails[pool].lender != address(0), "Pool not registered");
-        require(newBorrower != address(0), "Borrower cannot be the zero address");
+        require(
+            newBorrower != address(0),
+            "Borrower cannot be the zero address"
+        );
 
         address currentBorrower = poolDetails[pool].borrower;
         if (currentBorrower != newBorrower) {
@@ -113,28 +206,24 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         }
     }
 
-    function _removePoolFromBorrowerArray(address borrower, address pool) private {
-        uint256 index = findIndexInArray(borrowerPools[borrower], pool);
-        if (index < borrowerPools[borrower].length) {
-            uint256 lastIndex = borrowerPools[borrower].length - 1;
-            borrowerPools[borrower][index] = borrowerPools[borrower][lastIndex];
-            borrowerPools[borrower].pop();
-        }
-    }
-
-    function getAllBorrowerPoolDetails(address borrower) external view returns (IPoolOrganizer.PoolDetails[] memory) {
-        address[] memory borrowerPoolsArray = borrowerPools[borrower];
-        IPoolOrganizer.PoolDetails[] memory details = new IPoolOrganizer.PoolDetails[](borrowerPoolsArray.length);
-
-        for (uint256 i = 0; i < borrowerPoolsArray.length; i++) {
-            details[i] = poolDetails[borrowerPoolsArray[i]];
-        }
-        return details;
-    }
-
-    function registerManagers(address _vaultManager, address _rewardManager) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_vaultManager != address(0), "VaultManager cannot be zero address");
-        require(_rewardManager != address(0), "RewardManager cannot be zero address");
+    /**
+     * @notice Registers the vault and reward managers.
+     * @dev Registers the specified managers and emits a `ManagerRegistered` event.
+     * @param _vaultManager The address of the vault manager.
+     * @param _rewardManager The address of the reward manager.
+     */
+    function registerManagers(address _vaultManager, address _rewardManager)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        require(
+            _vaultManager != address(0),
+            "VaultManager cannot be zero address"
+        );
+        require(
+            _rewardManager != address(0),
+            "RewardManager cannot be zero address"
+        );
 
         vaultManager = IVaultManager(_vaultManager);
         rewardManager = IRewardManager(_rewardManager);
@@ -142,35 +231,110 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         emit ManagerRegistered(_vaultManager, _rewardManager);
     }
 
+    /**
+     * @notice Gets the addresses of the registered managers.
+     * @return The addresses of the vault and reward managers.
+     */
     function getManagers() external view returns (address, address) {
         return (address(vaultManager), address(rewardManager));
     }
 
+    /**
+     * @notice Gets the total number of registered pools.
+     * @return The total number of pools.
+     */
     function getTotalPools() external view returns (uint256) {
         return pools.length;
     }
 
-    function getPoolsByLender(address lender) external view returns (address[] memory) {
+    /**
+     * @notice Gets all pools associated with a lender.
+     * @param lender The address of the lender.
+     * @return An array of pool addresses.
+     */
+    function getPoolsByLender(address lender)
+        external
+        view
+        returns (address[] memory)
+    {
         return lenderPools[lender];
     }
 
-    function getPoolDetails(address pool) external view returns (IPoolOrganizer.PoolDetails memory) {
+    /**
+     * @notice Gets the details of a specified pool.
+     * @param pool The address of the pool.
+     * @return The details of the pool.
+     */
+    function getPoolDetails(address pool)
+        external
+        view
+        returns (IPoolOrganizer.PoolDetails memory)
+    {
         require(poolDetails[pool].lender != address(0), "Pool not registered");
         return poolDetails[pool];
     }
 
+    /**
+     * @notice Gets the vault address associated with a pool.
+     * @param pool The address of the pool.
+     * @return The address of the vault.
+     */
     function getVaultForPool(address pool) external view returns (address) {
-        require(poolVaults[pool] != address(0), "Pool not registered or has no vault");
+        require(
+            poolVaults[pool] != address(0),
+            "Pool not registered or has no vault"
+        );
         return poolVaults[pool];
     }
 
+    /**
+     * @notice Gets all registered pool addresses.
+     * @return An array of pool addresses.
+     */
+    function getAllPoolAddresses() external view returns (address[] memory) {
+        return pools;
+    }
+
+    /**
+     * @notice Grants factory access to the specified address.
+     * @param factoryAddress The address of the factory.
+     */
     function grantFactoryAccess(address factoryAddress) external {
-        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not an admin");
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "Caller is not an admin"
+        );
         grantRole(POOL_MANAGER_ROLE, factoryAddress);
         grantRole(DEFAULT_ADMIN_ROLE, factoryAddress);
     }
 
+    /**
+     * @notice Registers a vault for a specified pool.
+     * @dev Registers the specified vault for the pool and emits a `VaultRegistered` event.
+     * @param pool The address of the pool.
+     * @param vault The address of the vault.
+     */
+    function registerVault(address pool, address vault)
+        external
+    {
+        require(pool != address(0) && vault != address(0), "Invalid addresses");
+        require(poolDetails[pool].lender != address(0), "Pool not registered");
+        require(
+            poolVaults[pool] == address(0),
+            "Vault already registered for this pool"
+        );
+
+        poolVaults[pool] = vault;
+        emit VaultRegistered(pool, vault);
+    }
+
     // Private helper functions
+
+    /**
+     * @dev Removes a pool from the lender's array of pools.
+     * @param lender The address of the lender.
+     * @param pool The address of the pool.
+     */
     function _removePoolFromLenderArray(address lender, address pool) private {
         uint256 index = findIndexInArray(lenderPools[lender], pool);
         uint256 lastIndex = lenderPools[lender].length - 1;
@@ -178,6 +342,10 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         lenderPools[lender].pop();
     }
 
+    /**
+     * @dev Removes a pool from the main array of pools.
+     * @param pool The address of the pool.
+     */
     function _removePoolFromMainArray(address pool) private {
         uint256 index = findIndexInArray(pools, pool);
         uint256 lastIndex = pools.length - 1;
@@ -185,20 +353,36 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         pools.pop();
     }
 
-    function findIndexInArray(address[] storage array, address target) private view returns (uint256) {
+    /**
+     * @dev Finds the index of a target address in an array.
+     * @param array The array to search.
+     * @param target The target address.
+     * @return The index of the target address.
+     */
+    function findIndexInArray(address[] storage array, address target)
+        private
+        view
+        returns (uint256)
+    {
         for (uint256 i = 0; i < array.length; i++) {
             if (array[i] == target) return i;
         }
         return type(uint256).max; // Indicates not found
     }
 
-    function registerVault(address pool, address vault) external onlyRole(POOL_MANAGER_ROLE) {
-        require(pool != address(0) && vault != address(0), "Invalid addresses");
-        require(poolDetails[pool].lender != address(0), "Pool not registered");
-        require(poolVaults[pool] == address(0), "Vault already registered for this pool");
-
-        poolVaults[pool] = vault;
-        emit VaultRegistered(pool, vault);
-   
+    /**
+     * @dev Removes a pool from the borrower's array of pools.
+     * @param borrower The address of the borrower.
+     * @param pool The address of the pool.
+     */
+    function _removePoolFromBorrowerArray(address borrower, address pool)
+        private
+    {
+        uint256 index = findIndexInArray(borrowerPools[borrower], pool);
+        if (index < borrowerPools[borrower].length) {
+            uint256 lastIndex = borrowerPools[borrower].length - 1;
+            borrowerPools[borrower][index] = borrowerPools[borrower][lastIndex];
+            borrowerPools[borrower].pop();
+        }
     }
 }

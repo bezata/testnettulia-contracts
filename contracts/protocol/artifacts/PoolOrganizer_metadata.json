@@ -397,6 +397,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "getAllPoolAddresses",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getManagers",
 				"outputs": [
 					{
@@ -489,6 +502,25 @@
 						"internalType": "struct IPoolOrganizer.PoolDetails",
 						"name": "",
 						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "borrower",
+						"type": "address"
+					}
+				],
+				"name": "getPoolsByBorrower",
+				"outputs": [
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
 					}
 				],
 				"stateMutability": "view",
@@ -1002,6 +1034,9 @@
 				},
 				"registerVault(address,address)": {
 					"notice": "Registers a vault for a specific pool"
+				},
+				"setBorrowerForPool(address,address)": {
+					"notice": "Set borrower for pool"
 				}
 			},
 			"version": 1
@@ -1073,11 +1108,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0x3f77fcf711a180d4188993249f1c5d140cef6157fa7433c87f738114678a25f5",
+			"keccak256": "0xe6cb532077a4d0f82d154a08e30ca766643c902e959e4519e1c78bac567a02d0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://85a618b42504378a0136025e3526644421383a3aaedd33be4a38cf62e799efc3",
-				"dweb:/ipfs/QmUAc8CUvADYqVMRbjMWzcdXJgyLK76QyVCWe72HJ4MLEV"
+				"bzz-raw://3277ee67833de684424740208b2a6c823ebd5a2deff2d1c404c60903bf27432e",
+				"dweb:/ipfs/QmZaQyFB5veNsF4hAoRW1xLWYDHZyV6SeZuoxCRozXAMWx"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
@@ -1097,11 +1132,11 @@
 			]
 		},
 		"contracts/contracts/protocol/PoolOrganizer.sol": {
-			"keccak256": "0x5f94d2a87ca2e73e2ee927a2502566fe9b6ee0f389ec3f25faeaf72ebc8580fd",
+			"keccak256": "0xc380b14731fcdeeb6d77a0118764aa7a4f57c69367d69f6aec443896d4fb145c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e35edfa7662da87eb6a1ac601755163d1ae658f5febe77cf66828f7b6287f766",
-				"dweb:/ipfs/Qmcw11bYWkQ2xLqjzBT6JFtvj4yXAkuDKDB5emP2PcTasq"
+				"bzz-raw://af7c6404fd3adbccd23de139aa1329d3757f81c64743fb862b5532da6701e9f5",
+				"dweb:/ipfs/QmPw3dHEPJVcybb59rXMEEwa41gYmkag4Aa5iggwmkRnh5"
 			]
 		}
 	},

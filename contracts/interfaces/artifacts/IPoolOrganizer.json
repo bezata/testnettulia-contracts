@@ -58,7 +58,8 @@
 			"markPoolAsFunded(address)": "1f2f2e14",
 			"registerManagers(address,address)": "c489579d",
 			"registerPool(address,address,address,address,address,address,address,uint256,uint256,uint256,uint8)": "43756020",
-			"registerVault(address,address)": "05c4fdf9"
+			"registerVault(address,address)": "05c4fdf9",
+			"setBorrowerForPool(address,address)": "37e238c5"
 		}
 	},
 	"abi": [
@@ -328,6 +329,24 @@
 				}
 			],
 			"name": "registerVault",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "newBorrower",
+					"type": "address"
+				}
+			],
+			"name": "setBorrowerForPool",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

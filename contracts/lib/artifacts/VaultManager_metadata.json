@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.25+commit.b61c2a91"
 	},
 	"language": "Solidity",
 	"output": {
@@ -301,7 +301,7 @@
 		"compilationTarget": {
 			"contracts/contracts/lib/VaultManager.sol": "VaultManager"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -443,11 +443,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0x3f77fcf711a180d4188993249f1c5d140cef6157fa7433c87f738114678a25f5",
+			"keccak256": "0xe6cb532077a4d0f82d154a08e30ca766643c902e959e4519e1c78bac567a02d0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://85a618b42504378a0136025e3526644421383a3aaedd33be4a38cf62e799efc3",
-				"dweb:/ipfs/QmUAc8CUvADYqVMRbjMWzcdXJgyLK76QyVCWe72HJ4MLEV"
+				"bzz-raw://3277ee67833de684424740208b2a6c823ebd5a2deff2d1c404c60903bf27432e",
+				"dweb:/ipfs/QmZaQyFB5veNsF4hAoRW1xLWYDHZyV6SeZuoxCRozXAMWx"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
@@ -483,11 +483,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xd6ccaa8c244c357fc3e1a3c7c9c2d64c1888a2c79e405f7e2184b3ae09974158",
+			"keccak256": "0x8eb59960b9044bf2182147edaf218fed84c569042e3e959bad85060332f1b54a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://32b93b45203380c764efa680a7e0b0195e5e656dfe62ee06b6c5515e7fb343ad",
-				"dweb:/ipfs/QmWJWQKbWq7s8n1gu8i88n4LLRWhV9CmNETX3hx8kdDYzc"
+				"bzz-raw://39ad1cf39b576a000e2b1d2b2e9f0cb36f8bde8f94e84409cebc16c576e63f85",
+				"dweb:/ipfs/QmXVQ2YbRdqwshCtPtEEPLPeBQVt8aR5wYABmpukCnhwEb"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

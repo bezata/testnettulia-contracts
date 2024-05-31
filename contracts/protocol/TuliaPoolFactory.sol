@@ -21,14 +21,28 @@ contract TuliaPoolFactory {
     IVaultManager public vaultManager;
     mapping(address => TuliaVault) public vaults;
 
+    /// @notice Emitted when a new pool is created.
+    /// @param pool The address of the newly created pool.
+    /// @param lender The address of the lender initiating the pool.
+    /// @param vault The address of the vault associated with the pool.
+    /// @param poolType The type of the pool (standard or flash loan).
     event PoolCreated(
         address indexed pool,
         address indexed lender,
         address indexed vault,
         IPoolOrganizer.PoolType poolType
     );
+
+    /// @notice Emitted when a new vault is created.
+    /// @param vault The address of the newly created vault.
+    /// @param assetToken The address of the asset token used as collateral.
     event VaultCreated(address indexed vault, address assetToken);
 
+    /// @notice Constructs the TuliaPoolFactory contract.
+    /// @param _poolOrganizer The address of the Pool Organizer contract.
+    /// @param _permit2 The address of the Permit2 contract.
+    /// @param _rewardManager The address of the Reward Manager contract.
+    /// @param _vaultManager The address of the Vault Manager contract.
     constructor(
         address _poolOrganizer,
         address _permit2,
@@ -68,89 +82,89 @@ contract TuliaPoolFactory {
     /// @param optionalFlashLoanFeeRate Fee rate for flash loans if applicable.
     /// @return poolAddress Address of the newly created pool.
     /// @return vaultAddress Address of the vault associated with the pool, if applicable.
-   function createTuliaPool(
-    address lender,
-    IERC20 loanTokenAddress,
-    IERC20 assetToken,
-    IERC20 repaymentTokenAddress,
-    uint256 loanAmount,
-    uint256 interestRate,
-    uint256 repaymentPeriod,
-    IInterestModel interestModel,
-    IPoolOrganizer.PoolType poolType,
-    uint256 optionalFlashLoanFeeRate
-) external returns (address poolAddress, address vaultAddress) {
-    require(lender != address(0) && address(loanTokenAddress) != address(0), "Invalid addresses");
+    function createTuliaPool(
+        address lender,
+        IERC20 loanTokenAddress,
+        IERC20 assetToken,
+        IERC20 repaymentTokenAddress,
+        uint256 loanAmount,
+        uint256 interestRate,
+        uint256 repaymentPeriod,
+        IInterestModel interestModel,
+        IPoolOrganizer.PoolType poolType,
+        uint256 optionalFlashLoanFeeRate
+    ) external returns (address poolAddress, address vaultAddress) {
+        require(lender != address(0) && address(loanTokenAddress) != address(0), "Invalid addresses");
 
-    // Prepare data for potential vault creation
-    string memory symbol = string(abi.encodePacked("TV", IERC20Metadata(address(assetToken)).symbol()));
-    string memory name = string(abi.encodePacked("TuliaVault", IERC20Metadata(address(assetToken)).symbol()));
-    TuliaVault vault;
-    bool isStandardPool = (poolType == IPoolOrganizer.PoolType.STANDARD);
+        // Prepare data for potential vault creation
+        string memory symbol = string(abi.encodePacked("TV", IERC20Metadata(address(assetToken)).symbol()));
+        string memory name = string(abi.encodePacked("TuliaVault", IERC20Metadata(address(assetToken)).symbol()));
+        TuliaVault vault;
+        bool isStandardPool = (poolType == IPoolOrganizer.PoolType.STANDARD);
 
-    // Create vault if pool type is STANDARD
-    if (isStandardPool) {
-        vault = new TuliaVault(IERC20(assetToken), name, symbol);
-        emit VaultCreated(address(vault), address(assetToken));
+        // Create vault if pool type is STANDARD
+        if (isStandardPool) {
+            vault = new TuliaVault(IERC20(assetToken), name, symbol);
+            emit VaultCreated(address(vault), address(assetToken));
+        }
+
+        // Handle different pool types
+        if (isStandardPool) {
+            TuliaPool pool = new TuliaPool(
+                lender,
+                loanTokenAddress,
+                repaymentTokenAddress,
+                address(vault),
+                loanAmount,
+                interestRate,
+                repaymentPeriod,
+                interestModel,
+                permit2,
+                address(poolOrganizer),
+                address(vaultManager),
+                address(rewardManager)
+            );
+            poolOrganizer.registerPool(
+                address(pool),
+                lender,
+                address(0), 
+                address(vault),
+                loanTokenAddress,
+                assetToken,
+                repaymentTokenAddress,
+                loanAmount,
+                interestRate,
+                repaymentPeriod,
+                poolType
+            );
+            poolOrganizer.grantFactoryAccess(address(pool));
+            emit PoolCreated(address(pool), lender, address(vault), poolType);
+            return (address(pool), address(vault));
+        } else if (poolType == IPoolOrganizer.PoolType.FLASH_LOAN) {
+            TuliaFlashPool flashPool = new TuliaFlashPool(
+                IERC20(loanTokenAddress),
+                permit2,
+                optionalFlashLoanFeeRate
+            );
+            rewardManager.registerPool(address(this), address(loanTokenAddress), true);
+            poolOrganizer.registerPool(
+                address(flashPool),
+                lender,
+                address(0),
+                address(0), 
+                loanTokenAddress,
+                assetToken,
+                repaymentTokenAddress,
+                loanAmount,
+                interestRate,
+                0,
+                poolType
+            );
+            poolOrganizer.grantFactoryAccess(address(flashPool));
+            emit PoolCreated(address(flashPool), lender, address(0), poolType);
+            return (address(flashPool), address(0));
+        }
+
+        revert("Unsupported pool type");
     }
-
-    // Handle different pool types
-    if (isStandardPool) {
-        TuliaPool pool = new TuliaPool(
-            lender,
-            loanTokenAddress,
-            repaymentTokenAddress,
-            address(vault),
-            loanAmount,
-            interestRate,
-            repaymentPeriod,
-            interestModel,
-            permit2,
-            address(poolOrganizer),
-            address(vaultManager),
-            address(rewardManager)
-        );
-        poolOrganizer.registerPool(
-            address(pool),
-            lender,
-            address(0), 
-            address(vault),
-            loanTokenAddress,
-            assetToken,
-            repaymentTokenAddress,
-            loanAmount,
-            interestRate,
-            repaymentPeriod,
-            poolType
-        );
-        poolOrganizer.grantFactoryAccess(address(pool));
-        emit PoolCreated(address(pool), lender, address(vault), poolType);
-        return (address(pool), address(vault));
-    } else if (poolType == IPoolOrganizer.PoolType.FLASH_LOAN) {
-        TuliaFlashPool flashPool = new TuliaFlashPool(
-            IERC20(loanTokenAddress),
-            permit2,
-            optionalFlashLoanFeeRate
-        );
-        rewardManager.registerPool(address(this),address(loanTokenAddress), true);
-        poolOrganizer.registerPool(
-            address(flashPool),
-            lender,
-            address(0),
-            address(0), 
-            loanTokenAddress,
-            assetToken,
-            repaymentTokenAddress,
-            loanAmount,
-            interestRate,
-            0,
-            poolType
-        );
-        poolOrganizer.grantFactoryAccess(address(flashPool));
-        emit PoolCreated(address(flashPool), lender, address(0), poolType);
-        return (address(flashPool), address(0));
-    }
-
-    revert("Unsupported pool type");
-}
 }

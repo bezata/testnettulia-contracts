@@ -420,11 +420,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0x3f77fcf711a180d4188993249f1c5d140cef6157fa7433c87f738114678a25f5",
+			"keccak256": "0xe6cb532077a4d0f82d154a08e30ca766643c902e959e4519e1c78bac567a02d0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://85a618b42504378a0136025e3526644421383a3aaedd33be4a38cf62e799efc3",
-				"dweb:/ipfs/QmUAc8CUvADYqVMRbjMWzcdXJgyLK76QyVCWe72HJ4MLEV"
+				"bzz-raw://3277ee67833de684424740208b2a6c823ebd5a2deff2d1c404c60903bf27432e",
+				"dweb:/ipfs/QmZaQyFB5veNsF4hAoRW1xLWYDHZyV6SeZuoxCRozXAMWx"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
@@ -452,27 +452,27 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0x23337713df1570853ac2f9b7cfa86213017239477fb770af599f952cb1e71f31",
+			"keccak256": "0xafa5fdcd6e1471283a17724fb71510176cd2c239a9713c3d71d26e6d1b6fee35",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f75a80f21d0d2c87c04c598f40793cad5c94949f7b628e950ab689ca9e20333a",
-				"dweb:/ipfs/QmUN5ceiHc2eNNkHNJcEp9oS86pbVzZFbCxdkGcGfqBWUv"
+				"bzz-raw://627b4b7505ccabdd4247414bd1c3f704e3e7da11fffeafccf1095ddfe4a3927b",
+				"dweb:/ipfs/QmWzVQ1grrceU5YcSfW7w8RZtPqLNVrB26jhHmUQN8SYd1"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xd6ccaa8c244c357fc3e1a3c7c9c2d64c1888a2c79e405f7e2184b3ae09974158",
+			"keccak256": "0xc597a4fffb91b136c105b45ccc8f79c2b5cc947a04ee8898dd5269b916c7bb7f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://32b93b45203380c764efa680a7e0b0195e5e656dfe62ee06b6c5515e7fb343ad",
-				"dweb:/ipfs/QmWJWQKbWq7s8n1gu8i88n4LLRWhV9CmNETX3hx8kdDYzc"
+				"bzz-raw://ec8ea619812968f4c3457fc2693b1f44130a0ddf3e3bac9949ce0b2210d4ce96",
+				"dweb:/ipfs/QmTMAbq9K1DHHHDiE4zkeCVrVne7wctzaka3zwp65TUprX"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPoolFactory.sol": {
-			"keccak256": "0x9e498ae33fe352a5ab93ce3e4884a39c8ff81fcfd0c076616074527951b519e8",
+			"keccak256": "0x8052ccb3e2f63633ff6b64f8305cf95271fe3fd5dfe0454ac579d934ebacca1b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://13789dd788690b3dc0a2ae42d544e63b2969e0dd14e56b8a88caa7a6fb15d8f5",
-				"dweb:/ipfs/QmdsDNJ4esRU6Cq1imKEaSfNoFHQnYzYbBAVhvCSKWuryt"
+				"bzz-raw://378f55d746c96b6ac2aa0878b031c44fab3245222324e67abde991492f3a6018",
+				"dweb:/ipfs/Qma8748bvz9RpUPuG1cmhuiAyBpJ4tbyWKY4SmVj7ZRtJn"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {
