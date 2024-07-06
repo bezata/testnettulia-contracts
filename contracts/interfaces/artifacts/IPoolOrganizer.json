@@ -50,6 +50,7 @@
 		"gasEstimates": null,
 		"methodIdentifiers": {
 			"deregisterPool(address)": "7e72c7d7",
+			"getLoanState(address)": "c81c3bef",
 			"getPoolDetails(address)": "d3e90fa0",
 			"getPoolsByLender(address)": "24a44efb",
 			"getTotalPools()": "d3ffe67a",
@@ -59,7 +60,8 @@
 			"registerManagers(address,address)": "c489579d",
 			"registerPool(address,address,address,address,address,address,address,uint256,uint256,uint256,uint8)": "43756020",
 			"registerVault(address,address)": "05c4fdf9",
-			"setBorrowerForPool(address,address)": "37e238c5"
+			"setBorrowerForPool(address,address)": "37e238c5",
+			"updateLoanState(address,uint8)": "a956239b"
 		}
 	},
 	"abi": [
@@ -74,6 +76,25 @@
 			"name": "deregisterPool",
 			"outputs": [],
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				}
+			],
+			"name": "getLoanState",
+			"outputs": [
+				{
+					"internalType": "enum IPoolOrganizer.LoanState",
+					"name": "",
+					"type": "uint8"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -147,6 +168,16 @@
 							"internalType": "bool",
 							"name": "funded",
 							"type": "bool"
+						},
+						{
+							"internalType": "enum IPoolOrganizer.LoanState",
+							"name": "loanState",
+							"type": "uint8"
+						},
+						{
+							"internalType": "address",
+							"name": "pool",
+							"type": "address"
 						}
 					],
 					"internalType": "struct IPoolOrganizer.PoolDetails",
@@ -347,6 +378,24 @@
 				}
 			],
 			"name": "setBorrowerForPool",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
+					"type": "address"
+				},
+				{
+					"internalType": "enum IPoolOrganizer.LoanState",
+					"name": "newState",
+					"type": "uint8"
+				}
+			],
+			"name": "updateLoanState",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"

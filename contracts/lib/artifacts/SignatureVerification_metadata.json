@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.25+commit.b61c2a91"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -63,7 +63,7 @@
 		"compilationTarget": {
 			"contracts/contracts/lib/SignatureVerification.sol": "SignatureVerification"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -72,8 +72,7 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": [],
-		"viaIR": true
+		"remappings": []
 	},
 	"sources": {
 		"contracts/contracts/interfaces/IERC1271.sol": {

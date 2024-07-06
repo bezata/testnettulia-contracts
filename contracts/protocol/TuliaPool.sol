@@ -2,22 +2,25 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./TuliaVault.sol";
 import "../interfaces/IInterestModel.sol";
-import "../interfaces/IPermit2.sol";
 import "../interfaces/IPoolOrganizer.sol";
 import "../interfaces/IVaultManager.sol";
 import "../interfaces/IRewardManager.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /// @title TuliaPool
 /// @notice Manages the lifecycle of loans including creation, funding, repayment, and defaults.
 /// @dev This contract handles all operations regarding lending processes with integrated safety checks and state management.
-contract TuliaPool is ReentrancyGuard {
-    IPermit2 public permit2;
+contract TuliaPool is ReentrancyGuard, AccessControl {
     IPoolOrganizer public poolOrganizer;
     IVaultManager public vaultManager;
     IRewardManager public rewardManager;
+
+    // Role definitions
+    bytes32 public constant LENDER_ROLE = keccak256("LENDER_ROLE");
+    bytes32 public constant BORROWER_ROLE = keccak256("BORROWER_ROLE");
 
     /// @dev Stores all relevant details for a loan.
     struct LoanDetails {
@@ -93,7 +96,6 @@ contract TuliaPool is ReentrancyGuard {
     /// @param interestRate Interest rate of the loan.
     /// @param repaymentPeriodInDays Duration over which the loan must be repaid.
     /// @param interestModel Contract for calculating interest.
-    /// @param _permit2 Permit2 contract for ERC20 token operations.
     /// @param poolOrganizerAddress Pool Organizer contract for managing pool registrations.
     /// @param vaultManagerAddress Vault Manager contract address.
     /// @param rewardManagerAddress Reward Manager contract address.
@@ -106,7 +108,6 @@ contract TuliaPool is ReentrancyGuard {
         uint256 interestRate,
         uint256 repaymentPeriodInDays,
         IInterestModel interestModel,
-        IPermit2 _permit2,
         address poolOrganizerAddress,
         address vaultManagerAddress,
         address rewardManagerAddress
@@ -118,7 +119,8 @@ contract TuliaPool is ReentrancyGuard {
                 address(repaymentTokenAddress) != address(0),
             "Invalid input addresses"
         );
-        permit2 = _permit2;
+        _grantRole(DEFAULT_ADMIN_ROLE, lender); 
+        _grantRole(LENDER_ROLE, lender);
         poolOrganizer = IPoolOrganizer(poolOrganizerAddress);
         vaultManager = IVaultManager(vaultManagerAddress);
         rewardManager = IRewardManager(rewardManagerAddress);
@@ -145,12 +147,18 @@ contract TuliaPool is ReentrancyGuard {
         );
     }
 
-    /// @notice Activates a loan by transferring collateral from the borrower to the vault and transferring the loan amount to the borrower.
+    /**
+     * @notice Activates a loan by transferring collateral from the borrower to the vault and transferring the loan amount to the borrower.
+     */
     function activateLoan() external nonReentrant {
         _checkPreconditions();
         _handleCollateral();
         _disburseLoan();
         _finalizeActivation();
+        poolOrganizer.updateLoanState(
+            address(this),
+            IPoolOrganizer.LoanState.ACTIVE
+        );
     }
 
     /// @dev Checks preconditions before activating a loan.
@@ -159,6 +167,7 @@ contract TuliaPool is ReentrancyGuard {
         address borrower = msg.sender;
         require(borrower != address(0), "Invalid borrower address");
         require(borrower != loanDetails.lender, "Lender cannot be borrower");
+
         uint256 collateralAmount = calculateRequiredCollateral();
         require(
             loanDetails.repaymentToken.allowance(borrower, address(this)) >=
@@ -197,6 +206,7 @@ contract TuliaPool is ReentrancyGuard {
             netCollateral
         );
         loanDetails.collateralVault.deposit(netCollateral, borrower);
+        _grantRole(BORROWER_ROLE, borrower);
         poolOrganizer.setBorrowerForPool(address(this), address(borrower));
     }
 
@@ -220,6 +230,7 @@ contract TuliaPool is ReentrancyGuard {
     /// @notice Funds the loan by transferring the loan amount from the lender to the contract.
     function fundLoan() external nonReentrant {
         require(state == LoanState.CREATED, "Loan not in creatable state");
+        require(hasRole(LENDER_ROLE, msg.sender), "Invalid Role");
         loanDetails.loanToken.transferFrom(
             loanDetails.lender,
             address(this),
@@ -227,8 +238,16 @@ contract TuliaPool is ReentrancyGuard {
         );
         loanDetails.fundedBlock = block.timestamp;
         state = LoanState.PENDING;
-        rewardManager.registerPool(address(this), address(loanDetails.loanToken), false);
+        rewardManager.registerPool(
+            address(this),
+            address(loanDetails.loanToken),
+            false
+        );
         poolOrganizer.markPoolAsFunded(address(this));
+        poolOrganizer.updateLoanState(
+            address(this),
+            IPoolOrganizer.LoanState.PENDING
+        );
         emit LoanFunded(loanDetails.loanAmount);
     }
 
@@ -237,6 +256,10 @@ contract TuliaPool is ReentrancyGuard {
         require(state == LoanState.ACTIVE, "Loan is not active");
         if (_isPastDue()) {
             state = LoanState.DEFAULTED;
+            poolOrganizer.updateLoanState(
+                address(this),
+                IPoolOrganizer.LoanState.DEFAULTED
+            );
             _handleDefault();
         }
     }
@@ -244,6 +267,10 @@ contract TuliaPool is ReentrancyGuard {
     /// @dev Transitions the loan to closed state and emits the LoanDefaulted event.
     function _transitionToClosed() private {
         _closeLoan();
+        poolOrganizer.updateLoanState(
+            address(this),
+            IPoolOrganizer.LoanState.CLOSED
+        );
         emit LoanDefaulted(loanDetails.borrower);
     }
 
@@ -344,17 +371,56 @@ contract TuliaPool is ReentrancyGuard {
     /// @dev Updates the state of the loan to REPAID and handles any cleanup.
     function _updateLoanStateToRepaid() private {
         state = LoanState.REPAID;
-        loanDetails.repaymentToken.transfer(msg.sender, loanDetails.repaymentToken.balanceOf(address(this))); // Last check if any borrower's collateral remains before loan closed.
+        loanDetails.repaymentToken.transfer(
+            msg.sender,
+            loanDetails.repaymentToken.balanceOf(address(this))
+        ); // Last check if any borrower's collateral remains before loan closed.
         _closeLoan();
+        poolOrganizer.updateLoanState(
+            address(this),
+            IPoolOrganizer.LoanState.REPAID
+        );
         emit RepaymentMade(calculateRequiredCollateral());
     }
 
     /// @dev Closes the loan, deregistering it from various managers and updating state.
     function _closeLoan() internal {
         state = LoanState.CLOSED;
+        poolOrganizer.updateLoanState(
+            address(this),
+            IPoolOrganizer.LoanState.CLOSED
+        );
         poolOrganizer.deregisterPool(address(this));
         vaultManager.deregisterVault(address(this));
         rewardManager.deregisterPool(address(this));
+
+        emit LoanClosed();
+    }
+
+    /// @notice Allows the lender to reclaim the loan amount and close the pool if the borrower does not exist.
+    function reclaimLoanAndClosePool() external nonReentrant {
+        require(
+            hasRole(LENDER_ROLE, msg.sender),
+            "Only the lender can reclaim the loan"
+        );
+        require(state == LoanState.PENDING, "Loan must be in a pending state");
+        require(loanDetails.borrower == address(0), "Borrower already exists");
+
+        // Transfer the loan amount back to the lender
+        loanDetails.loanToken.transfer(
+            loanDetails.lender,
+            loanDetails.loanAmount
+        );
+
+        // Close the loan
+        state = LoanState.CLOSED;
+        poolOrganizer.updateLoanState(
+            address(this),
+            IPoolOrganizer.LoanState.CLOSED
+        );
+        poolOrganizer.deregisterPool(address(this));
+        rewardManager.deregisterPool(address(this));
+
         emit LoanClosed();
     }
 
@@ -362,10 +428,11 @@ contract TuliaPool is ReentrancyGuard {
     /// @return The total interest amount.
     function calculateInterest() public view returns (uint256) {
         // Assuming interest is calculated annually on the full loan amount
-        return loanDetails.interestModel.calculateInterest(
-            loanDetails.loanAmount,
-            loanDetails.interestRate
-        );
+        return
+            loanDetails.interestModel.calculateInterest(
+                loanDetails.loanAmount,
+                loanDetails.interestRate
+            );
     }
 
     /// @notice Calculates the required collateral based on the interest and principal.
@@ -429,5 +496,22 @@ contract TuliaPool is ReentrancyGuard {
     function getRepaymentPeriod() public view returns (uint256) {
         return loanDetails.repaymentPeriod;
     }
-}
 
+    /**
+     * @notice Calculates the remaining repayment period of the loan in seconds.
+     * @dev Returns 0 if the loan is past due or if it has not yet been activated.
+     * @return The remaining repayment period in seconds.
+     */
+    function getRemainingRepaymentPeriod() public view returns (uint256) {
+        if (state != LoanState.ACTIVE) {
+            return 0;
+        }
+
+        uint256 endBlock = loanDetails.startBlock + loanDetails.repaymentPeriod;
+        if (block.timestamp >= endBlock) {
+            return 0;
+        }
+
+        return endBlock - block.timestamp;
+    }
+}

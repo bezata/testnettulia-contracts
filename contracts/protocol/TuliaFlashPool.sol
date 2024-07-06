@@ -1,27 +1,25 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
 import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
-import "../interfaces/IPermit2.sol";
-import "../interfaces/IRewardManager.sol";
 import "../interfaces/IPoolOrganizer.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /// @title TuliaFlashPool
 /// @dev Implements flash loan functionalities with integrated fee management.
 /// This contract allows issuing flash loans backed by ERC20 tokens.
-contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
+contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard, AccessControl {
     /// @notice RewardManager when lender waiting.
-    IRewardManager public rewardManager;
     /// @notice ERC20 asset used for flash loans
     IERC20 public asset;
 
     IPoolOrganizer public poolOrganizer;
 
-    /// @notice Permit2 contract utilized for permissioned token transfers
-    IPermit2 public permit2;
+    bytes32 public constant LENDER_ROLE = keccak256("LENDER_ROLE");
+    address public lender;  // Address of the lender who funded the pool
 
     /// @notice Initial fee rate for flash loans issued by this pool
     uint256 public flashLoanFeeRate;
@@ -38,18 +36,52 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
         uint256 fee
     );
 
+    /// @dev Enumerates the possible states of a loan.
+    enum FlashLoanState {
+        FUNDED,
+        CLOSED
+    }
+
+    FlashLoanState public state; // Current state of the loan.
+
+    /// @notice Event emitted when a loan is funded
+    /// @param lender The address of the lender
+    /// @param amount The amount of the loan
+    event LoanFunded(address indexed lender, uint256 amount);
+
     /// @notice Constructs the TuliaFlashPool lending pool
     /// @param _asset The ERC20 token asset used for flash loans
-    /// @param _permit2 The Permit2 contract utilized for permissioned token transfers
     /// @param _flashLoanFeeRate The initial fee rate for flash loans issued by this pool
+    /// @param _poolOrganizer The Pool Organizer contract
+
     constructor(
         IERC20 _asset,
-        IPermit2 _permit2,
-        uint256 _flashLoanFeeRate
+        uint256 _flashLoanFeeRate,
+        IPoolOrganizer _poolOrganizer
     ) {
         asset = _asset;
-        permit2 = _permit2;
         flashLoanFeeRate = _flashLoanFeeRate;
+        poolOrganizer = _poolOrganizer;
+
+    }
+
+    /// @notice Allows a lender to fund the pool and wait for a borrower
+    /// @param amount The amount of tokens to fund
+    function fundLoan(uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than zero");
+        require(
+            asset.allowance(msg.sender, address(this)) >= amount,
+            "Allowance not set for the amount"
+        );
+
+        asset.transferFrom(msg.sender, address(this), amount);
+
+        _grantRole(LENDER_ROLE, msg.sender);
+        lender = msg.sender;  // Set the lender address
+        state = FlashLoanState.FUNDED;
+        poolOrganizer.updateLoanState(address(this), IPoolOrganizer.LoanState.FUNDED);
+        
+        emit LoanFunded(msg.sender, amount);
     }
 
     /// @notice Returns the maximum loanable amount of the asset
@@ -91,6 +123,8 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
         uint256 amount,
         bytes calldata data
     ) external override nonReentrant returns (bool) {
+        require(state == FlashLoanState.FUNDED, "Pool not funded");
+        poolOrganizer.updateLoanState(address(this), IPoolOrganizer.LoanState.PENDING);
         return _executeFlashLoan(receiver, token, amount, data);
     }
 
@@ -127,8 +161,14 @@ contract TuliaFlashPool is IERC3156FlashLender, ReentrancyGuard {
             asset.balanceOf(address(this)) >= balanceBefore,
             "Flash loan repayment failed"
         );
-        rewardManager.deregisterPool(address(this));
+
+        state = FlashLoanState.CLOSED;
+        poolOrganizer.updateLoanState(address(this), IPoolOrganizer.LoanState.REPAID);
         poolOrganizer.deregisterPool(address(this));
+        
+        // Transfer the repaid amount and fee back to the lender
+        asset.transfer(lender, amountOwed);
+
         emit FlashLoanExecuted(address(receiver), token, amount, totalFee);
         return true;
     }

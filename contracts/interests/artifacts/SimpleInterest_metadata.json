@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -56,7 +56,7 @@
 		"compilationTarget": {
 			"contracts/contracts/interests/SimpleInterest.sol": "SimpleInterest"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -65,8 +65,7 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": [],
-		"viaIR": true
+		"remappings": []
 	},
 	"sources": {
 		"contracts/contracts/interests/SimpleInterest.sol": {

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -975,6 +975,13 @@
 				"balanceOf(address)": {
 					"details": "See {IERC20-balanceOf}."
 				},
+				"constructor": {
+					"params": {
+						"asset": "The ERC20 token that represents the underlying asset.",
+						"name": "The name of the tokenized vault shares.",
+						"symbol": "The symbol of the tokenized vault shares."
+					}
+				},
 				"convertToAssets(uint256)": {
 					"details": "See {IERC4626-convertToAssets}. "
 				},
@@ -1044,7 +1051,11 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"constructor": {
+					"notice": "Initializes the TuliaVault contract."
+				}
+			},
 			"notice": "Manages the vault where assets are stored and facilitates tokenized shares representing ownership of the underlying assets.",
 			"version": 1
 		}
@@ -1053,7 +1064,7 @@
 		"compilationTarget": {
 			"contracts/contracts/protocol/TuliaVault.sol": "TuliaVault"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1062,8 +1073,7 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": [],
-		"viaIR": true
+		"remappings": []
 	},
 	"sources": {
 		"@openzeppelin/contracts/interfaces/IERC4626.sol": {
@@ -1155,11 +1165,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {
-			"keccak256": "0x78e9881f8512638a50cd7dee0adf71beac4ce17a22e8b265b71b31092703d153",
+			"keccak256": "0xdfa11ca777bded799c55db7df65fb13b055d21d78ce7522c09f378391e6c20d9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f74a3d9d8003d54ea7f750e998474a383ebc9747bf7e09456e66faea9e2cab47",
-				"dweb:/ipfs/QmYyAwTVuJbvPWNRED7o5wPcoi48jydvQunsqNw8fSZjEy"
+				"bzz-raw://57b6a5332b4eb7b8a792d724ba60dc1ca65e82e7341d28e6389047ebc3addbc2",
+				"dweb:/ipfs/Qma9cTB2tEcC32YQqTe95qDxMd55Ab8Wfggajdcundys6D"
 			]
 		}
 	},

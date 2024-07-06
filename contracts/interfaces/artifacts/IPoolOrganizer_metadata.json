@@ -26,6 +26,25 @@
 						"type": "address"
 					}
 				],
+				"name": "getLoanState",
+				"outputs": [
+					{
+						"internalType": "enum IPoolOrganizer.LoanState",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
 				"name": "getPoolDetails",
 				"outputs": [
 					{
@@ -89,6 +108,16 @@
 								"internalType": "bool",
 								"name": "funded",
 								"type": "bool"
+							},
+							{
+								"internalType": "enum IPoolOrganizer.LoanState",
+								"name": "loanState",
+								"type": "uint8"
+							},
+							{
+								"internalType": "address",
+								"name": "pool",
+								"type": "address"
 							}
 						],
 						"internalType": "struct IPoolOrganizer.PoolDetails",
@@ -292,6 +321,24 @@
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "enum IPoolOrganizer.LoanState",
+						"name": "newState",
+						"type": "uint8"
+					}
+				],
+				"name": "updateLoanState",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -300,6 +347,14 @@
 				"deregisterPool(address)": {
 					"params": {
 						"pool": "The address of the pool to deregister"
+					}
+				},
+				"getLoanState(address)": {
+					"params": {
+						"pool": "The address of the pool"
+					},
+					"returns": {
+						"_0": "The loan state of the specified pool"
 					}
 				},
 				"getPoolDetails(address)": {
@@ -367,6 +422,18 @@
 						"pool": "The address of the pool",
 						"vault": "The address of the vault"
 					}
+				},
+				"setBorrowerForPool(address,address)": {
+					"params": {
+						"newBorrower": "The address of the new borrower",
+						"pool": "The address of the pool"
+					}
+				},
+				"updateLoanState(address,uint8)": {
+					"params": {
+						"newState": "The new state of the loan",
+						"pool": "The address of the pool"
+					}
 				}
 			},
 			"title": "IPoolOrganizer interface",
@@ -377,6 +444,9 @@
 			"methods": {
 				"deregisterPool(address)": {
 					"notice": "Deregisters a pool"
+				},
+				"getLoanState(address)": {
+					"notice": "Retrieves the loan state of a specific pool"
 				},
 				"getPoolDetails(address)": {
 					"notice": "Retrieves detailed information about a specific pool"
@@ -406,7 +476,10 @@
 					"notice": "Registers a vault for a specific pool"
 				},
 				"setBorrowerForPool(address,address)": {
-					"notice": "Set borrower for pool"
+					"notice": "Sets the borrower for a specified pool"
+				},
+				"updateLoanState(address,uint8)": {
+					"notice": "Updates the loan state of a specific pool"
 				}
 			},
 			"notice": "Interface for the Pool Organizer contract managing pools, vaults, and rewards.",
@@ -439,11 +512,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0xe6cb532077a4d0f82d154a08e30ca766643c902e959e4519e1c78bac567a02d0",
+			"keccak256": "0x0ce052094139df49200b21b6c088c9997ddc2c688f4528d1fcdfb0c0414080a1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3277ee67833de684424740208b2a6c823ebd5a2deff2d1c404c60903bf27432e",
-				"dweb:/ipfs/QmZaQyFB5veNsF4hAoRW1xLWYDHZyV6SeZuoxCRozXAMWx"
+				"bzz-raw://4c18bdcccf32a2a9e7fb8e347b80d09032c8fe64dcb02e6b92a4b99c6d7a16a8",
+				"dweb:/ipfs/QmVprNk8mRzHy6GWT6bhBPmgtj3U3rkN8LamBAwES92GMh"
 			]
 		}
 	},

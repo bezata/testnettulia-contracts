@@ -8,6 +8,17 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 interface IPoolOrganizer {
     enum PoolType { STANDARD, FLASH_LOAN }
 
+    enum LoanState {
+        CREATED,
+        PENDING,
+        ACTIVE,
+        DEFAULTED,
+        REPAID,
+        CLOSED,
+        FUNDED
+    }
+
+ 
     struct PoolDetails {
         address lender;
         address borrower;
@@ -21,6 +32,8 @@ interface IPoolOrganizer {
         uint256 repaymentPeriod;
         PoolType poolType;
         bool funded;
+        LoanState loanState;
+        address pool;
     }
 
     /// @notice Registers a new pool
@@ -47,6 +60,7 @@ interface IPoolOrganizer {
         uint256 interestRate,
         uint256 repaymentPeriod,
         PoolType poolType
+    
     ) external;
 
     /// @notice Deregisters a pool
@@ -61,6 +75,16 @@ interface IPoolOrganizer {
     /// @param lender The address of the lender
     /// @return An array of pool addresses
     function getPoolsByLender(address lender) external view returns (address[] memory);
+
+    /// @notice Retrieves the loan state of a specific pool
+    /// @param pool The address of the pool
+    /// @return The loan state of the specified pool
+    function getLoanState(address pool) external view returns (LoanState);
+
+    /// @notice Updates the loan state of a specific pool
+    /// @param pool The address of the pool
+    /// @param newState The new state of the loan
+    function updateLoanState(address pool, LoanState newState) external;
 
     /// @notice Retrieves detailed information about a specific pool
     /// @param pool The address of the pool
@@ -90,7 +114,8 @@ interface IPoolOrganizer {
     /// @param pool The address of the pool to mark as funded
     function markPoolAsFunded(address pool) external;
      
-    /// @notice Set borrower for pool
+    /// @notice Sets the borrower for a specified pool
+    /// @param pool The address of the pool
+    /// @param newBorrower The address of the new borrower
     function setBorrowerForPool(address pool, address newBorrower) external;
 }
-

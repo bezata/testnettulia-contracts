@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -13,18 +13,39 @@
 						"type": "address"
 					},
 					{
-						"internalType": "contract IPermit2",
-						"name": "_permit2",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "_flashLoanFeeRate",
 						"type": "uint256"
+					},
+					{
+						"internalType": "contract IPoolOrganizer",
+						"name": "_poolOrganizer",
+						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "AccessControlBadConfirmation",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "neededRole",
+						"type": "bytes32"
+					}
+				],
+				"name": "AccessControlUnauthorizedAccount",
+				"type": "error"
 			},
 			{
 				"anonymous": false,
@@ -56,6 +77,126 @@
 				],
 				"name": "FlashLoanExecuted",
 				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "lender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "LoanFunded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "previousAdminRole",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "newAdminRole",
+						"type": "bytes32"
+					}
+				],
+				"name": "RoleAdminChanged",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleGranted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					}
+				],
+				"name": "RoleRevoked",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "DEFAULT_ADMIN_ROLE",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "LENDER_ROLE",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [],
@@ -144,6 +285,93 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "fundLoan",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					}
+				],
+				"name": "getRoleAdmin",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "grantRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "hasRole",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "lender",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "token",
 						"type": "address"
@@ -155,19 +383,6 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "permit2",
-				"outputs": [
-					{
-						"internalType": "contract IPermit2",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -187,13 +402,68 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "callerConfirmation",
+						"type": "address"
+					}
+				],
+				"name": "renounceRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "role",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "revokeRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
-				"name": "rewardManager",
+				"name": "state",
 				"outputs": [
 					{
-						"internalType": "contract IRewardManager",
+						"internalType": "enum TuliaFlashPool.FlashLoanState",
 						"name": "",
-						"type": "address"
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes4",
+						"name": "interfaceId",
+						"type": "bytes4"
+					}
+				],
+				"name": "supportsInterface",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -202,6 +472,18 @@
 		],
 		"devdoc": {
 			"details": "Implements flash loan functionalities with integrated fee management. This contract allows issuing flash loans backed by ERC20 tokens.",
+			"errors": {
+				"AccessControlBadConfirmation()": [
+					{
+						"details": "The caller of a function is not the expected one. NOTE: Don't confuse with {AccessControlUnauthorizedAccount}."
+					}
+				],
+				"AccessControlUnauthorizedAccount(address,bytes32)": [
+					{
+						"details": "The `account` is missing a role."
+					}
+				]
+			},
 			"events": {
 				"FlashLoanExecuted(address,address,uint256,uint256)": {
 					"params": {
@@ -210,6 +492,21 @@
 						"receiver": "The borrower contract",
 						"token": "The ERC20 token for the loan"
 					}
+				},
+				"LoanFunded(address,uint256)": {
+					"params": {
+						"amount": "The amount of the loan",
+						"lender": "The address of the lender"
+					}
+				},
+				"RoleAdminChanged(bytes32,bytes32,bytes32)": {
+					"details": "Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole` `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite {RoleAdminChanged} not being emitted signaling this."
+				},
+				"RoleGranted(bytes32,address,address)": {
+					"details": "Emitted when `account` is granted `role`. `sender` is the account that originated the contract call, an admin role bearer except when using {AccessControl-_setupRole}."
+				},
+				"RoleRevoked(bytes32,address,address)": {
+					"details": "Emitted when `account` is revoked `role`. `sender` is the account that originated the contract call:   - if using `revokeRole`, it is the admin role bearer   - if using `renounceRole`, it is the role bearer (i.e. `account`)"
 				}
 			},
 			"kind": "dev",
@@ -218,7 +515,7 @@
 					"params": {
 						"_asset": "The ERC20 token asset used for flash loans",
 						"_flashLoanFeeRate": "The initial fee rate for flash loans issued by this pool",
-						"_permit2": "The Permit2 contract utilized for permissioned token transfers"
+						"_poolOrganizer": "The Pool Organizer contract"
 					}
 				},
 				"flashFee(address,uint256)": {
@@ -241,6 +538,20 @@
 						"_0": "true if the flash loan is paid back successfully within the same transaction"
 					}
 				},
+				"fundLoan(uint256)": {
+					"params": {
+						"amount": "The amount of tokens to fund"
+					}
+				},
+				"getRoleAdmin(bytes32)": {
+					"details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
+				},
+				"grantRole(bytes32,address)": {
+					"details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleGranted} event."
+				},
+				"hasRole(bytes32,address)": {
+					"details": "Returns `true` if `account` has been granted `role`."
+				},
 				"maxFlashLoan(address)": {
 					"params": {
 						"token": "The ERC20 token address for which the max loan amount is queried"
@@ -248,6 +559,15 @@
 					"returns": {
 						"_0": "The maximum amount available for a flash loan"
 					}
+				},
+				"renounceRole(bytes32,address)": {
+					"details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `callerConfirmation`. May emit a {RoleRevoked} event."
+				},
+				"revokeRole(bytes32,address)": {
+					"details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event."
+				},
+				"supportsInterface(bytes4)": {
+					"details": "See {IERC165-supportsInterface}."
 				}
 			},
 			"title": "TuliaFlashPool",
@@ -257,12 +577,15 @@
 			"events": {
 				"FlashLoanExecuted(address,address,uint256,uint256)": {
 					"notice": "Event emitted when a flash loan is executed"
+				},
+				"LoanFunded(address,uint256)": {
+					"notice": "Event emitted when a loan is funded"
 				}
 			},
 			"kind": "user",
 			"methods": {
 				"asset()": {
-					"notice": "ERC20 asset used for flash loans"
+					"notice": "RewardManager when lender waiting.ERC20 asset used for flash loans"
 				},
 				"constructor": {
 					"notice": "Constructs the TuliaFlashPool lending pool"
@@ -276,14 +599,11 @@
 				"flashLoanFeeRate()": {
 					"notice": "Initial fee rate for flash loans issued by this pool"
 				},
+				"fundLoan(uint256)": {
+					"notice": "Allows a lender to fund the pool and wait for a borrower"
+				},
 				"maxFlashLoan(address)": {
 					"notice": "Returns the maximum loanable amount of the asset"
-				},
-				"permit2()": {
-					"notice": "Permit2 contract utilized for permissioned token transfers"
-				},
-				"rewardManager()": {
-					"notice": "RewardManager when lender waiting."
 				}
 			},
 			"version": 1
@@ -293,7 +613,7 @@
 		"compilationTarget": {
 			"contracts/contracts/protocol/TuliaFlashPool.sol": "TuliaFlashPool"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -302,10 +622,25 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": [],
-		"viaIR": true
+		"remappings": []
 	},
 	"sources": {
+		"@openzeppelin/contracts/access/AccessControl.sol": {
+			"keccak256": "0xa0e92d42942f4f57c5be50568dac11e9d00c93efcb458026e18d2d9b9b2e7308",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://46326c0bb1e296b67185e81c918e0b40501b8b6386165855df0a3f3c634b6a80",
+				"dweb:/ipfs/QmTwyrDYtsxsk6pymJTK94PnEpzsmkpUxFuzEiakDopy4Z"
+			]
+		},
+		"@openzeppelin/contracts/access/IAccessControl.sol": {
+			"keccak256": "0xb6b36edd6a2999fd243ff226d6cbf84bd71af2432bbd0dfe19392996a1d9cb41",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1fd2f35495652e57e3f99bc6c510bc5f7dd398a176ea2e72d8ed730aebc6ca26",
+				"dweb:/ipfs/QmTQV6X4gkikTib49cho5iDX3JvSQbdsoEChoDwrk3CbbH"
+			]
+		},
 		"@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol": {
 			"keccak256": "0x9f9e6dba43fe0775c400aa384375f1f503efaf733a40187169fdfc195f5ea6fa",
 			"license": "MIT",
@@ -338,60 +673,44 @@
 				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
 			]
 		},
-		"contracts/contracts/interfaces/IAllowanceTransfer.sol": {
-			"keccak256": "0x37f0ac203b6ef605c9533e1a739477e8e9dcea90710b40e645a367f8a21ace29",
+		"@openzeppelin/contracts/utils/Context.sol": {
+			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e0104d72aeaec1cd66cc232e7de7b7ead08608efcc179491b8a66387614670b0",
-				"dweb:/ipfs/QmfAZDyuNC9FXXbnJUwqHNwmAK6uRrXxtWEytLsxjskPsN"
+				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"contracts/contracts/interfaces/IEIP712.sol": {
-			"keccak256": "0xfdccf2b9639070803cd0e4198427fb0df3cc452ca59bd3b8a0d957a9a4254138",
+		"@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+			"keccak256": "0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f7c936ac42ce89e827db905a1544397f8bdf46db34cdb6aa1b90dea42fdb4c72",
-				"dweb:/ipfs/QmVgurxo1N31qZqkPBirw9Z7S9tLYmv6jSwQp8R8ur2cBk"
+				"bzz-raw://1777404f1dcd0fac188e55a288724ec3c67b45288e49cc64723e95e702b49ab8",
+				"dweb:/ipfs/QmZFdC626GButBApwDUvvTnUzdinevC3B24d7yyh57XkiA"
 			]
 		},
-		"contracts/contracts/interfaces/IPermit2.sol": {
-			"keccak256": "0xaa631cc9f53e699301d94233007110a345e6779011def484e8dd97b8fe0af771",
+		"@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0x4296879f55019b23e135000eb36896057e7101fb7fb859c5ef690cf14643757b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://fc0502cf19c9c18f320a3001201e89e350393b75837f6b7971de18b2de06f30d",
-				"dweb:/ipfs/QmT9SfhdJ7VJNNrf94g4H5usyi7ShqWGx7Cqsz9jZTjX96"
+				"bzz-raw://87b3541437c8c443ccd36795e56a338ed12855eec17f8da624511b8d1a7e14df",
+				"dweb:/ipfs/QmeJQCtZrQjtJLr6u7ZHWeH3pBnjtLWzvRrKViAi7UZqxL"
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0xe6cb532077a4d0f82d154a08e30ca766643c902e959e4519e1c78bac567a02d0",
+			"keccak256": "0x0ce052094139df49200b21b6c088c9997ddc2c688f4528d1fcdfb0c0414080a1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3277ee67833de684424740208b2a6c823ebd5a2deff2d1c404c60903bf27432e",
-				"dweb:/ipfs/QmZaQyFB5veNsF4hAoRW1xLWYDHZyV6SeZuoxCRozXAMWx"
-			]
-		},
-		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
-				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
-			]
-		},
-		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
-			"keccak256": "0x16a051e45a3f1ab341a8560aa106c483c3d0a3be4abc52225651c78939b18f93",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://a7cda3c6ed2db1454b4a6ec1e418956d199019085d92163a038d0064615a5acb",
-				"dweb:/ipfs/QmWDfZwi8jcGFBuiwHKq6iBWCZq2mA8HmkM9NNTzotMpXH"
+				"bzz-raw://4c18bdcccf32a2a9e7fb8e347b80d09032c8fe64dcb02e6b92a4b99c6d7a16a8",
+				"dweb:/ipfs/QmVprNk8mRzHy6GWT6bhBPmgtj3U3rkN8LamBAwES92GMh"
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0xafa5fdcd6e1471283a17724fb71510176cd2c239a9713c3d71d26e6d1b6fee35",
+			"keccak256": "0xec089ac3b0cfcd83896c5e1dad1cd800e57b55a603ff5b8a3c5bbb362c00062d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://627b4b7505ccabdd4247414bd1c3f704e3e7da11fffeafccf1095ddfe4a3927b",
-				"dweb:/ipfs/QmWzVQ1grrceU5YcSfW7w8RZtPqLNVrB26jhHmUQN8SYd1"
+				"bzz-raw://66ddb3a4396b081b00e5402c9385309d72fe6d71fbab0da19c8870fa3b8c94da",
+				"dweb:/ipfs/QmQfyQnZo2qwPCmDiJbwWLMXVD8YDuhavFNPRLJmqNMxPY"
 			]
 		}
 	},

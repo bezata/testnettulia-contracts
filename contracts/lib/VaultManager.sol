@@ -81,7 +81,7 @@ contract VaultManager is IVaultManager {
             TuliaPool(pool).getLoanState() == TuliaPool.LoanState.DEFAULTED,
             "Loan must be defaulted to handle default"
         );
-
+        require(lender == TuliaPool(pool).getLender(), "Wrong Lender Address");
         InterestPaymentInfo storage info = interestInfo[pool];
         IERC20 repaymentToken = IERC20(TuliaPool(pool).getRepaymentToken());
 
@@ -134,15 +134,15 @@ contract VaultManager is IVaultManager {
             return 0;
         }
 
-        uint256 totalBlocks = TuliaPool(pool).getRepaymentPeriod();
-        require(totalBlocks > 0, "Repayment period must be greater than zero");
+        uint256 totalDuration = TuliaPool(pool).getRepaymentPeriod();
+        require(totalDuration > 0, "Repayment period must be greater than zero");
 
-        uint256 blocksElapsed = block.timestamp - info.paymentStartBlock;
-        if (blocksElapsed > totalBlocks) {
-            blocksElapsed = totalBlocks;
+        uint256 elapsedTime = block.timestamp - info.paymentStartBlock;
+        if (elapsedTime > totalDuration) {
+            elapsedTime = totalDuration;
         }
-        uint256 accruedInterest = (info.totalInterest * blocksElapsed) /
-            totalBlocks;
+
+        uint256 accruedInterest = (info.totalInterest * elapsedTime) / totalDuration;
         return
             accruedInterest > info.interestPaid
                 ? accruedInterest - info.interestPaid
@@ -154,6 +154,7 @@ contract VaultManager is IVaultManager {
     /// @param to The recipient of the interest payment.
     function distributeInterest(address pool, address to) external override {
         IERC20 repaymentToken = IERC20(TuliaPool(pool).getRepaymentToken());
+        require(TuliaPool(pool).getLender() == msg.sender, "Only Lender Request acceptable");
         uint256 payableInterest = calculateClaimableInterest(pool);
         require(pool != address(0) && to != address(0), "Invalid address");
         require(
@@ -184,9 +185,10 @@ contract VaultManager is IVaultManager {
         InterestPaymentInfo storage info = interestInfo[pool];
         IERC20 repaymentToken = IERC20(TuliaPool(pool).getRepaymentToken());
 
-        uint256 accruedInterest = (info.totalInterest *
-            (block.timestamp - info.paymentStartBlock)) /
-            TuliaPool(pool).getRepaymentPeriod();
+        uint256 totalDuration = TuliaPool(pool).getRepaymentPeriod();
+        uint256 elapsedTime = block.timestamp - info.paymentStartBlock;
+
+        uint256 accruedInterest = (info.totalInterest * elapsedTime) / totalDuration;
         if (accruedInterest > info.interestPaid) {
             accruedInterest -= info.interestPaid;
         } else {

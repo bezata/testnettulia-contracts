@@ -16,7 +16,6 @@ import "../interfaces/IVaultManager.sol";
 /// @dev A factory for creating and managing TuliaPool and TuliaFlashPool contracts.
 contract TuliaPoolFactory {
     IPoolOrganizer public poolOrganizer;
-    IPermit2 public permit2;
     IRewardManager public rewardManager;
     IVaultManager public vaultManager;
     mapping(address => TuliaVault) public vaults;
@@ -40,12 +39,10 @@ contract TuliaPoolFactory {
 
     /// @notice Constructs the TuliaPoolFactory contract.
     /// @param _poolOrganizer The address of the Pool Organizer contract.
-    /// @param _permit2 The address of the Permit2 contract.
     /// @param _rewardManager The address of the Reward Manager contract.
     /// @param _vaultManager The address of the Vault Manager contract.
     constructor(
         address _poolOrganizer,
-        address _permit2,
         address _rewardManager,
         address _vaultManager
     ) {
@@ -53,7 +50,6 @@ contract TuliaPoolFactory {
             _poolOrganizer != address(0),
             "PoolOrganizer cannot be the zero address"
         );
-        require(_permit2 != address(0), "Permit2 cannot be the zero address");
         require(
             _rewardManager != address(0),
             "RewardManager cannot be the zero address"
@@ -64,7 +60,6 @@ contract TuliaPoolFactory {
         );
 
         poolOrganizer = IPoolOrganizer(_poolOrganizer);
-        permit2 = IPermit2(_permit2);
         rewardManager = IRewardManager(_rewardManager);
         vaultManager = IVaultManager(_vaultManager);
     }
@@ -119,7 +114,6 @@ contract TuliaPoolFactory {
                 interestRate,
                 repaymentPeriod,
                 interestModel,
-                permit2,
                 address(poolOrganizer),
                 address(vaultManager),
                 address(rewardManager)
@@ -136,6 +130,7 @@ contract TuliaPoolFactory {
                 interestRate,
                 repaymentPeriod,
                 poolType
+
             );
             poolOrganizer.grantFactoryAccess(address(pool));
             emit PoolCreated(address(pool), lender, address(vault), poolType);
@@ -143,8 +138,8 @@ contract TuliaPoolFactory {
         } else if (poolType == IPoolOrganizer.PoolType.FLASH_LOAN) {
             TuliaFlashPool flashPool = new TuliaFlashPool(
                 IERC20(loanTokenAddress),
-                permit2,
-                optionalFlashLoanFeeRate
+                optionalFlashLoanFeeRate,
+                poolOrganizer
             );
             rewardManager.registerPool(address(this), address(loanTokenAddress), true);
             poolOrganizer.registerPool(
@@ -159,6 +154,7 @@ contract TuliaPoolFactory {
                 interestRate,
                 0,
                 poolType
+              
             );
             poolOrganizer.grantFactoryAccess(address(flashPool));
             emit PoolCreated(address(flashPool), lender, address(0), poolType);

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -30,6 +30,31 @@
 				],
 				"name": "AccessControlUnauthorizedAccount",
 				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum IPoolOrganizer.LoanState",
+						"name": "oldState",
+						"type": "uint8"
+					},
+					{
+						"indexed": false,
+						"internalType": "enum IPoolOrganizer.LoanState",
+						"name": "newState",
+						"type": "uint8"
+					}
+				],
+				"name": "LoanStateUpdated",
+				"type": "event"
 			},
 			{
 				"anonymous": false,
@@ -237,87 +262,6 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "borrower",
-						"type": "address"
-					}
-				],
-				"name": "getAllBorrowerPoolDetails",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "address",
-								"name": "lender",
-								"type": "address"
-							},
-							{
-								"internalType": "address",
-								"name": "borrower",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "creationTime",
-								"type": "uint256"
-							},
-							{
-								"internalType": "address",
-								"name": "vault",
-								"type": "address"
-							},
-							{
-								"internalType": "contract IERC20",
-								"name": "loanToken",
-								"type": "address"
-							},
-							{
-								"internalType": "contract IERC20",
-								"name": "assetToken",
-								"type": "address"
-							},
-							{
-								"internalType": "contract IERC20",
-								"name": "repaymentToken",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "loanAmount",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "interestRate",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "repaymentPeriod",
-								"type": "uint256"
-							},
-							{
-								"internalType": "enum IPoolOrganizer.PoolType",
-								"name": "poolType",
-								"type": "uint8"
-							},
-							{
-								"internalType": "bool",
-								"name": "funded",
-								"type": "bool"
-							}
-						],
-						"internalType": "struct IPoolOrganizer.PoolDetails[]",
-						"name": "",
-						"type": "tuple[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
 						"name": "lender",
 						"type": "address"
 					}
@@ -385,6 +329,16 @@
 								"internalType": "bool",
 								"name": "funded",
 								"type": "bool"
+							},
+							{
+								"internalType": "enum IPoolOrganizer.LoanState",
+								"name": "loanState",
+								"type": "uint8"
+							},
+							{
+								"internalType": "address",
+								"name": "pool",
+								"type": "address"
 							}
 						],
 						"internalType": "struct IPoolOrganizer.PoolDetails[]",
@@ -403,6 +357,116 @@
 						"internalType": "address[]",
 						"name": "",
 						"type": "address[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "borrower",
+						"type": "address"
+					}
+				],
+				"name": "getBorrowerPoolDetails",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "lender",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "borrower",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "creationTime",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "vault",
+								"type": "address"
+							},
+							{
+								"internalType": "contract IERC20",
+								"name": "loanToken",
+								"type": "address"
+							},
+							{
+								"internalType": "contract IERC20",
+								"name": "assetToken",
+								"type": "address"
+							},
+							{
+								"internalType": "contract IERC20",
+								"name": "repaymentToken",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "loanAmount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "interestRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "repaymentPeriod",
+								"type": "uint256"
+							},
+							{
+								"internalType": "enum IPoolOrganizer.PoolType",
+								"name": "poolType",
+								"type": "uint8"
+							},
+							{
+								"internalType": "bool",
+								"name": "funded",
+								"type": "bool"
+							},
+							{
+								"internalType": "enum IPoolOrganizer.LoanState",
+								"name": "loanState",
+								"type": "uint8"
+							},
+							{
+								"internalType": "address",
+								"name": "pool",
+								"type": "address"
+							}
+						],
+						"internalType": "struct IPoolOrganizer.PoolDetails[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "getLoanState",
+				"outputs": [
+					{
+						"internalType": "enum IPoolOrganizer.LoanState",
+						"name": "",
+						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -497,6 +561,16 @@
 								"internalType": "bool",
 								"name": "funded",
 								"type": "bool"
+							},
+							{
+								"internalType": "enum IPoolOrganizer.LoanState",
+								"name": "loanState",
+								"type": "uint8"
+							},
+							{
+								"internalType": "address",
+								"name": "pool",
+								"type": "address"
 							}
 						],
 						"internalType": "struct IPoolOrganizer.PoolDetails",
@@ -869,6 +943,24 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "enum IPoolOrganizer.LoanState",
+						"name": "newState",
+						"type": "uint8"
+					}
+				],
+				"name": "updateLoanState",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "vaultManager",
 				"outputs": [
@@ -897,6 +989,37 @@
 				]
 			},
 			"events": {
+				"LoanStateUpdated(address,uint8,uint8)": {
+					"details": "Emitted when the loan state of a pool is updated.",
+					"params": {
+						"newState": "The new state of the loan.",
+						"oldState": "The previous state of the loan.",
+						"pool": "The address of the pool."
+					}
+				},
+				"ManagerRegistered(address,address)": {
+					"details": "Emitted when managers are registered.",
+					"params": {
+						"rewardManager": "The address of the reward manager.",
+						"vaultManager": "The address of the vault manager."
+					}
+				},
+				"PoolDeregistered(address)": {
+					"details": "Emitted when a pool is deregistered.",
+					"params": {
+						"pool": "The address of the deregistered pool."
+					}
+				},
+				"PoolRegistered(address,address,address,address,uint8)": {
+					"details": "Emitted when a new pool is registered.",
+					"params": {
+						"borrower": "The address of the borrower.",
+						"lender": "The address of the lender.",
+						"pool": "The address of the pool.",
+						"poolType": "The type of the pool.",
+						"vault": "The address of the vault associated with the pool."
+					}
+				},
 				"RoleAdminChanged(bytes32,bytes32,bytes32)": {
 					"details": "Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole` `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite {RoleAdminChanged} not being emitted signaling this."
 				},
@@ -905,29 +1028,82 @@
 				},
 				"RoleRevoked(bytes32,address,address)": {
 					"details": "Emitted when `account` is revoked `role`. `sender` is the account that originated the contract call:   - if using `revokeRole`, it is the admin role bearer   - if using `renounceRole`, it is the role bearer (i.e. `account`)"
+				},
+				"VaultRegistered(address,address)": {
+					"details": "Emitted when a vault is registered for a pool.",
+					"params": {
+						"pool": "The address of the pool.",
+						"vault": "The address of the registered vault."
+					}
 				}
 			},
 			"kind": "dev",
 			"methods": {
+				"constructor": {
+					"details": "Constructor that grants the deployer the admin and pool manager roles."
+				},
 				"deregisterPool(address)": {
+					"details": "Deregisters the specified pool and emits a `PoolDeregistered` event.",
 					"params": {
-						"pool": "The address of the pool to deregister"
+						"pool": "The address of the pool to deregister."
+					}
+				},
+				"getAllLenderPoolDetails(address)": {
+					"params": {
+						"lender": "The address of the lender."
+					},
+					"returns": {
+						"_0": "An array of pool details."
+					}
+				},
+				"getAllPoolAddresses()": {
+					"returns": {
+						"_0": "An array of pool addresses."
+					}
+				},
+				"getBorrowerPoolDetails(address)": {
+					"params": {
+						"borrower": "The address of the borrower."
+					},
+					"returns": {
+						"_0": "An array of pool details."
+					}
+				},
+				"getLoanState(address)": {
+					"params": {
+						"pool": "The address of the pool."
+					},
+					"returns": {
+						"_0": "The current loan state of the pool."
+					}
+				},
+				"getManagers()": {
+					"returns": {
+						"_0": "The addresses of the vault and reward managers."
 					}
 				},
 				"getPoolDetails(address)": {
 					"params": {
-						"pool": "The address of the pool"
+						"pool": "The address of the pool."
 					},
 					"returns": {
-						"_0": "The details of the specified pool"
+						"_0": "The details of the pool."
+					}
+				},
+				"getPoolsByBorrower(address)": {
+					"params": {
+						"borrower": "The address of the borrower."
+					},
+					"returns": {
+						"_0": "An array of pool addresses."
 					}
 				},
 				"getPoolsByLender(address)": {
 					"params": {
-						"lender": "The address of the lender"
+						"lender": "The address of the lender."
 					},
 					"returns": {
-						"_0": "An array of pool addresses"
+						"_0": "An array of pool addresses."
 					}
 				},
 				"getRoleAdmin(bytes32)": {
@@ -935,20 +1111,20 @@
 				},
 				"getTotalPools()": {
 					"returns": {
-						"_0": "The total number of registered pools"
+						"_0": "The total number of pools."
 					}
 				},
 				"getVaultForPool(address)": {
 					"params": {
-						"pool": "The address of the pool"
+						"pool": "The address of the pool."
 					},
 					"returns": {
-						"_0": "The address of the linked vault"
+						"_0": "The address of the vault."
 					}
 				},
 				"grantFactoryAccess(address)": {
 					"params": {
-						"factoryAddress": "The address of the factory to be granted access"
+						"factoryAddress": "The address of the factory."
 					}
 				},
 				"grantRole(bytes32,address)": {
@@ -958,35 +1134,39 @@
 					"details": "Returns `true` if `account` has been granted `role`."
 				},
 				"markPoolAsFunded(address)": {
+					"details": "Marks the specified pool as funded.",
 					"params": {
-						"pool": "The address of the pool to mark as funded"
+						"pool": "The address of the pool to mark as funded."
 					}
 				},
 				"registerManagers(address,address)": {
+					"details": "Registers the specified managers and emits a `ManagerRegistered` event.",
 					"params": {
-						"_rewardManager": "The address of the RewardManager contract",
-						"_vaultManager": "The address of the VaultManager contract"
+						"_rewardManager": "The address of the reward manager.",
+						"_vaultManager": "The address of the vault manager."
 					}
 				},
 				"registerPool(address,address,address,address,address,address,address,uint256,uint256,uint256,uint8)": {
+					"details": "Registers a pool and emits a `PoolRegistered` event.",
 					"params": {
-						"assetToken": "The token used as collateral",
-						"borrower": "The address of the borrower",
-						"interestRate": "The interest rate of the loan",
-						"lender": "The address of the lender",
-						"loanAmount": "The amount of the loan",
-						"loanToken": "The token to be loaned",
-						"pool": "The address of the pool contract",
-						"poolType": "The type of the pool (standard or flash loan)",
-						"repaymentPeriod": "The loan repayment period",
-						"repaymentToken": "The token used for loan repayment",
-						"vault": "The address of the vault associated with the pool"
+						"assetToken": "The ERC20 token for the asset.",
+						"borrower": "The address of the borrower.",
+						"interestRate": "The interest rate for the loan.",
+						"lender": "The address of the lender.",
+						"loanAmount": "The amount of the loan.",
+						"loanToken": "The ERC20 token for the loan.",
+						"pool": "The address of the pool.",
+						"poolType": "The type of the pool.",
+						"repaymentPeriod": "The repayment period for the loan.",
+						"repaymentToken": "The ERC20 token for the repayment.",
+						"vault": "The address of the vault."
 					}
 				},
 				"registerVault(address,address)": {
+					"details": "Registers the specified vault for the pool and emits a `VaultRegistered` event.",
 					"params": {
-						"pool": "The address of the pool",
-						"vault": "The address of the vault"
+						"pool": "The address of the pool.",
+						"vault": "The address of the vault."
 					}
 				},
 				"renounceRole(bytes32,address)": {
@@ -995,8 +1175,20 @@
 				"revokeRole(bytes32,address)": {
 					"details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event."
 				},
+				"setBorrowerForPool(address,address)": {
+					"params": {
+						"newBorrower": "The address of the new borrower.",
+						"pool": "The address of the pool."
+					}
+				},
 				"supportsInterface(bytes4)": {
 					"details": "See {IERC165-supportsInterface}."
+				},
+				"updateLoanState(address,uint8)": {
+					"params": {
+						"newState": "The new state of the loan.",
+						"pool": "The address of the pool."
+					}
 				}
 			},
 			"title": "Pool Organizer for managing pools, vaults, and rewards.",
@@ -1006,37 +1198,58 @@
 			"kind": "user",
 			"methods": {
 				"deregisterPool(address)": {
-					"notice": "Deregisters a pool"
+					"notice": "Deregisters a pool."
+				},
+				"getAllLenderPoolDetails(address)": {
+					"notice": "Gets the details of all pools associated with a lender."
+				},
+				"getAllPoolAddresses()": {
+					"notice": "Gets all registered pool addresses."
+				},
+				"getBorrowerPoolDetails(address)": {
+					"notice": "Gets the details of all pools associated with a borrower."
+				},
+				"getLoanState(address)": {
+					"notice": "Gets the current loan state of a specific pool."
+				},
+				"getManagers()": {
+					"notice": "Gets the addresses of the registered managers."
 				},
 				"getPoolDetails(address)": {
-					"notice": "Retrieves detailed information about a specific pool"
+					"notice": "Gets the details of a specified pool."
+				},
+				"getPoolsByBorrower(address)": {
+					"notice": "Gets all pools associated with a borrower."
 				},
 				"getPoolsByLender(address)": {
-					"notice": "Retrieves all pool addresses associated with a specific lender"
+					"notice": "Gets all pools associated with a lender."
 				},
 				"getTotalPools()": {
-					"notice": "Gets the total number of registered pools"
+					"notice": "Gets the total number of registered pools."
 				},
 				"getVaultForPool(address)": {
-					"notice": "Retrieves the associated vault address for a given pool"
+					"notice": "Gets the vault address associated with a pool."
 				},
 				"grantFactoryAccess(address)": {
-					"notice": "Grants factory access to manage pools"
+					"notice": "Grants factory access to the specified address."
 				},
 				"markPoolAsFunded(address)": {
-					"notice": "Marks a pool as funded"
+					"notice": "Marks a pool as funded."
 				},
 				"registerManagers(address,address)": {
-					"notice": "Registers manager contracts for managing vaults and rewards"
+					"notice": "Registers the vault and reward managers."
 				},
 				"registerPool(address,address,address,address,address,address,address,uint256,uint256,uint256,uint8)": {
-					"notice": "Registers a new pool"
+					"notice": "Registers a new pool with the specified details."
 				},
 				"registerVault(address,address)": {
-					"notice": "Registers a vault for a specific pool"
+					"notice": "Registers a vault for a specified pool."
 				},
 				"setBorrowerForPool(address,address)": {
-					"notice": "Set borrower for pool"
+					"notice": "Sets the borrower for a specified pool."
+				},
+				"updateLoanState(address,uint8)": {
+					"notice": "Updates the loan state of the specified pool and emits a `LoanStateUpdated` event."
 				}
 			},
 			"version": 1
@@ -1046,7 +1259,7 @@
 		"compilationTarget": {
 			"contracts/contracts/protocol/PoolOrganizer.sol": "PoolOrganizer"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1055,8 +1268,7 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": [],
-		"viaIR": true
+		"remappings": []
 	},
 	"sources": {
 		"@openzeppelin/contracts/access/AccessControl.sol": {
@@ -1108,11 +1320,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0xe6cb532077a4d0f82d154a08e30ca766643c902e959e4519e1c78bac567a02d0",
+			"keccak256": "0x0ce052094139df49200b21b6c088c9997ddc2c688f4528d1fcdfb0c0414080a1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3277ee67833de684424740208b2a6c823ebd5a2deff2d1c404c60903bf27432e",
-				"dweb:/ipfs/QmZaQyFB5veNsF4hAoRW1xLWYDHZyV6SeZuoxCRozXAMWx"
+				"bzz-raw://4c18bdcccf32a2a9e7fb8e347b80d09032c8fe64dcb02e6b92a4b99c6d7a16a8",
+				"dweb:/ipfs/QmVprNk8mRzHy6GWT6bhBPmgtj3U3rkN8LamBAwES92GMh"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
@@ -1132,11 +1344,11 @@
 			]
 		},
 		"contracts/contracts/protocol/PoolOrganizer.sol": {
-			"keccak256": "0xc380b14731fcdeeb6d77a0118764aa7a4f57c69367d69f6aec443896d4fb145c",
+			"keccak256": "0xdc43e2a49512cfa08faec1371d4de45c454d18667f99a310331ec146bada5e6c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://af7c6404fd3adbccd23de139aa1329d3757f81c64743fb862b5532da6701e9f5",
-				"dweb:/ipfs/QmPw3dHEPJVcybb59rXMEEwa41gYmkag4Aa5iggwmkRnh5"
+				"bzz-raw://235b06b0e2d17d358c55f20f43b53be2de19539c4ad126835154883ad7b88ab0",
+				"dweb:/ipfs/Qmdrb9Ya5AkRPDkSeUWLXrvD9cFa6rQpejRokj438T2ns9"
 			]
 		}
 	},

@@ -2,12 +2,11 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "../protocol/TuliaPool.sol";
 import "../interfaces/IRewardManager.sol";
 import "../interfaces/IAdvancedAPYManager.sol";
 import "../tokens/MockTokenCreator.sol";
-
 
 /**
  * @title RewardManager
@@ -16,18 +15,19 @@ import "../tokens/MockTokenCreator.sol";
  */
 contract RewardManager is IRewardManager, ReentrancyGuard {
     struct RewardDetails {
-        IERC20 rewardToken;
-        uint256 rewardsAccrued;
-        uint256 lastRewardBlock; // Last block number when rewards were calculated
-        uint256 rewardRate; // Dynamic reward rate based on APY
-        uint256 totalInterestRewards; // Total interest rewards accrued
-        uint256 lenderClaimedRewards; // Amount of rewards already claimed by the lender
-        uint256 borrowerClaimedRewards; // Amount of rewards already claimed by the borrower
-        bool isFlashPool;
+        IERC20 rewardToken; // The token used for rewards.
+        uint256 rewardsAccrued; // Total accrued rewards.
+        uint256 lastRewardBlock; // Last block number when rewards were calculated.
+        uint256 rewardRate; // Dynamic reward rate based on APY.
+        uint256 totalInterestRewards; // Total interest rewards accrued.
+        uint256 lenderClaimedRewards; // Amount of rewards claimed by the lender.
+        uint256 borrowerClaimedRewards; // Amount of rewards claimed by the borrower.
+        bool isFlashPool; // Indicates if the pool is a flash pool.
+        bool isAccruing; // Flag to indicate if the pool is accruing rewards.
     }
 
-    IAdvancedAPYManager public apyManager;
-    mapping(address => RewardDetails) public rewardDetails;
+    IAdvancedAPYManager public apyManager; // Reference to the APY Manager for reward calculations.
+    mapping(address => RewardDetails) public rewardDetails; // Mapping from pool address to reward details.
 
     event PoolRegistered(address indexed pool);
     event PoolDeregistered(address indexed pool);
@@ -39,6 +39,7 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @param _apyManager The address of the APYManager contract.
      */
     constructor(address _apyManager) {
+        require(_apyManager != address(0), "Invalid APY manager address");
         apyManager = IAdvancedAPYManager(_apyManager);
     }
 
@@ -46,19 +47,20 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @notice Registers a pool to start accruing rewards, initializing the reward mechanism.
      * @param pool The address of the pool to register.
      * @param rewardToken The ERC20 token used as the reward token.
-     * @param isFlashPool Checks the pool type
+     * @param isFlashPool Indicates if the pool is a flash pool.
      */
-    function registerPool(address pool, address rewardToken, bool isFlashPool) public override {
+    function registerPool(address pool, address rewardToken, bool isFlashPool) external override {
         require(pool != address(0) && rewardToken != address(0), "Invalid addresses");
         rewardDetails[pool] = RewardDetails({
             rewardToken: IERC20(rewardToken),
             rewardsAccrued: 0,
             lastRewardBlock: block.number,
-            rewardRate: 0,  
+            rewardRate: 0,
             totalInterestRewards: 0,
             lenderClaimedRewards: 0,
             borrowerClaimedRewards: 0,
-            isFlashPool: isFlashPool
+            isFlashPool: isFlashPool,
+            isAccruing: true 
         });
         emit PoolRegistered(pool);
     }
@@ -68,13 +70,16 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @param pool The address of the TuliaPool.
      * @param isLender True if the lender is claiming, false if the borrower.
      */
-    function claimRewards(address pool, bool isLender) public override nonReentrant {
+    function claimRewards(address pool, bool isLender) external override nonReentrant {
+        accrueRewards(pool);
+
         RewardDetails storage details = rewardDetails[pool];
         TuliaPool poolContract = TuliaPool(pool);
         address claimant = isLender ? poolContract.getLender() : poolContract.getBorrower();
 
         require(msg.sender == claimant, "Not authorized to claim rewards");
-        uint256 claimableRewards = calculateClaimableRewards(details, isLender, pool);
+
+        uint256 claimableRewards = _calculateClaimableRewards(details, isLender, pool);
         require(claimableRewards > 0, "No rewards to claim");
 
         if (isLender) {
@@ -89,26 +94,75 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
 
     /**
      * @notice Calculates claimable rewards for either the lender or the borrower based on their share of the interest rewards.
-     * @param details The reward details for the pool.
+     * @param pool The address of the pool.
      * @param isLender True if calculating for the lender, false for the borrower.
      * @return uint256 The amount of rewards that can be claimed.
      */
-    function calculateClaimableRewards(RewardDetails storage details, bool isLender, address pool)  internal view returns (uint256) {
+    function calculateClaimableRewards(address pool, bool isLender) external view returns (uint256) {
+        RewardDetails storage details = rewardDetails[pool];
+        return _calculateClaimableRewards(details, isLender, pool);
+    }
+
+    /**
+     * @notice Internal function to calculate claimable rewards.
+     * @param details The reward details for the pool.
+     * @param isLender True if calculating for the lender, false for the borrower.
+     * @param pool The address of the pool.
+     * @return uint256 The amount of rewards that can be claimed.
+     */
+    function _calculateClaimableRewards(RewardDetails storage details, bool isLender, address pool) internal view returns (uint256) {
+        if (!details.isAccruing) {
+            return 0; // Return 0 if the pool is not accruing rewards
+        }
+
+        // Calculate rewards dynamically based on the number of blocks passed since the last update
+        TuliaPool poolContract = TuliaPool(pool);
+        uint256 loanAmount = poolContract.getLoanAmount();
+        uint256 loanDuration = details.isFlashPool ? 30 days : poolContract.getRepaymentPeriod();
+
+        uint256 currentAPY = apyManager.calculateAPY(loanAmount, loanDuration);
+        uint256 rewardRate = currentAPY / 10000; // Convert basis points to a percentage for calculations
+
+        uint256 blocksPassed = block.number - details.lastRewardBlock;
+        uint256 dynamicReward = blocksPassed * rewardRate;
+
+        uint256 totalRewards = details.rewardsAccrued + dynamicReward;
+
         uint256 totalInterest = details.totalInterestRewards;
-        uint256 nonInterestRewards = details.rewardsAccrued - totalInterest;
-        if (isLender) {
-            uint256 lenderTotalRewards = TuliaPool(pool).getLoanState() == TuliaPool.LoanState.ACTIVE ? (nonInterestRewards + totalInterest / 2) : nonInterestRewards;
-            return lenderTotalRewards - details.lenderClaimedRewards;
+        uint256 nonInterestRewards = totalRewards - totalInterest;
+
+        if (poolContract.getBorrower() == address(0)) {
+            // Loan is not activated
+            return isLender ? totalRewards - details.lenderClaimedRewards : 0;
         } else {
-            uint256 borrowerTotalRewards = nonInterestRewards / 2;
-            return borrowerTotalRewards - details.borrowerClaimedRewards;
+            // Loan is activated, split rewards between lender and borrower
+            uint256 lenderTotalRewards = nonInterestRewards + totalInterest / 2;
+            uint256 borrowerTotalRewards = totalInterest / 2;
+
+            if (isLender) {
+                return lenderTotalRewards - details.lenderClaimedRewards;
+            } else {
+                return borrowerTotalRewards - details.borrowerClaimedRewards;
+            }
         }
     }
-    
-    /// @param pool The address of the pool for which to accrue rewards.
+
+    /**
+     * @notice Accrues rewards for a specific pool based on the current APY and block difference.
+     * @param pool The address of the pool for which to accrue rewards.
+     */
     function accrueRewards(address pool) public override {
         RewardDetails storage details = rewardDetails[pool];
         TuliaPool poolContract = TuliaPool(pool);
+
+        // Check the loan state and set isAccruing accordingly
+        TuliaPool.LoanState loanState = poolContract.getLoanState();
+        details.isAccruing = (loanState == TuliaPool.LoanState.ACTIVE || loanState == TuliaPool.LoanState.PENDING || loanState == TuliaPool.LoanState.CREATED);
+
+        if (!details.isAccruing) {
+            return; // Exit if the pool is not accruing rewards
+        }
+
         uint256 loanAmount = poolContract.getLoanAmount();
         uint256 loanDuration = details.isFlashPool ? 30 days : poolContract.getRepaymentPeriod();
 
@@ -124,11 +178,12 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
 
         emit RewardAccrued(pool, reward);
     }
+
     /**
      * @notice Deregisters a pool, stopping it from accruing further rewards.
      * @param pool The address of the pool to deregister.
      */
-    function deregisterPool(address pool) public override {
+    function deregisterPool(address pool) external override {
         require(pool != address(0), "Invalid pool address");
         delete rewardDetails[pool];
         emit PoolDeregistered(pool);

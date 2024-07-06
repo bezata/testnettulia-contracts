@@ -14,11 +14,6 @@
 					},
 					{
 						"internalType": "address",
-						"name": "_permit2",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
 						"name": "_rewardManager",
 						"type": "address"
 					},
@@ -152,19 +147,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "permit2",
-				"outputs": [
-					{
-						"internalType": "contract IPermit2",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "poolOrganizer",
 				"outputs": [
 					{
@@ -224,8 +206,31 @@
 		],
 		"devdoc": {
 			"details": "A factory for creating and managing TuliaPool and TuliaFlashPool contracts.",
+			"events": {
+				"PoolCreated(address,address,address,uint8)": {
+					"params": {
+						"lender": "The address of the lender initiating the pool.",
+						"pool": "The address of the newly created pool.",
+						"poolType": "The type of the pool (standard or flash loan).",
+						"vault": "The address of the vault associated with the pool."
+					}
+				},
+				"VaultCreated(address,address)": {
+					"params": {
+						"assetToken": "The address of the asset token used as collateral.",
+						"vault": "The address of the newly created vault."
+					}
+				}
+			},
 			"kind": "dev",
 			"methods": {
+				"constructor": {
+					"params": {
+						"_poolOrganizer": "The address of the Pool Organizer contract.",
+						"_rewardManager": "The address of the Reward Manager contract.",
+						"_vaultManager": "The address of the Vault Manager contract."
+					}
+				},
 				"createTuliaPool(address,address,address,address,uint256,uint256,uint256,address,uint8,uint256)": {
 					"params": {
 						"assetToken": "ERC20 token address used as collateral.",
@@ -249,8 +254,19 @@
 			"version": 1
 		},
 		"userdoc": {
+			"events": {
+				"PoolCreated(address,address,address,uint8)": {
+					"notice": "Emitted when a new pool is created."
+				},
+				"VaultCreated(address,address)": {
+					"notice": "Emitted when a new vault is created."
+				}
+			},
 			"kind": "user",
 			"methods": {
+				"constructor": {
+					"notice": "Constructs the TuliaPoolFactory contract."
+				},
 				"createTuliaPool(address,address,address,address,uint256,uint256,uint256,address,uint8,uint256)": {
 					"notice": "Creates a new TuliaPool or TuliaFlashPool depending on the specified pool type."
 				}
@@ -275,6 +291,22 @@
 		"viaIR": true
 	},
 	"sources": {
+		"@openzeppelin/contracts/access/AccessControl.sol": {
+			"keccak256": "0xa0e92d42942f4f57c5be50568dac11e9d00c93efcb458026e18d2d9b9b2e7308",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://46326c0bb1e296b67185e81c918e0b40501b8b6386165855df0a3f3c634b6a80",
+				"dweb:/ipfs/QmTwyrDYtsxsk6pymJTK94PnEpzsmkpUxFuzEiakDopy4Z"
+			]
+		},
+		"@openzeppelin/contracts/access/IAccessControl.sol": {
+			"keccak256": "0xb6b36edd6a2999fd243ff226d6cbf84bd71af2432bbd0dfe19392996a1d9cb41",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1fd2f35495652e57e3f99bc6c510bc5f7dd398a176ea2e72d8ed730aebc6ca26",
+				"dweb:/ipfs/QmTQV6X4gkikTib49cho5iDX3JvSQbdsoEChoDwrk3CbbH"
+			]
+		},
 		"@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol": {
 			"keccak256": "0x9f9e6dba43fe0775c400aa384375f1f503efaf733a40187169fdfc195f5ea6fa",
 			"license": "MIT",
@@ -379,6 +411,22 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+			"keccak256": "0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1777404f1dcd0fac188e55a288724ec3c67b45288e49cc64723e95e702b49ab8",
+				"dweb:/ipfs/QmZFdC626GButBApwDUvvTnUzdinevC3B24d7yyh57XkiA"
+			]
+		},
+		"@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0x4296879f55019b23e135000eb36896057e7101fb7fb859c5ef690cf14643757b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://87b3541437c8c443ccd36795e56a338ed12855eec17f8da624511b8d1a7e14df",
+				"dweb:/ipfs/QmeJQCtZrQjtJLr6u7ZHWeH3pBnjtLWzvRrKViAi7UZqxL"
+			]
+		},
 		"@openzeppelin/contracts/utils/math/Math.sol": {
 			"keccak256": "0x005ec64c6313f0555d59e278f9a7a5ab2db5bdc72a027f255a37c327af1ec02d",
 			"license": "MIT",
@@ -420,11 +468,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
-			"keccak256": "0xe6cb532077a4d0f82d154a08e30ca766643c902e959e4519e1c78bac567a02d0",
+			"keccak256": "0x0ce052094139df49200b21b6c088c9997ddc2c688f4528d1fcdfb0c0414080a1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3277ee67833de684424740208b2a6c823ebd5a2deff2d1c404c60903bf27432e",
-				"dweb:/ipfs/QmZaQyFB5veNsF4hAoRW1xLWYDHZyV6SeZuoxCRozXAMWx"
+				"bzz-raw://4c18bdcccf32a2a9e7fb8e347b80d09032c8fe64dcb02e6b92a4b99c6d7a16a8",
+				"dweb:/ipfs/QmVprNk8mRzHy6GWT6bhBPmgtj3U3rkN8LamBAwES92GMh"
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
@@ -452,35 +500,35 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0xafa5fdcd6e1471283a17724fb71510176cd2c239a9713c3d71d26e6d1b6fee35",
+			"keccak256": "0xec089ac3b0cfcd83896c5e1dad1cd800e57b55a603ff5b8a3c5bbb362c00062d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://627b4b7505ccabdd4247414bd1c3f704e3e7da11fffeafccf1095ddfe4a3927b",
-				"dweb:/ipfs/QmWzVQ1grrceU5YcSfW7w8RZtPqLNVrB26jhHmUQN8SYd1"
+				"bzz-raw://66ddb3a4396b081b00e5402c9385309d72fe6d71fbab0da19c8870fa3b8c94da",
+				"dweb:/ipfs/QmQfyQnZo2qwPCmDiJbwWLMXVD8YDuhavFNPRLJmqNMxPY"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xc597a4fffb91b136c105b45ccc8f79c2b5cc947a04ee8898dd5269b916c7bb7f",
+			"keccak256": "0x040a0d9a4f8d1d891aafa904804437a607c7cce741aa09cc8dccd51ac00e1711",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ec8ea619812968f4c3457fc2693b1f44130a0ddf3e3bac9949ce0b2210d4ce96",
-				"dweb:/ipfs/QmTMAbq9K1DHHHDiE4zkeCVrVne7wctzaka3zwp65TUprX"
+				"bzz-raw://d7be3ddf2ce02ca3a7d48bceeb295c83457c01ec6792b71575dcec819f8c9910",
+				"dweb:/ipfs/QmeTV28AsbCsUFxoq4q3xEVLNKaFswAXUWVvuvPQ9x4ETL"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPoolFactory.sol": {
-			"keccak256": "0x8052ccb3e2f63633ff6b64f8305cf95271fe3fd5dfe0454ac579d934ebacca1b",
+			"keccak256": "0x3abb77025713b864477bc715a4c36cec0ad59ce3e49348ab900e29b8aaf32310",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://378f55d746c96b6ac2aa0878b031c44fab3245222324e67abde991492f3a6018",
-				"dweb:/ipfs/Qma8748bvz9RpUPuG1cmhuiAyBpJ4tbyWKY4SmVj7ZRtJn"
+				"bzz-raw://5e65015239e07c55a89dba9485b93416653194f0b48d96c654cc7c7321a89a0a",
+				"dweb:/ipfs/Qma5897uGHo5LbWRkGPydHZe8H914WrAqwcDWjaxDVALMz"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {
-			"keccak256": "0x78e9881f8512638a50cd7dee0adf71beac4ce17a22e8b265b71b31092703d153",
+			"keccak256": "0xdfa11ca777bded799c55db7df65fb13b055d21d78ce7522c09f378391e6c20d9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f74a3d9d8003d54ea7f750e998474a383ebc9747bf7e09456e66faea9e2cab47",
-				"dweb:/ipfs/QmYyAwTVuJbvPWNRED7o5wPcoi48jydvQunsqNw8fSZjEy"
+				"bzz-raw://57b6a5332b4eb7b8a792d724ba60dc1ca65e82e7341d28e6389047ebc3addbc2",
+				"dweb:/ipfs/Qma9cTB2tEcC32YQqTe95qDxMd55Ab8Wfggajdcundys6D"
 			]
 		}
 	},

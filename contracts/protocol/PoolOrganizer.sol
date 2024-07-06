@@ -21,6 +21,7 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
     mapping(address => address[]) private lenderPools;
     mapping(address => address) public poolVaults;
     mapping(address => address[]) private borrowerPools;
+    mapping(address => LoanState) private loanStates;
 
     /**
      * @dev Emitted when a new pool is registered.
@@ -57,6 +58,18 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
      * @param vault The address of the registered vault.
      */
     event VaultRegistered(address indexed pool, address indexed vault);
+
+    /**
+     * @dev Emitted when the loan state of a pool is updated.
+     * @param pool The address of the pool.
+     * @param oldState The previous state of the loan.
+     * @param newState The new state of the loan.
+     */
+    event LoanStateUpdated(
+        address indexed pool,
+        LoanState oldState,
+        LoanState newState
+    );
 
     /**
      * @dev Constructor that grants the deployer the admin and pool manager roles.
@@ -112,11 +125,26 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
             interestRate: interestRate,
             repaymentPeriod: repaymentPeriod,
             poolType: poolType,
-            funded: false
+            funded: false,
+            loanState: LoanState.CREATED,
+            pool: pool
         });
         lenderPools[lender].push(pool);
         pools.push(pool);
+        loanStates[pool] = LoanState.CREATED;
         emit PoolRegistered(pool, lender, borrower, vault, poolType);
+    }
+
+    /**
+     * @notice Updates the loan state of the specified pool and emits a `LoanStateUpdated` event.
+     * @param pool The address of the pool.
+     * @param newState The new state of the loan.
+     */
+    function updateLoanState(address pool, LoanState newState) external {
+        require(poolDetails[pool].lender != address(0), "Pool not registered");
+        LoanState oldState = loanStates[pool];
+        loanStates[pool] = newState;
+        emit LoanStateUpdated(pool, oldState, newState);
     }
 
     /**
@@ -124,11 +152,18 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
      * @dev Marks the specified pool as funded.
      * @param pool The address of the pool to mark as funded.
      */
-    function markPoolAsFunded(address pool)
-        external
-    {
+    function markPoolAsFunded(address pool) external {
         require(poolDetails[pool].lender != address(0), "Pool not registered");
         poolDetails[pool].funded = true;
+    }
+
+    /**
+     * @notice Gets the current loan state of a specific pool.
+     * @param pool The address of the pool.
+     * @return The current loan state of the pool.
+     */
+    function getLoanState(address pool) external view returns (LoanState) {
+        return loanStates[pool];
     }
 
     /**
@@ -167,6 +202,28 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
     }
 
     /**
+     * @notice Gets the details of all pools associated with a borrower.
+     * @param borrower The address of the borrower.
+     * @return An array of pool details.
+     */
+    function getBorrowerPoolDetails(address borrower)
+        external
+        view
+        returns (IPoolOrganizer.PoolDetails[] memory)
+    {
+        address[] memory borrowerPoolsArray = borrowerPools[borrower];
+        IPoolOrganizer.PoolDetails[]
+            memory details = new IPoolOrganizer.PoolDetails[](
+                borrowerPoolsArray.length
+            );
+
+        for (uint256 i = 0; i < borrowerPoolsArray.length; i++) {
+            details[i] = poolDetails[borrowerPoolsArray[i]];
+        }
+        return details;
+    }
+
+    /**
      * @notice Deregisters a pool.
      * @dev Deregisters the specified pool and emits a `PoolDeregistered` event.
      * @param pool The address of the pool to deregister.
@@ -179,6 +236,7 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
         _removePoolFromMainArray(pool);
 
         delete poolDetails[pool];
+        delete loanStates[pool];
         emit PoolDeregistered(pool);
     }
 
@@ -187,9 +245,7 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
      * @param pool The address of the pool.
      * @param newBorrower The address of the new borrower.
      */
-    function setBorrowerForPool(address pool, address newBorrower)
-        external
-    {
+    function setBorrowerForPool(address pool, address newBorrower) external {
         require(poolDetails[pool].lender != address(0), "Pool not registered");
         require(
             newBorrower != address(0),
@@ -314,9 +370,7 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
      * @param pool The address of the pool.
      * @param vault The address of the vault.
      */
-    function registerVault(address pool, address vault)
-        external
-    {
+    function registerVault(address pool, address vault) external {
         require(pool != address(0) && vault != address(0), "Invalid addresses");
         require(poolDetails[pool].lender != address(0), "Pool not registered");
         require(
