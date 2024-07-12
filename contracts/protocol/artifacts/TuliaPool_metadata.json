@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -85,6 +85,11 @@
 					}
 				],
 				"name": "AccessControlUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ReentrancyGuardReentrantCall",
 				"type": "error"
 			},
 			{
@@ -455,6 +460,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "getRemainingRepaymentPeriod",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getRepaymentPeriod",
 				"outputs": [
 					{
@@ -742,6 +760,11 @@
 					{
 						"details": "The `account` is missing a role."
 					}
+				],
+				"ReentrancyGuardReentrantCall()": [
+					{
+						"details": "Unauthorized reentrant call."
+					}
 				]
 			},
 			"events": {
@@ -854,6 +877,12 @@
 						"_0": "The current state of the loan."
 					}
 				},
+				"getRemainingRepaymentPeriod()": {
+					"details": "Returns 0 if the loan is past due or if it has not yet been activated.",
+					"returns": {
+						"_0": "The remaining repayment period in seconds."
+					}
+				},
 				"getRepaymentPeriod()": {
 					"returns": {
 						"_0": "The repayment period of the loan."
@@ -951,6 +980,9 @@
 				"getLoanState()": {
 					"notice": "Retrieves the current state of the loan."
 				},
+				"getRemainingRepaymentPeriod()": {
+					"notice": "Calculates the remaining repayment period of the loan in seconds."
+				},
 				"getRepaymentPeriod()": {
 					"notice": "Retrieves the repayment period of the loan."
 				},
@@ -958,10 +990,7 @@
 					"notice": "Retrieves the repayment token."
 				},
 				"reclaimLoanAndClosePool()": {
-					"notice": "Allows the lender to reclaim the loan amount and close the pool if the borrower does not exist. "
-				},
-				"repay()": {
-					"notice": "Handles the repayment process, segregating responsibilities into modular functions."
+					"notice": "Allows the lender to reclaim the loan amount and close the pool if the borrower does not exist."
 				}
 			},
 			"notice": "Manages the lifecycle of loans including creation, funding, repayment, and defaults.",
@@ -972,7 +1001,7 @@
 		"compilationTarget": {
 			"contracts/contracts/protocol/TuliaPool.sol": "TuliaPool"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -981,7 +1010,8 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
 		"@openzeppelin/contracts/access/AccessControl.sol": {
@@ -1014,14 +1044,6 @@
 			"urls": [
 				"bzz-raw://ea290300e0efc4d901244949dc4d877fd46e6c5e43dc2b26620e8efab3ab803f",
 				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
-			]
-		},
-		"@openzeppelin/contracts/security/ReentrancyGuard.sol": {
-			"keccak256": "0xa535a5df777d44e945dd24aa43a11e44b024140fc340ad0dfe42acf4002aade1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://41319e7f621f2dc3733511332c4fd032f8e32ad2aa7fd6f665c19741d9941a34",
-				"dweb:/ipfs/QmcYR3bd862GD1Bc7jwrU9bGxrhUu5na1oP964bDCu2id1"
 			]
 		},
 		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
@@ -1088,6 +1110,14 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+			"keccak256": "0xf980daa263b661ab8ddee7d4fd833c7da7e7995e2c359ff1f17e67e4112f2236",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7448ab095d6940130bcf76ba47a2eab14148c83119523b93dd89f6d84edd6c02",
+				"dweb:/ipfs/QmawrZ4voKQjH3oomXT3Kuheb3Mnmo2VvVpxg8Ne5UJUrd"
+			]
+		},
 		"@openzeppelin/contracts/utils/introspection/ERC165.sol": {
 			"keccak256": "0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133",
 			"license": "MIT",
@@ -1129,11 +1159,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
+			"keccak256": "0x7cc26fedce851c23bbb6543528c2341a9f482d4dbd914861c90c6f18ac2a758a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
-				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
+				"bzz-raw://ab650267dc4615bb32a41f3154a7fbce0b8b7a8f10ff67701f7ab1b0088d6af5",
+				"dweb:/ipfs/QmeJWqHULBijdCe3ZEHYZcEYZqtgbo4VrKiwsYi54LjPvP"
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {
@@ -1145,11 +1175,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xe12f6c6e1803ed339f2bea54f96ce72932f0454ad230c6d544e554a5d32ddb51",
+			"keccak256": "0x72a5dd2bac825b5661d27eb3700750d529a00442673fcc42b9db2089f656a5ef",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0ccdc5891e16b6be8dc66ac49eead2021fc9c2902ea248b4d3e0f1ce5cbadfe4",
-				"dweb:/ipfs/QmNZ4LXLAbb3dF6aXrGkRnBz5hFfGpsvobGrA2gcfJWBcx"
+				"bzz-raw://2e591d3623136e09669843ca306f8b487a453edd20d4ca59e405d5d2bb22a099",
+				"dweb:/ipfs/QmVFQ34bAS34ffUyb5Bi4V1gaiarXi9xdGF6xEhpFJoN2k"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

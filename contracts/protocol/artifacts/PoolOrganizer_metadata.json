@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -1259,7 +1259,7 @@
 		"compilationTarget": {
 			"contracts/contracts/protocol/PoolOrganizer.sol": "PoolOrganizer"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1268,7 +1268,8 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
 		"@openzeppelin/contracts/access/AccessControl.sol": {
@@ -1328,11 +1329,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
+			"keccak256": "0xabecc155181d61f5aa35a0f84d78ce2d732ad21c3eb0be7b85bdf42210f532c7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
-				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
+				"bzz-raw://8f339fedbe7335b8b089d6cc864a85f58673a77e5c4216061bc96f1a59a3a109",
+				"dweb:/ipfs/QmdxJoLaTrUMKVD6TRAxABTwNNT4B5vzwbF9PwBTbqK55y"
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {
@@ -1344,11 +1345,11 @@
 			]
 		},
 		"contracts/contracts/protocol/PoolOrganizer.sol": {
-			"keccak256": "0xdc43e2a49512cfa08faec1371d4de45c454d18667f99a310331ec146bada5e6c",
+			"keccak256": "0xb1654da238c68efebd238c35eb6e09cbacd1172f22033b690956807a41fedfb8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://235b06b0e2d17d358c55f20f43b53be2de19539c4ad126835154883ad7b88ab0",
-				"dweb:/ipfs/Qmdrb9Ya5AkRPDkSeUWLXrvD9cFa6rQpejRokj438T2ns9"
+				"bzz-raw://62122bb4d43e3e32aec7c5d4ef88f2d7524061505d6e395b1895b432e99c205f",
+				"dweb:/ipfs/QmV7awDL7uu8hX2cY6N9v8GahAWc2q11gFd5q9sbtDPhg8"
 			]
 		}
 	},

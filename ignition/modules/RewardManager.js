@@ -1,10 +1,10 @@
 // ignition/modules/RewardManager.js
 const { buildModule } = require("@nomicfoundation/hardhat-ignition/modules");
-const AdvancedAPYManager = require("./AdvancedAPYManager");
 
 module.exports = buildModule("RewardManager", (m) => {
-  const { advancedAPYManager } = m.useModule(AdvancedAPYManager);
-  const rewardManager = m.contract("RewardManager", [advancedAPYManager]);
+  const rewardManager = m.contract("RewardManager", [
+    "0x4e6acfc41ca9c367Af36352023f985f0B4DDEd28",
+  ]);
 
   return { rewardManager };
 });

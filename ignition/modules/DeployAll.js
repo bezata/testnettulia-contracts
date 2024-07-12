@@ -16,35 +16,10 @@ const MockARB = require("./MockARB");
 const MockTulia = require("./MockTulia");
 
 module.exports = buildModule("DeployAll", (m) => {
-  const { simpleInterest } = m.useModule(SimpleInterest);
-  const { advancedAPYManager } = m.useModule(AdvancedAPYManager);
-  const { emissionManager } = m.useModule(EmissionManager);
+
   const { rewardManager } = m.useModule(RewardManager);
-  const { vaultManager } = m.useModule(VaultManager);
-  const { poolOrganizer } = m.useModule(PoolOrganizer);
-  const { bulkMinter } = m.useModule(BulkMinter);
-  const { mockDAI } = m.useModule(MockDAI);
-  const { mockUSDC } = m.useModule(MockUSDC);
-  const { mockUNI } = m.useModule(MockUNI);
-  const { mockWBTC } = m.useModule(MockWBTC);
-  const { mockETH } = m.useModule(MockETH);
-  const { mockARB } = m.useModule(MockARB);
-  const { mockTulia } = m.useModule(MockTulia);
 
   return {
-    simpleInterest,
-    advancedAPYManager,
-    emissionManager,
     rewardManager,
-    vaultManager,
-    poolOrganizer,
-    bulkMinter,
-    mockDAI,
-    mockUSDC,
-    mockUNI,
-    mockWBTC,
-    mockETH,
-    mockARB,
-    mockTulia,
   };
 });

@@ -119,7 +119,7 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
                 address(repaymentTokenAddress) != address(0),
             "Invalid input addresses"
         );
-        _grantRole(DEFAULT_ADMIN_ROLE, lender); 
+        _grantRole(DEFAULT_ADMIN_ROLE, lender);
         _grantRole(LENDER_ROLE, lender);
         poolOrganizer = IPoolOrganizer(poolOrganizerAddress);
         vaultManager = IVaultManager(vaultManagerAddress);
@@ -165,6 +165,7 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
     function _checkPreconditions() internal view {
         require(state == LoanState.PENDING, "Loan not ready to activate");
         address borrower = msg.sender;
+
         require(borrower != address(0), "Invalid borrower address");
         require(borrower != loanDetails.lender, "Lender cannot be borrower");
 
@@ -186,6 +187,7 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
     /// @dev Handles the transfer and deposit of collateral.
     function _handleCollateral() internal {
         address borrower = msg.sender;
+        rewardManager.registerBorrower(address(this), borrower);
         uint256 collateralAmount = calculateRequiredCollateral();
         uint256 netCollateral = loanDetails.loanAmount; // Collateral without interest
         uint256 netInterest = calculateInterest(); // Collateral interest amount
@@ -240,8 +242,7 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
         state = LoanState.PENDING;
         rewardManager.registerPool(
             address(this),
-            address(loanDetails.loanToken),
-            false
+            address(loanDetails.loanToken)
         );
         poolOrganizer.markPoolAsFunded(address(this));
         poolOrganizer.updateLoanState(
@@ -281,14 +282,18 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
         return block.timestamp >= dueDate;
     }
 
-    /// @dev Handles the default by redeeming collateral to the lender and updating state.
+    /**
+     * @dev Handles the default by redeeming collateral to the lender and updating state.
+     */
     function _handleDefault() private {
         _redeemCollateralToLender();
         vaultManager.handleDefault(address(this), loanDetails.lender);
         _transitionToClosed();
     }
 
-    /// @dev Redeems collateral to the lender in case of default.
+    /**
+     * @dev Redeems collateral to the lender in case of default.
+     */
     function _redeemCollateralToLender() private {
         uint256 collateralAmount = loanDetails.collateralVault.balanceOf(
             loanDetails.borrower
@@ -303,7 +308,6 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
         );
     }
 
-    /// @notice Handles the repayment process, segregating responsibilities into modular functions.
     function repay() external nonReentrant {
         require(
             loanDetails.borrower == msg.sender,
@@ -315,18 +319,31 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
         );
 
         uint256 totalRepayment = calculateRequiredCollateral();
-        uint256 interestAmount = calculateInterest();
-        uint256 principalAmount = totalRepayment - interestAmount;
+        uint256 principalAmount = loanDetails.loanAmount;
 
+        // Validate repayment amount and allowances
         _validateRepayment(totalRepayment);
+
+        // Transfer the principal repayment to the lender
         _transferFunds(msg.sender, principalAmount);
+
+        // Refund any remaining interest to the borrower
         _refundRemainingInterest();
-        _releaseCollateral(principalAmount);
+
+        // Release the collateral from the vault back to the borrower
+        _releaseCollateral();
+
+        // Update the loan state to REPAID and handle cleanup
         _updateLoanStateToRepaid();
+
+        // Close the loan
+        _closeLoan();
     }
 
-    /// @dev Ensures that the borrower has enough tokens approved and available for the repayment.
-    /// @param totalRepayment The total amount required for repayment.
+    /**
+     * @dev Ensures that the borrower has enough tokens approved and available for the repayment.
+     * @param totalRepayment The total amount required for repayment.
+     */
     function _validateRepayment(uint256 totalRepayment) private view {
         require(
             loanDetails.repaymentToken.allowance(msg.sender, address(this)) >=
@@ -339,9 +356,11 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
         );
     }
 
-    /// @dev Transfers the principal repayment to the lender.
-    /// @param borrower The address of the borrower.
-    /// @param principalAmount The amount of the principal.
+    /**
+     * @dev Transfers the principal repayment to the lender.
+     * @param borrower The address of the borrower.
+     * @param principalAmount The amount of the principal.
+     */
     function _transferFunds(address borrower, uint256 principalAmount) private {
         loanDetails.repaymentToken.transferFrom(
             borrower,
@@ -350,16 +369,22 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
         );
     }
 
-    /// @dev Refunds any remaining interest to the borrower after loan repayment.
+    /**
+     * @dev Refunds any remaining interest to the borrower after loan repayment.
+     */
     function _refundRemainingInterest() private {
         vaultManager.refundRemainingInterest(address(this), msg.sender);
     }
 
-    /// @dev Releases the collateral from the vault back to the borrower.
-    /// @param principalAmount The amount of the principal.
-    function _releaseCollateral(uint256 principalAmount) private {
+    /**
+     * @dev Releases the collateral from the vault back to the borrower.
+     */
+    function _releaseCollateral() private {
+        uint256 collateralBalance = loanDetails.collateralVault.balanceOf(
+            loanDetails.borrower
+        );
         uint256 sharesToRedeem = loanDetails.collateralVault.convertToShares(
-            principalAmount
+            collateralBalance
         );
         loanDetails.collateralVault.redeem(
             sharesToRedeem,
@@ -368,31 +393,39 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
         );
     }
 
-    /// @dev Updates the state of the loan to REPAID and handles any cleanup.
+    /**
+     * @dev Updates the state of the loan to REPAID and handles any cleanup.
+     */
     function _updateLoanStateToRepaid() private {
         state = LoanState.REPAID;
-        loanDetails.repaymentToken.transfer(
-            msg.sender,
-            loanDetails.repaymentToken.balanceOf(address(this))
-        ); // Last check if any borrower's collateral remains before loan closed.
-        _closeLoan();
+        uint256 remainingBalance = loanDetails.repaymentToken.balanceOf(
+            address(this)
+        );
+        if (remainingBalance > 0) {
+            loanDetails.repaymentToken.transfer(msg.sender, remainingBalance);
+        }
+
         poolOrganizer.updateLoanState(
             address(this),
             IPoolOrganizer.LoanState.REPAID
         );
+
         emit RepaymentMade(calculateRequiredCollateral());
     }
 
-    /// @dev Closes the loan, deregistering it from various managers and updating state.
+    /**
+     * @dev Closes the loan, deregistering it from various managers and updating state.
+     */
     function _closeLoan() internal {
         state = LoanState.CLOSED;
         poolOrganizer.updateLoanState(
             address(this),
             IPoolOrganizer.LoanState.CLOSED
         );
-        poolOrganizer.deregisterPool(address(this));
+
         vaultManager.deregisterVault(address(this));
         rewardManager.deregisterPool(address(this));
+        poolOrganizer.deregisterPool(address(this));
 
         emit LoanClosed();
     }
@@ -427,10 +460,11 @@ contract TuliaPool is ReentrancyGuard, AccessControl {
     /// @notice Calculates the total interest for the full term of the loan using an external interest model.
     /// @return The total interest amount.
     function calculateInterest() public view returns (uint256) {
-        return loanDetails.interestModel.calculateInterest(
-            loanDetails.loanAmount,
-            loanDetails.interestRate
-        );
+        return
+            loanDetails.interestModel.calculateInterest(
+                loanDetails.loanAmount,
+                loanDetails.interestRate
+            );
     }
 
     /// @notice Calculates the required collateral based on the interest and principal.

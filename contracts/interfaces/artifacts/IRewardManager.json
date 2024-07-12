@@ -52,7 +52,8 @@
 			"accrueRewards(address)": "3d39955c",
 			"claimRewards(address,bool)": "491c011a",
 			"deregisterPool(address)": "7e72c7d7",
-			"registerPool(address,address,bool)": "77ff76e7"
+			"registerBorrower(address,address)": "06846e05",
+			"registerPool(address,address)": "7286e5e5"
 		}
 	},
 	"abi": [
@@ -109,13 +110,26 @@
 				},
 				{
 					"internalType": "address",
-					"name": "rewardToken",
+					"name": "borrower",
+					"type": "address"
+				}
+			],
+			"name": "registerBorrower",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "pool",
 					"type": "address"
 				},
 				{
-					"internalType": "bool",
-					"name": "isFlashPool",
-					"type": "bool"
+					"internalType": "address",
+					"name": "rewardToken",
+					"type": "address"
 				}
 			],
 			"name": "registerPool",

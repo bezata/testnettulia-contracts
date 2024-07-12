@@ -8,9 +8,9 @@ import "./TuliaFlashPool.sol";
 import "../interfaces/IPoolOrganizer.sol";
 import "./TuliaVault.sol";
 import "../interfaces/IInterestModel.sol";
-import "../interfaces/IPermit2.sol";
 import "../interfaces/IRewardManager.sol";
 import "../interfaces/IVaultManager.sol";
+import "../interfaces/IFlashPoolRewardManager.sol";
 
 /// @title TuliaPoolFactory
 /// @dev A factory for creating and managing TuliaPool and TuliaFlashPool contracts.
@@ -18,6 +18,7 @@ contract TuliaPoolFactory {
     IPoolOrganizer public poolOrganizer;
     IRewardManager public rewardManager;
     IVaultManager public vaultManager;
+    IFlashPoolRewardManager public flashPoolRewardManager;
     mapping(address => TuliaVault) public vaults;
 
     /// @notice Emitted when a new pool is created.
@@ -44,7 +45,8 @@ contract TuliaPoolFactory {
     constructor(
         address _poolOrganizer,
         address _rewardManager,
-        address _vaultManager
+        address _vaultManager,
+        address _flashPoolRewardManager
     ) {
         require(
             _poolOrganizer != address(0),
@@ -58,10 +60,15 @@ contract TuliaPoolFactory {
             _vaultManager != address(0),
             "VaultManager cannot be the zero address"
         );
+         require(
+            _flashPoolRewardManager != address(0),
+            "FlashPoolRewardManager cannot be the zero address"
+        );
 
         poolOrganizer = IPoolOrganizer(_poolOrganizer);
         rewardManager = IRewardManager(_rewardManager);
         vaultManager = IVaultManager(_vaultManager);
+        flashPoolRewardManager = IFlashPoolRewardManager(_flashPoolRewardManager);
     }
 
     /// @notice Creates a new TuliaPool or TuliaFlashPool depending on the specified pool type.
@@ -139,9 +146,9 @@ contract TuliaPoolFactory {
             TuliaFlashPool flashPool = new TuliaFlashPool(
                 IERC20(loanTokenAddress),
                 optionalFlashLoanFeeRate,
-                poolOrganizer
+                poolOrganizer,
+                flashPoolRewardManager
             );
-            rewardManager.registerPool(address(this), address(loanTokenAddress), true);
             poolOrganizer.registerPool(
                 address(flashPool),
                 lender,

@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.24+commit.e11b9ed9"
 	},
 	"language": "Solidity",
 	"output": {
@@ -251,11 +251,11 @@
 			]
 		},
 		"contracts/contracts/mockFlashLoan/mockFlashLoan.sol": {
-			"keccak256": "0xbe6e268145eff4cbf8d412b682f250cc78cb5c4a7ed76a1005259ab32022d8bc",
+			"keccak256": "0xe5864cdfb19d2573e3f658dd124e84c9737ee35a850b5d1d88f10b858feb674e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://21a3e6b7ec54906a5c19f1955ee645088a5514e0df9f81b48a95c21047aeecaa",
-				"dweb:/ipfs/QmXWk9u74ESgqzqwhaYc5DsTifp1eCNZArNR6jCvFpyw5J"
+				"bzz-raw://2fabdb871296ff3c651f02548157a6b61fe7f7de0ece1d1f214b32b54fbdf8a1",
+				"dweb:/ipfs/Qme1hyJ3MjTj84767RGJJiGeHVFAvocktJ5Kz6MMeXi3AE"
 			]
 		}
 	},

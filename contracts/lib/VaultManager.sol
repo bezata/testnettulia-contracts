@@ -44,36 +44,19 @@ contract VaultManager is IVaultManager {
             "Loan must be active to register"
         );
         require(pool != address(0), "Invalid pool address");
-        IERC20 repaymentToken = IERC20(TuliaPool(pool).getRepaymentToken());
         interestInfo[pool] = InterestPaymentInfo({
-            totalInterest: 0,
+            totalInterest: TuliaPool(pool).calculateInterest(),
             paymentStartBlock: block.timestamp,
             interestPaid: 0,
             isAccruing: true
         });
-        handleInterest(pool, repaymentToken.balanceOf(address(this)));
         emit InterestAccrualToggled(pool, true);
-    }
-
-    /**
-     * @notice Handles the redemption of accrued interest from the vault using the interest payment.
-     * @param pool The address of the loan pool.
-     * @param amount The amount of interest being redeemed.
-     */
-    function handleInterest(address pool, uint256 amount) private {
-        require(
-            interestInfo[pool].isAccruing,
-            "Interest accrual is not active for this pool"
-        );
-        // Update the interest payment information.
-        InterestPaymentInfo storage info = interestInfo[pool];
-        info.totalInterest += amount;
-        emit InterestDeposited(pool, amount);
     }
 
     /**
      * @notice Handles the default scenario by securing the collateral and distributing remaining interest.
      * @param pool The address of the loan pool which has defaulted.
+     * @param lender The address of the lender.
      */
     function handleDefault(address pool, address lender) external {
         require(pool != address(0), "Invalid pool address");
@@ -154,7 +137,7 @@ contract VaultManager is IVaultManager {
     /// @param to The recipient of the interest payment.
     function distributeInterest(address pool, address to) external override {
         IERC20 repaymentToken = IERC20(TuliaPool(pool).getRepaymentToken());
-        require(TuliaPool(pool).getLender() == msg.sender, "Only Lender Request acceptable");
+        require(TuliaPool(pool).getLender() == msg.sender, "Only Lender can request interest");
         uint256 payableInterest = calculateClaimableInterest(pool);
         require(pool != address(0) && to != address(0), "Invalid address");
         require(

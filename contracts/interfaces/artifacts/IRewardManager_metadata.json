@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -58,13 +58,26 @@
 					},
 					{
 						"internalType": "address",
-						"name": "rewardToken",
+						"name": "borrower",
+						"type": "address"
+					}
+				],
+				"name": "registerBorrower",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
 						"type": "address"
 					},
 					{
-						"internalType": "bool",
-						"name": "isFlashPool",
-						"type": "bool"
+						"internalType": "address",
+						"name": "rewardToken",
+						"type": "address"
 					}
 				],
 				"name": "registerPool",
@@ -92,7 +105,13 @@
 						"pool": "The address of the pool to deregister."
 					}
 				},
-				"registerPool(address,address,bool)": {
+				"registerBorrower(address,address)": {
+					"params": {
+						"borrower": "The address of the borrower.",
+						"pool": "The address of the pool "
+					}
+				},
+				"registerPool(address,address)": {
 					"params": {
 						"pool": "The address of the pool to register.",
 						"rewardToken": "The ERC20 address for the reward token."
@@ -113,7 +132,10 @@
 				"deregisterPool(address)": {
 					"notice": "Deregisters a pool."
 				},
-				"registerPool(address,address,bool)": {
+				"registerBorrower(address,address)": {
+					"notice": "Registers borrower"
+				},
+				"registerPool(address,address)": {
 					"notice": "Registers a pool to be eligible for rewards, initializing its reward token."
 				}
 			},
@@ -124,7 +146,7 @@
 		"compilationTarget": {
 			"contracts/contracts/interfaces/IRewardManager.sol": "IRewardManager"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -133,15 +155,16 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
+			"keccak256": "0x7cc26fedce851c23bbb6543528c2341a9f482d4dbd914861c90c6f18ac2a758a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
-				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
+				"bzz-raw://ab650267dc4615bb32a41f3154a7fbce0b8b7a8f10ff67701f7ab1b0088d6af5",
+				"dweb:/ipfs/QmeJWqHULBijdCe3ZEHYZcEYZqtgbo4VrKiwsYi54LjPvP"
 			]
 		}
 	},

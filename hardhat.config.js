@@ -26,7 +26,7 @@ module.exports = {
       chainId: 1337,
     },
     arbitrumSepolia: {
-      url: `https://arb-sepolia.g.alchemy.com`,
+      url: `https://arb-sepolia.g.alchemy.com/v2/aHcOL`,
       accounts: [process.env.PRIVATE_KEY],
     },
     polygonAmoy: {
@@ -53,7 +53,7 @@ module.exports = {
   ignition: {
     strategyConfig: {
       create2: {
-        salt: "0xdc142284f7fc139c7852357d1c36ad97c4df5ddc95f883b8f849f9b34de1d017",
+        salt: "0xbd8a7ea8cfca7b4e5f5031d8d4b17bc317c5ce42cfbc42066a00cf26b43eb53f",
       },
     },
   },

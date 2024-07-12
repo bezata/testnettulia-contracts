@@ -21,6 +21,11 @@
 						"internalType": "contract IPoolOrganizer",
 						"name": "_poolOrganizer",
 						"type": "address"
+					},
+					{
+						"internalType": "contract IFlashPoolRewardManager",
+						"name": "_flashPoolRewardManager",
+						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -45,6 +50,11 @@
 					}
 				],
 				"name": "AccessControlUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "ReentrancyGuardReentrantCall",
 				"type": "error"
 			},
 			{
@@ -76,6 +86,25 @@
 					}
 				],
 				"name": "FlashLoanExecuted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "lender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "LoanClosed",
 				"type": "event"
 			},
 			{
@@ -212,6 +241,13 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "closeLoan",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -283,6 +319,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "flashPoolRewardManager",
+				"outputs": [
+					{
+						"internalType": "contract IFlashPoolRewardManager",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -293,6 +342,19 @@
 				"name": "fundLoan",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getFlashLoanState",
+				"outputs": [
+					{
+						"internalType": "enum TuliaFlashPool.FlashLoanState",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -482,6 +544,11 @@
 					{
 						"details": "The `account` is missing a role."
 					}
+				],
+				"ReentrancyGuardReentrantCall()": [
+					{
+						"details": "Unauthorized reentrant call."
+					}
 				]
 			},
 			"events": {
@@ -515,6 +582,7 @@
 					"params": {
 						"_asset": "The ERC20 token asset used for flash loans",
 						"_flashLoanFeeRate": "The initial fee rate for flash loans issued by this pool",
+						"_flashPoolRewardManager": "The FlashPool Reward Manager contract",
 						"_poolOrganizer": "The Pool Organizer contract"
 					}
 				},
@@ -541,6 +609,11 @@
 				"fundLoan(uint256)": {
 					"params": {
 						"amount": "The amount of tokens to fund"
+					}
+				},
+				"getFlashLoanState()": {
+					"returns": {
+						"_0": "The current state of the flash loan"
 					}
 				},
 				"getRoleAdmin(bytes32)": {
@@ -585,7 +658,10 @@
 			"kind": "user",
 			"methods": {
 				"asset()": {
-					"notice": "RewardManager when lender waiting.ERC20 asset used for flash loans"
+					"notice": "ERC20 asset used for flash loans"
+				},
+				"closeLoan()": {
+					"notice": "Allows the lender to close the loan and withdraw their funds if no active flash loans are present"
 				},
 				"constructor": {
 					"notice": "Constructs the TuliaFlashPool lending pool"
@@ -601,6 +677,9 @@
 				},
 				"fundLoan(uint256)": {
 					"notice": "Allows a lender to fund the pool and wait for a borrower"
+				},
+				"getFlashLoanState()": {
+					"notice": "Returns the current state of the flash loan"
 				},
 				"maxFlashLoan(address)": {
 					"notice": "Returns the maximum loanable amount of the asset"
@@ -622,7 +701,8 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
 		"@openzeppelin/contracts/access/AccessControl.sol": {
@@ -657,14 +737,6 @@
 				"dweb:/ipfs/QmQcnBK28GDH4S5uXWqAcdRY1KcusXH4CxAqp87rYLir6n"
 			]
 		},
-		"@openzeppelin/contracts/security/ReentrancyGuard.sol": {
-			"keccak256": "0xa535a5df777d44e945dd24aa43a11e44b024140fc340ad0dfe42acf4002aade1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://41319e7f621f2dc3733511332c4fd032f8e32ad2aa7fd6f665c19741d9941a34",
-				"dweb:/ipfs/QmcYR3bd862GD1Bc7jwrU9bGxrhUu5na1oP964bDCu2id1"
-			]
-		},
 		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
 			"keccak256": "0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70",
 			"license": "MIT",
@@ -679,6 +751,14 @@
 			"urls": [
 				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+			"keccak256": "0xf980daa263b661ab8ddee7d4fd833c7da7e7995e2c359ff1f17e67e4112f2236",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7448ab095d6940130bcf76ba47a2eab14148c83119523b93dd89f6d84edd6c02",
+				"dweb:/ipfs/QmawrZ4voKQjH3oomXT3Kuheb3Mnmo2VvVpxg8Ne5UJUrd"
 			]
 		},
 		"@openzeppelin/contracts/utils/introspection/ERC165.sol": {
@@ -697,6 +777,14 @@
 				"dweb:/ipfs/QmeJQCtZrQjtJLr6u7ZHWeH3pBnjtLWzvRrKViAi7UZqxL"
 			]
 		},
+		"contracts/contracts/interfaces/IFlashPoolRewardManager.sol": {
+			"keccak256": "0x6902028befafa85fa9125fbfb69270fb4b75de335abaade7c3297befc30cb0ac",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6078bfa72d24c6c758246fd0bb3e16efafd14d74b298949f887b2327bc5a7a42",
+				"dweb:/ipfs/QmW95cMpCAzU9UKdtyHVzPqKRsmDoXkS178k4sXE9JB2v5"
+			]
+		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
 			"keccak256": "0x0ce052094139df49200b21b6c088c9997ddc2c688f4528d1fcdfb0c0414080a1",
 			"license": "MIT",
@@ -706,11 +794,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0xec089ac3b0cfcd83896c5e1dad1cd800e57b55a603ff5b8a3c5bbb362c00062d",
+			"keccak256": "0x718113b8ab6c97d432910f4f515074a685a63ecfb96e5d0449fdd6a3de042bed",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://66ddb3a4396b081b00e5402c9385309d72fe6d71fbab0da19c8870fa3b8c94da",
-				"dweb:/ipfs/QmQfyQnZo2qwPCmDiJbwWLMXVD8YDuhavFNPRLJmqNMxPY"
+				"bzz-raw://38b27f4b4905f461253299d01354fdfe08c4c67f1a4f49305f960a5be8fda14c",
+				"dweb:/ipfs/QmXTyuchz257fz1gX2vAuWCh74umLxDAMKkkhP2kRVNeir"
 			]
 		}
 	},

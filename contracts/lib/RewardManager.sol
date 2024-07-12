@@ -22,7 +22,7 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
         uint256 totalInterestRewards; // Total interest rewards accrued.
         uint256 lenderClaimedRewards; // Amount of rewards claimed by the lender.
         uint256 borrowerClaimedRewards; // Amount of rewards claimed by the borrower.
-        bool isFlashPool; // Indicates if the pool is a flash pool.
+        address borrower; // The borrower of the loan.
         bool isAccruing; // Flag to indicate if the pool is accruing rewards.
     }
 
@@ -31,6 +31,7 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
 
     event PoolRegistered(address indexed pool);
     event PoolDeregistered(address indexed pool);
+    event BorrowerRegistered(address indexed pool, address indexed borrower);
     event RewardAccrued(address indexed pool, uint256 reward);
     event RewardClaimed(address indexed pool, address claimant, uint256 reward);
 
@@ -47,10 +48,15 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @notice Registers a pool to start accruing rewards, initializing the reward mechanism.
      * @param pool The address of the pool to register.
      * @param rewardToken The ERC20 token used as the reward token.
-     * @param isFlashPool Indicates if the pool is a flash pool.
      */
-    function registerPool(address pool, address rewardToken, bool isFlashPool) external override {
-        require(pool != address(0) && rewardToken != address(0), "Invalid addresses");
+    function registerPool(
+        address pool,
+        address rewardToken
+    ) external override {
+        require(
+            pool != address(0) && rewardToken != address(0),
+            "Invalid addresses"
+        );
         rewardDetails[pool] = RewardDetails({
             rewardToken: IERC20(rewardToken),
             rewardsAccrued: 0,
@@ -59,10 +65,34 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
             totalInterestRewards: 0,
             lenderClaimedRewards: 0,
             borrowerClaimedRewards: 0,
-            isFlashPool: isFlashPool,
-            isAccruing: true 
+            borrower: address(0),
+            isAccruing: true // Start accruing rewards immediately upon pool registration
         });
         emit PoolRegistered(pool);
+    }
+
+    /**
+     * @notice Registers the borrower for a specific pool and updates reward allocation.
+     * @param pool The address of the pool.
+     * @param borrower The address of the borrower.
+     */
+    function registerBorrower(address pool, address borrower)
+        external
+        override
+    {
+        require(
+            pool != address(0) && borrower != address(0),
+            "Invalid addresses"
+        );
+        RewardDetails storage details = rewardDetails[pool];
+        require(details.borrower == address(0), "Borrower already registered");
+
+        // Ensure the rewards accrued so far are updated to reflect the new state
+        accrueRewards(pool);
+
+        details.borrower = borrower;
+
+        emit BorrowerRegistered(pool, borrower);
     }
 
     /**
@@ -70,16 +100,22 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @param pool The address of the TuliaPool.
      * @param isLender True if the lender is claiming, false if the borrower.
      */
-    function claimRewards(address pool, bool isLender) external override nonReentrant {
+    function claimRewards(address pool, bool isLender)
+        external
+        override
+        nonReentrant
+    {
         accrueRewards(pool);
 
         RewardDetails storage details = rewardDetails[pool];
         TuliaPool poolContract = TuliaPool(pool);
-        address claimant = isLender ? poolContract.getLender() : poolContract.getBorrower();
+        address claimant = isLender
+            ? poolContract.getLender()
+            : details.borrower;
 
         require(msg.sender == claimant, "Not authorized to claim rewards");
 
-        uint256 claimableRewards = _calculateClaimableRewards(details, isLender, pool);
+        uint256 claimableRewards = calculateClaimableRewards(pool, isLender);
         require(claimableRewards > 0, "No rewards to claim");
 
         if (isLender) {
@@ -88,7 +124,10 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
             details.borrowerClaimedRewards += claimableRewards;
         }
 
-        MockTokenCreator(address(details.rewardToken)).mint(claimant, claimableRewards);
+        MockTokenCreator(address(details.rewardToken)).mint(
+            claimant,
+            claimableRewards
+        );
         emit RewardClaimed(pool, claimant, claimableRewards);
     }
 
@@ -98,7 +137,11 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @param isLender True if calculating for the lender, false for the borrower.
      * @return uint256 The amount of rewards that can be claimed.
      */
-    function calculateClaimableRewards(address pool, bool isLender) external view returns (uint256) {
+    function calculateClaimableRewards(address pool, bool isLender)
+        public
+        view
+        returns (uint256)
+    {
         RewardDetails storage details = rewardDetails[pool];
         return _calculateClaimableRewards(details, isLender, pool);
     }
@@ -110,7 +153,11 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
      * @param pool The address of the pool.
      * @return uint256 The amount of rewards that can be claimed.
      */
-    function _calculateClaimableRewards(RewardDetails storage details, bool isLender, address pool) internal view returns (uint256) {
+    function _calculateClaimableRewards(
+        RewardDetails storage details,
+        bool isLender,
+        address pool
+    ) internal view returns (uint256) {
         if (!details.isAccruing) {
             return 0; // Return 0 if the pool is not accruing rewards
         }
@@ -118,32 +165,34 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
         // Calculate rewards dynamically based on the number of blocks passed since the last update
         TuliaPool poolContract = TuliaPool(pool);
         uint256 loanAmount = poolContract.getLoanAmount();
-        uint256 loanDuration = details.isFlashPool ? 30 days : poolContract.getRepaymentPeriod();
+        uint256 loanDuration = poolContract.getRepaymentPeriod();
 
         uint256 currentAPY = apyManager.calculateAPY(loanAmount, loanDuration);
-        uint256 rewardRate = currentAPY / 10000; // Convert basis points to a percentage for calculations
+        uint256 rewardRate = (currentAPY * loanAmount) / 10000 / loanDuration; // Calculate reward rate per second
 
         uint256 blocksPassed = block.number - details.lastRewardBlock;
-        uint256 dynamicReward = blocksPassed * rewardRate;
+        uint256 reward = blocksPassed * rewardRate;
 
-        uint256 totalRewards = details.rewardsAccrued + dynamicReward;
+        uint256 totalRewards = details.rewardsAccrued + reward;
 
-        uint256 totalInterest = details.totalInterestRewards;
-        uint256 nonInterestRewards = totalRewards - totalInterest;
+        // Calculate claimable rewards
+        uint256 lenderTotalRewards;
+        uint256 borrowerTotalRewards;
 
-        if (poolContract.getBorrower() == address(0)) {
-            // Loan is not activated
-            return isLender ? totalRewards - details.lenderClaimedRewards : 0;
+        if (details.borrower == address(0)) {
+            // Loan is not activated, all rewards go to the lender
+            lenderTotalRewards = totalRewards;
+            borrowerTotalRewards = 0;
         } else {
-            // Loan is activated, split rewards between lender and borrower
-            uint256 lenderTotalRewards = nonInterestRewards + totalInterest / 2;
-            uint256 borrowerTotalRewards = totalInterest / 2;
+            // Loan is activated, split rewards equally between lender and borrower
+            lenderTotalRewards = totalRewards / 2;
+            borrowerTotalRewards = totalRewards / 2;
+        }
 
-            if (isLender) {
-                return lenderTotalRewards - details.lenderClaimedRewards;
-            } else {
-                return borrowerTotalRewards - details.borrowerClaimedRewards;
-            }
+        if (isLender) {
+            return lenderTotalRewards - details.lenderClaimedRewards;
+        } else {
+            return borrowerTotalRewards - details.borrowerClaimedRewards;
         }
     }
 
@@ -155,19 +204,15 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
         RewardDetails storage details = rewardDetails[pool];
         TuliaPool poolContract = TuliaPool(pool);
 
-        // Check the loan state and set isAccruing accordingly
-        TuliaPool.LoanState loanState = poolContract.getLoanState();
-        details.isAccruing = (loanState == TuliaPool.LoanState.ACTIVE || loanState == TuliaPool.LoanState.PENDING || loanState == TuliaPool.LoanState.CREATED);
-
         if (!details.isAccruing) {
             return; // Exit if the pool is not accruing rewards
         }
 
         uint256 loanAmount = poolContract.getLoanAmount();
-        uint256 loanDuration = details.isFlashPool ? 30 days : poolContract.getRepaymentPeriod();
+        uint256 loanDuration = poolContract.getRepaymentPeriod();
 
         uint256 currentAPY = apyManager.calculateAPY(loanAmount, loanDuration);
-        uint256 rewardRate = currentAPY / 10000; // Convert basis points to a percentage for calculations
+        uint256 rewardRate = (currentAPY * loanAmount) / 10000 / loanDuration; // Calculate reward rate per second
 
         uint256 blocksPassed = block.number - details.lastRewardBlock;
         uint256 reward = blocksPassed * rewardRate;
@@ -187,5 +232,13 @@ contract RewardManager is IRewardManager, ReentrancyGuard {
         require(pool != address(0), "Invalid pool address");
         delete rewardDetails[pool];
         emit PoolDeregistered(pool);
+    }
+
+    function getRewardDetails(address pool)
+        external
+        view
+        returns (RewardDetails memory)
+    {
+        return rewardDetails[pool];
     }
 }

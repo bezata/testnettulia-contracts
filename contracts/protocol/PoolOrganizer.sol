@@ -75,8 +75,8 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
      * @dev Constructor that grants the deployer the admin and pool manager roles.
      */
     constructor() {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(POOL_MANAGER_ROLE, msg.sender);
+        _grantRole(DEFAULT_ADMIN_ROLE, 0x4fa390F2f1f74403504d7A490B47F0c2BC0ACE48);
+        _grantRole(POOL_MANAGER_ROLE, 0x4fa390F2f1f74403504d7A490B47F0c2BC0ACE48);
     }
 
     /**
@@ -230,10 +230,11 @@ contract PoolOrganizer is AccessControl, IPoolOrganizer {
      */
     function deregisterPool(address pool) external {
         require(poolDetails[pool].lender != address(0), "Pool not registered");
-
+        address borrower = poolDetails[pool].borrower;
         address lender = poolDetails[pool].lender;
         _removePoolFromLenderArray(lender, pool);
         _removePoolFromMainArray(pool);
+        _removePoolFromBorrowerArray(borrower, pool);
 
         delete poolDetails[pool];
         delete loanStates[pool];

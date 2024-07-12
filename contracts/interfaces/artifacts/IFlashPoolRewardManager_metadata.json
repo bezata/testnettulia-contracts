@@ -1,0 +1,229 @@
+{
+	"compiler": {
+		"version": "0.8.20+commit.a1b79de6"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "accrueRewards",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "calculateClaimableInterest",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "claimRewards",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "deregisterPool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					}
+				],
+				"name": "getRewardDetails",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "rewardToken",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rewardsAccrued",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lastRewardBlock",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rewardRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lenderClaimedRewards",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isAccruing",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "rewardToken",
+						"type": "address"
+					}
+				],
+				"name": "registerPool",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"accrueRewards(address)": {
+					"params": {
+						"pool": "The address of the pool for which to accrue rewards."
+					}
+				},
+				"calculateClaimableInterest(address)": {
+					"params": {
+						"pool": "The address of the pool."
+					},
+					"returns": {
+						"_0": "uint256 The amount of interest that can be claimed."
+					}
+				},
+				"claimRewards(address)": {
+					"params": {
+						"pool": "The address of the flash pool."
+					}
+				},
+				"deregisterPool(address)": {
+					"params": {
+						"pool": "The address of the pool to deregister."
+					}
+				},
+				"getRewardDetails(address)": {
+					"params": {
+						"pool": "The address of the pool."
+					},
+					"returns": {
+						"isAccruing": "Flag to indicate if the pool is accruing rewards.",
+						"lastRewardBlock": "Last block number when rewards were calculated.",
+						"lenderClaimedRewards": "Amount of rewards claimed by the lender.",
+						"rewardRate": "Dynamic reward rate based on APY.",
+						"rewardToken": "The token used for rewards.",
+						"rewardsAccrued": "Total accrued rewards."
+					}
+				},
+				"registerPool(address,address)": {
+					"params": {
+						"pool": "The address of the pool to register.",
+						"rewardToken": "The ERC20 token used as the reward token."
+					}
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"accrueRewards(address)": {
+					"notice": "Accrues rewards for a specific pool based on the current APY and block difference."
+				},
+				"calculateClaimableInterest(address)": {
+					"notice": "Calculates claimable interest for the lender."
+				},
+				"claimRewards(address)": {
+					"notice": "Claims rewards for the lender from a specific pool."
+				},
+				"deregisterPool(address)": {
+					"notice": "Deregisters a pool, stopping it from accruing further rewards."
+				},
+				"getRewardDetails(address)": {
+					"notice": "Returns the reward details for a specific pool."
+				},
+				"registerPool(address,address)": {
+					"notice": "Registers a pool to start accruing rewards, initializing the reward mechanism."
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/contracts/interfaces/IFlashPoolRewardManager.sol": "IFlashPoolRewardManager"
+		},
+		"evmVersion": "shanghai",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": [],
+		"viaIR": true
+	},
+	"sources": {
+		"contracts/contracts/interfaces/IFlashPoolRewardManager.sol": {
+			"keccak256": "0x6902028befafa85fa9125fbfb69270fb4b75de335abaade7c3297befc30cb0ac",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6078bfa72d24c6c758246fd0bb3e16efafd14d74b298949f887b2327bc5a7a42",
+				"dweb:/ipfs/QmW95cMpCAzU9UKdtyHVzPqKRsmDoXkS178k4sXE9JB2v5"
+			]
+		}
+	},
+	"version": 1
+}

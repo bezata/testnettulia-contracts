@@ -21,6 +21,11 @@
 						"internalType": "address",
 						"name": "_vaultManager",
 						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_flashPoolRewardManager",
+						"type": "address"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -143,6 +148,19 @@
 					}
 				],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "flashPoolRewardManager",
+				"outputs": [
+					{
+						"internalType": "contract IFlashPoolRewardManager",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -339,14 +357,6 @@
 				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
 			]
 		},
-		"@openzeppelin/contracts/security/ReentrancyGuard.sol": {
-			"keccak256": "0xa535a5df777d44e945dd24aa43a11e44b024140fc340ad0dfe42acf4002aade1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://41319e7f621f2dc3733511332c4fd032f8e32ad2aa7fd6f665c19741d9941a34",
-				"dweb:/ipfs/QmcYR3bd862GD1Bc7jwrU9bGxrhUu5na1oP964bDCu2id1"
-			]
-		},
 		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
 			"keccak256": "0xc3e1fa9d1987f8d349dfb4d6fe93bf2ca014b52ba335cfac30bfe71e357e6f80",
 			"license": "MIT",
@@ -411,6 +421,14 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+			"keccak256": "0xf980daa263b661ab8ddee7d4fd833c7da7e7995e2c359ff1f17e67e4112f2236",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7448ab095d6940130bcf76ba47a2eab14148c83119523b93dd89f6d84edd6c02",
+				"dweb:/ipfs/QmawrZ4voKQjH3oomXT3Kuheb3Mnmo2VvVpxg8Ne5UJUrd"
+			]
+		},
 		"@openzeppelin/contracts/utils/introspection/ERC165.sol": {
 			"keccak256": "0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133",
 			"license": "MIT",
@@ -435,20 +453,12 @@
 				"dweb:/ipfs/QmQyRpyPRL5SQuAgj6SHmbir3foX65FJjbVTTQrA2EFg6L"
 			]
 		},
-		"contracts/contracts/interfaces/IAllowanceTransfer.sol": {
-			"keccak256": "0x37f0ac203b6ef605c9533e1a739477e8e9dcea90710b40e645a367f8a21ace29",
+		"contracts/contracts/interfaces/IFlashPoolRewardManager.sol": {
+			"keccak256": "0x6902028befafa85fa9125fbfb69270fb4b75de335abaade7c3297befc30cb0ac",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e0104d72aeaec1cd66cc232e7de7b7ead08608efcc179491b8a66387614670b0",
-				"dweb:/ipfs/QmfAZDyuNC9FXXbnJUwqHNwmAK6uRrXxtWEytLsxjskPsN"
-			]
-		},
-		"contracts/contracts/interfaces/IEIP712.sol": {
-			"keccak256": "0xfdccf2b9639070803cd0e4198427fb0df3cc452ca59bd3b8a0d957a9a4254138",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://f7c936ac42ce89e827db905a1544397f8bdf46db34cdb6aa1b90dea42fdb4c72",
-				"dweb:/ipfs/QmVgurxo1N31qZqkPBirw9Z7S9tLYmv6jSwQp8R8ur2cBk"
+				"bzz-raw://6078bfa72d24c6c758246fd0bb3e16efafd14d74b298949f887b2327bc5a7a42",
+				"dweb:/ipfs/QmW95cMpCAzU9UKdtyHVzPqKRsmDoXkS178k4sXE9JB2v5"
 			]
 		},
 		"contracts/contracts/interfaces/IInterestModel.sol": {
@@ -457,14 +467,6 @@
 			"urls": [
 				"bzz-raw://4fd0676f3b641e6bcceeb9d2658b32752fde1b5767ca8a9af570bb84c97d07a1",
 				"dweb:/ipfs/QmT11N5mM22VBSR5pip85GbNWh2Q8a149SbmigMM5apivq"
-			]
-		},
-		"contracts/contracts/interfaces/IPermit2.sol": {
-			"keccak256": "0xaa631cc9f53e699301d94233007110a345e6779011def484e8dd97b8fe0af771",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://fc0502cf19c9c18f320a3001201e89e350393b75837f6b7971de18b2de06f30d",
-				"dweb:/ipfs/QmT9SfhdJ7VJNNrf94g4H5usyi7ShqWGx7Cqsz9jZTjX96"
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
@@ -476,19 +478,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
+			"keccak256": "0x7cc26fedce851c23bbb6543528c2341a9f482d4dbd914861c90c6f18ac2a758a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
-				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
-			]
-		},
-		"contracts/contracts/interfaces/ISignatureTransfer.sol": {
-			"keccak256": "0x16a051e45a3f1ab341a8560aa106c483c3d0a3be4abc52225651c78939b18f93",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://a7cda3c6ed2db1454b4a6ec1e418956d199019085d92163a038d0064615a5acb",
-				"dweb:/ipfs/QmWDfZwi8jcGFBuiwHKq6iBWCZq2mA8HmkM9NNTzotMpXH"
+				"bzz-raw://ab650267dc4615bb32a41f3154a7fbce0b8b7a8f10ff67701f7ab1b0088d6af5",
+				"dweb:/ipfs/QmeJWqHULBijdCe3ZEHYZcEYZqtgbo4VrKiwsYi54LjPvP"
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {
@@ -500,27 +494,27 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0xec089ac3b0cfcd83896c5e1dad1cd800e57b55a603ff5b8a3c5bbb362c00062d",
+			"keccak256": "0x1f58539f62ab809f4b6470113a6d5897b55b0b243be6d694695d4cc14830a559",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://66ddb3a4396b081b00e5402c9385309d72fe6d71fbab0da19c8870fa3b8c94da",
-				"dweb:/ipfs/QmQfyQnZo2qwPCmDiJbwWLMXVD8YDuhavFNPRLJmqNMxPY"
+				"bzz-raw://522122c8c647df356ff0f1e91e4957eb6203925e97f2d916fba726040d35d3e2",
+				"dweb:/ipfs/QmbXYRSgbBoEdKmVG9PUpgmrusZX52dAjnKHpMTQUe6xkF"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0x040a0d9a4f8d1d891aafa904804437a607c7cce741aa09cc8dccd51ac00e1711",
+			"keccak256": "0x72a5dd2bac825b5661d27eb3700750d529a00442673fcc42b9db2089f656a5ef",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d7be3ddf2ce02ca3a7d48bceeb295c83457c01ec6792b71575dcec819f8c9910",
-				"dweb:/ipfs/QmeTV28AsbCsUFxoq4q3xEVLNKaFswAXUWVvuvPQ9x4ETL"
+				"bzz-raw://2e591d3623136e09669843ca306f8b487a453edd20d4ca59e405d5d2bb22a099",
+				"dweb:/ipfs/QmVFQ34bAS34ffUyb5Bi4V1gaiarXi9xdGF6xEhpFJoN2k"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPoolFactory.sol": {
-			"keccak256": "0x3abb77025713b864477bc715a4c36cec0ad59ce3e49348ab900e29b8aaf32310",
+			"keccak256": "0x149c169b79832030a0013d92bf53693aa84234700c896ff39ced1eef2c0c420a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5e65015239e07c55a89dba9485b93416653194f0b48d96c654cc7c7321a89a0a",
-				"dweb:/ipfs/Qma5897uGHo5LbWRkGPydHZe8H914WrAqwcDWjaxDVALMz"
+				"bzz-raw://d0187a66b2311781022544ca9e88b74363ccf22a00d40a857d58ea9e2a470fac",
+				"dweb:/ipfs/Qmdo79wCU8vQjAkcxsikR7qkxEM2tbBSHDt2Vhfmad87D4"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

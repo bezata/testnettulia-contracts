@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.20+commit.a1b79de6"
 	},
 	"language": "Solidity",
 	"output": {
@@ -253,6 +253,7 @@
 				},
 				"handleDefault(address,address)": {
 					"params": {
+						"lender": "The address of the lender.",
 						"pool": "The address of the loan pool which has defaulted."
 					}
 				},
@@ -301,7 +302,7 @@
 		"compilationTarget": {
 			"contracts/contracts/lib/VaultManager.sol": "VaultManager"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -310,7 +311,8 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
 		"@openzeppelin/contracts/access/AccessControl.sol": {
@@ -343,14 +345,6 @@
 			"urls": [
 				"bzz-raw://ea290300e0efc4d901244949dc4d877fd46e6c5e43dc2b26620e8efab3ab803f",
 				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
-			]
-		},
-		"@openzeppelin/contracts/security/ReentrancyGuard.sol": {
-			"keccak256": "0xa535a5df777d44e945dd24aa43a11e44b024140fc340ad0dfe42acf4002aade1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://41319e7f621f2dc3733511332c4fd032f8e32ad2aa7fd6f665c19741d9941a34",
-				"dweb:/ipfs/QmcYR3bd862GD1Bc7jwrU9bGxrhUu5na1oP964bDCu2id1"
 			]
 		},
 		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
@@ -417,6 +411,14 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
+		"@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+			"keccak256": "0xf980daa263b661ab8ddee7d4fd833c7da7e7995e2c359ff1f17e67e4112f2236",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7448ab095d6940130bcf76ba47a2eab14148c83119523b93dd89f6d84edd6c02",
+				"dweb:/ipfs/QmawrZ4voKQjH3oomXT3Kuheb3Mnmo2VvVpxg8Ne5UJUrd"
+			]
+		},
 		"@openzeppelin/contracts/utils/introspection/ERC165.sol": {
 			"keccak256": "0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133",
 			"license": "MIT",
@@ -458,11 +460,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
+			"keccak256": "0xabecc155181d61f5aa35a0f84d78ce2d732ad21c3eb0be7b85bdf42210f532c7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
-				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
+				"bzz-raw://8f339fedbe7335b8b089d6cc864a85f58673a77e5c4216061bc96f1a59a3a109",
+				"dweb:/ipfs/QmdxJoLaTrUMKVD6TRAxABTwNNT4B5vzwbF9PwBTbqK55y"
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {
@@ -474,19 +476,19 @@
 			]
 		},
 		"contracts/contracts/lib/VaultManager.sol": {
-			"keccak256": "0x5283db6cb577188c53fa448e6a78767bb167d9fc08f7adc83eac48645ece06a2",
+			"keccak256": "0xe9bab1ef95bac136329ee4a9178ffb9b0922eeb0bd1650468d57525a87d76a6a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ece837abb8c967b904503af2357817e3b7f65dae65d0c3151326cd9a9459672f",
-				"dweb:/ipfs/QmdPVsV1cPtRTZfjhPiBksErYa6x9Gz2GtG9GfotKhRrKq"
+				"bzz-raw://ddfe782507b09ece092b91b149c031b9f26760d0e9bea2710624df6acd71914d",
+				"dweb:/ipfs/QmeuywpBBxzMHKimwE7aA2qnMfisFmq8di7tAH9RH8ARaT"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xe12f6c6e1803ed339f2bea54f96ce72932f0454ad230c6d544e554a5d32ddb51",
+			"keccak256": "0xe7528e0b88a04b8a6cae90b8426aa7a9f08a46e89d6bdda325c98245471edcef",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0ccdc5891e16b6be8dc66ac49eead2021fc9c2902ea248b4d3e0f1ce5cbadfe4",
-				"dweb:/ipfs/QmNZ4LXLAbb3dF6aXrGkRnBz5hFfGpsvobGrA2gcfJWBcx"
+				"bzz-raw://f2a88b4127200a63017479e51cc06cd185c889d2f6060500de09b19d23a6b5c4",
+				"dweb:/ipfs/QmPzntfL4dbC1c2FzU7Rug79uZr22L9A7A6bWcfZLoE3Dq"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {

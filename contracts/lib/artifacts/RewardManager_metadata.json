@@ -17,6 +17,30 @@
 				"type": "constructor"
 			},
 			{
+				"inputs": [],
+				"name": "ReentrancyGuardReentrantCall",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "borrower",
+						"type": "address"
+					}
+				],
+				"name": "BorrowerRegistered",
+				"type": "event"
+			},
+			{
 				"anonymous": false,
 				"inputs": [
 					{
@@ -173,16 +197,95 @@
 						"internalType": "address",
 						"name": "pool",
 						"type": "address"
+					}
+				],
+				"name": "getRewardDetails",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "contract IERC20",
+								"name": "rewardToken",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "rewardsAccrued",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lastRewardBlock",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "rewardRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "totalInterestRewards",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "lenderClaimedRewards",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "borrowerClaimedRewards",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "borrower",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "isAccruing",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct RewardManager.RewardDetails",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "borrower",
+						"type": "address"
+					}
+				],
+				"name": "registerBorrower",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "pool",
+						"type": "address"
 					},
 					{
 						"internalType": "address",
 						"name": "rewardToken",
 						"type": "address"
-					},
-					{
-						"internalType": "bool",
-						"name": "isFlashPool",
-						"type": "bool"
 					}
 				],
 				"name": "registerPool",
@@ -236,9 +339,9 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "bool",
-						"name": "isFlashPool",
-						"type": "bool"
+						"internalType": "address",
+						"name": "borrower",
+						"type": "address"
 					},
 					{
 						"internalType": "bool",
@@ -252,6 +355,13 @@
 		],
 		"devdoc": {
 			"details": "Manages dynamic rewards across all active loan pools, incorporating APY adjustments. This contract handles the allocation, accrual, and claiming of rewards based on loan activities and states.",
+			"errors": {
+				"ReentrancyGuardReentrantCall()": [
+					{
+						"details": "Unauthorized reentrant call."
+					}
+				]
+			},
 			"kind": "dev",
 			"methods": {
 				"accrueRewards(address)": {
@@ -284,9 +394,14 @@
 						"pool": "The address of the pool to deregister."
 					}
 				},
-				"registerPool(address,address,bool)": {
+				"registerBorrower(address,address)": {
 					"params": {
-						"isFlashPool": "Indicates if the pool is a flash pool.",
+						"borrower": "The address of the borrower.",
+						"pool": "The address of the pool."
+					}
+				},
+				"registerPool(address,address)": {
+					"params": {
 						"pool": "The address of the pool to register.",
 						"rewardToken": "The ERC20 token used as the reward token."
 					}
@@ -313,7 +428,10 @@
 				"deregisterPool(address)": {
 					"notice": "Deregisters a pool, stopping it from accruing further rewards."
 				},
-				"registerPool(address,address,bool)": {
+				"registerBorrower(address,address)": {
+					"notice": "Registers the borrower for a specific pool and updates reward allocation."
+				},
+				"registerPool(address,address)": {
 					"notice": "Registers a pool to start accruing rewards, initializing the reward mechanism."
 				}
 			},
@@ -333,7 +451,8 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [],
+		"viaIR": true
 	},
 	"sources": {
 		"@openzeppelin/contracts/access/AccessControl.sol": {
@@ -374,14 +493,6 @@
 			"urls": [
 				"bzz-raw://ea290300e0efc4d901244949dc4d877fd46e6c5e43dc2b26620e8efab3ab803f",
 				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
-			]
-		},
-		"@openzeppelin/contracts/security/ReentrancyGuard.sol": {
-			"keccak256": "0xa535a5df777d44e945dd24aa43a11e44b024140fc340ad0dfe42acf4002aade1",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://41319e7f621f2dc3733511332c4fd032f8e32ad2aa7fd6f665c19741d9941a34",
-				"dweb:/ipfs/QmcYR3bd862GD1Bc7jwrU9bGxrhUu5na1oP964bDCu2id1"
 			]
 		},
 		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
@@ -462,6 +573,14 @@
 			"urls": [
 				"bzz-raw://132dce9686a54e025eb5ba5d2e48208f847a1ec3e60a3e527766d7bf53fb7f9e",
 				"dweb:/ipfs/QmXn1a2nUZMpu2z6S88UoTfMVtY2YNh86iGrzJDYmMkKeZ"
+			]
+		},
+		"@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+			"keccak256": "0xf980daa263b661ab8ddee7d4fd833c7da7e7995e2c359ff1f17e67e4112f2236",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7448ab095d6940130bcf76ba47a2eab14148c83119523b93dd89f6d84edd6c02",
+				"dweb:/ipfs/QmawrZ4voKQjH3oomXT3Kuheb3Mnmo2VvVpxg8Ne5UJUrd"
 			]
 		},
 		"@openzeppelin/contracts/utils/ShortStrings.sol": {
@@ -569,11 +688,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0x692870b248c0b71185a5c030f853306d6a4c3a25180a3f57ff56dfb2da59a9d2",
+			"keccak256": "0x7cc26fedce851c23bbb6543528c2341a9f482d4dbd914861c90c6f18ac2a758a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d27ba33e21e32b7bfff41db71f93f4ba9a427659a2c04fdf8510087963dbcb62",
-				"dweb:/ipfs/QmcnnmcjEc7gkPNHKLECceA9FdVryvK9qKppnakhXGgNMh"
+				"bzz-raw://ab650267dc4615bb32a41f3154a7fbce0b8b7a8f10ff67701f7ab1b0088d6af5",
+				"dweb:/ipfs/QmeJWqHULBijdCe3ZEHYZcEYZqtgbo4VrKiwsYi54LjPvP"
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {
@@ -585,19 +704,19 @@
 			]
 		},
 		"contracts/contracts/lib/RewardManager.sol": {
-			"keccak256": "0x76b67467386b30b97b7ce2483816f77415060a6f615aad54fe5f50e933952215",
+			"keccak256": "0x925f7ee15d3c63471e019b54b477105ab0f2bff6e0333570af613ebc161b3cf9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c29febc6aaf62ce73d159cd01380121ca9934bcb577a6ed905faf982f032781a",
-				"dweb:/ipfs/QmfXKoNWU7hvvP2SNKDM1YKEkLz7hdzj4MuULt9EDA1t8H"
+				"bzz-raw://b69dd0bb40c701b962a9a07ca19046b0d247c608322c59617aeb826308518755",
+				"dweb:/ipfs/QmU3jFTi9NGYNkgv59Cw7a2fPkSiortruK3T5NDupQtZ3o"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {
-			"keccak256": "0xe12f6c6e1803ed339f2bea54f96ce72932f0454ad230c6d544e554a5d32ddb51",
+			"keccak256": "0x72a5dd2bac825b5661d27eb3700750d529a00442673fcc42b9db2089f656a5ef",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0ccdc5891e16b6be8dc66ac49eead2021fc9c2902ea248b4d3e0f1ce5cbadfe4",
-				"dweb:/ipfs/QmNZ4LXLAbb3dF6aXrGkRnBz5hFfGpsvobGrA2gcfJWBcx"
+				"bzz-raw://2e591d3623136e09669843ca306f8b487a453edd20d4ca59e405d5d2bb22a099",
+				"dweb:/ipfs/QmVFQ34bAS34ffUyb5Bi4V1gaiarXi9xdGF6xEhpFJoN2k"
 			]
 		},
 		"contracts/contracts/protocol/TuliaVault.sol": {
