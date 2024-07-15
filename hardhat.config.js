@@ -29,23 +29,23 @@ module.exports = {
       chainId: 1337,
     },
     arbitrumSepolia: {
-      url: `https://arb-sepolia.g.alchemy.com/v2/aHK2851UBjpt0-LHxD3LX4NXnttXhcOL`,
+      url: `https://arb-sepolia.g.alchemy.com/`,
       accounts: [process.env.PRIVATE_KEY],
     },
     polygonAmoy: {
-      url: `https://icy-crimson-moon.matic-amoy.quiknode.pro`,
+      url: `https://polygon-amoy.g.alchemy.com/`,
       accounts: [process.env.PRIVATE_KEY],
     },
     ethereumHolesky: {
-      url: `https://eth-holesky.g.alchemy.com`,
+      url: `https://eth-holesky.g.alchemy.com/`,
       accounts: [process.env.PRIVATE_KEY],
     },
     baseSepolia: {
-      url: `https://base-sepolia.g.alchemy.com`,
+      url: ``,
       accounts: [process.env.PRIVATE_KEY],
     },
     avalancheFuji: {
-      url: "https://cosmopolitan-sly-glitter.avalanche-testnet.quiknode.pro/",
+      url: "",
       accounts: [process.env.PRIVATE_KEY],
     },
     binanceTestnet: {
@@ -56,7 +56,7 @@ module.exports = {
   ignition: {
     strategyConfig: {
       create2: {
-        salt: "0xbd8a7ea8cfca7b4e5f5031d8d4b17bc327g5cd42cfbc42066a00cf26b43eb53f",
+        salt: "0xbd8a7ea8cfca7b4e5f5041d7d4b17bc317c5ce42cfbc42066a00cf26b43eb53f",
       },
     },
   },

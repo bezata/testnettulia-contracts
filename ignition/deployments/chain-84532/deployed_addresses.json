@@ -1,0 +1,17 @@
+{
+  "AdvancedAPYManager#AdvancedAPYManager": "0x84F2b371A76F1178E5f0560f36b39118FD4aAdb9",
+  "BulkMinter#BulkMinter": "0x8f03dCBc73694719afAAFC41f75a10EB89175262",
+  "EmissionManager#FeeManager": "0xC74B1D20391f8326702DEFd433C7F86C470c41cF",
+  "FlashPoolRewardManager#FlashPoolRewardManager": "0x076f592c1371F41140b45328c1cc7644823E2D8C",
+  "MockARB#MockTokenCreator": "0xD4a2b111c346200b131D668594BfaF52dee8FAE7",
+  "MockDAI#MockTokenCreator": "0xdAFb89D8Dd8eCdd369e02542E965E23A3bC4b074",
+  "MockETH#MockTokenCreator": "0x46EAE7F1f2155D3A7f799C96a2c52e0a634Ed186",
+  "MockTulia#MockTokenCreator": "0xF401B345175E19b9705fb186B474982C76e7b80f",
+  "MockUNI#MockTokenCreator": "0x8c9ae3da7C53470d86EDF14771586431136DD270",
+  "MockUSDC#MockTokenCreator": "0x485D5Df7178C2413771914df0910b326c308b5c3",
+  "MockWBTC#MockTokenCreator": "0xAF8442cfC7491b9cC6FC2CE94199084d39e85A09",
+  "PoolOrganizer#PoolOrganizer": "0x2dE66006A9769438613042ad6DB03293F1E739Bc",
+  "RewardManager#RewardManager": "0x82B7B9715273f7063AeD2c1b5136e241bc342d34",
+  "SimpleInterest#SimpleInterest": "0x7BD46bF5df17E7fe9F998fe9185b63D1324bA65c",
+  "VaultManager#VaultManager": "0x5a27651600F4115FE966b9bb72DB3F28e2bBAb54"
+}
