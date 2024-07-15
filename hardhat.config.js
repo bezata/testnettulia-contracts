@@ -5,13 +5,9 @@ require("dotenv").config();
 
 module.exports = {
   solidity: {
-    version: "0.8.24",
+    version: "0.8.20",
     settings: {
       viaIR: true,
-    },
-    optimizer: {
-      enabled: true,
-      runs: 100,
     },
   },
 
@@ -26,7 +22,7 @@ module.exports = {
       chainId: 1337,
     },
     arbitrumSepolia: {
-      url: `https://arb-sepolia.g.alchemy.com/v2/aHcOL`,
+      url: `https://arb-sepolia.g.alchemy.com/v2/aHK2851UBjpt0-LHxD3LX4NXnttXhcOL`,
       accounts: [process.env.PRIVATE_KEY],
     },
     polygonAmoy: {
@@ -53,7 +49,7 @@ module.exports = {
   ignition: {
     strategyConfig: {
       create2: {
-        salt: "0xbd8a7ea8cfca7b4e5f5031d8d4b17bc317c5ce42cfbc42066a00cf26b43eb53f",
+        salt: "0xbd8a7ea8cfca7b4e5f5031d8d4b17bc327g5cd42cfbc42066a00cf26b43eb53f",
       },
     },
   },
