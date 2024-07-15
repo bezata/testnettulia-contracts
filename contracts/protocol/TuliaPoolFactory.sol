@@ -147,7 +147,8 @@ contract TuliaPoolFactory {
                 IERC20(loanTokenAddress),
                 optionalFlashLoanFeeRate,
                 poolOrganizer,
-                flashPoolRewardManager
+                flashPoolRewardManager,
+                loanAmount
             );
             poolOrganizer.registerPool(
                 address(flashPool),

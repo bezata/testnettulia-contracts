@@ -217,10 +217,21 @@
 						"internalType": "address",
 						"name": "rewardToken",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "loanAmount",
+						"type": "uint256"
 					}
 				],
 				"name": "registerPool",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -321,8 +332,9 @@
 						"rewardsAccrued": "Total accrued rewards."
 					}
 				},
-				"registerPool(address,address)": {
+				"registerPool(address,address,uint256)": {
 					"params": {
+						"loanAmount": "The amount of the loan used for reward calculations.\"",
 						"pool": "The address of the pool to register.",
 						"rewardToken": "The ERC20 token used as the reward token."
 					}
@@ -352,7 +364,7 @@
 				"getRewardDetails(address)": {
 					"notice": "Returns the reward details for a specific pool."
 				},
-				"registerPool(address,address)": {
+				"registerPool(address,address,uint256)": {
 					"notice": "Registers a pool to start accruing rewards, initializing the reward mechanism."
 				}
 			},
@@ -529,19 +541,19 @@
 			]
 		},
 		"contracts/contracts/interfaces/IFlashPoolRewardManager.sol": {
-			"keccak256": "0x6902028befafa85fa9125fbfb69270fb4b75de335abaade7c3297befc30cb0ac",
+			"keccak256": "0x9dd0d2b6a0a9561e31b724b73ad384a3d5525e8c9786e98f608e8a7b16052084",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6078bfa72d24c6c758246fd0bb3e16efafd14d74b298949f887b2327bc5a7a42",
-				"dweb:/ipfs/QmW95cMpCAzU9UKdtyHVzPqKRsmDoXkS178k4sXE9JB2v5"
+				"bzz-raw://a6e01c75eb15ad3ba0dd1b965df8188200177519c6fd7e6d9b624654da527fec",
+				"dweb:/ipfs/QmQdysNJH7hW9mXMcy22TMyfdMjJSNtzmRFMniGMYoAXAr"
 			]
 		},
 		"contracts/contracts/lib/FlashPoolRewardManager.sol": {
-			"keccak256": "0x38a448a5a1aec4b937a91f83b611c3e0eeeac2475009e3fea6dcd43aee6ce58a",
+			"keccak256": "0xba942abc67d5cdd68b6fa4d9e2d2cb1a5db77bee2d931008dd0590a27683939c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f9cc5d53a0b987d0ffa90df0fb808b42c3040854a01664a18ab39522f4ff9b14",
-				"dweb:/ipfs/QmbC1XGS9z2Z3yDsoPPrj8gpjB626GEowGUknumiKkV1Fi"
+				"bzz-raw://3c8ae21d1f94f60829231c9b4ac547743e7294a9ea56356c99b5077beded2eac",
+				"dweb:/ipfs/QmStkrEP18jQAi2EioffzTtXqpVAAJAN7y56m7YRrsHBRu"
 			]
 		},
 		"contracts/contracts/tokens/MockTokenCreator.sol": {

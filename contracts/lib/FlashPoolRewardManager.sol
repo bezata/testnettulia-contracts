@@ -43,19 +43,22 @@ contract FlashPoolRewardManager is ReentrancyGuard, IFlashPoolRewardManager {
      * @notice Registers a pool to start accruing rewards, initializing the reward mechanism.
      * @param pool The address of the pool to register.
      * @param rewardToken The ERC20 token used as the reward token.
+     " @param loanAmount The amount of the loan used for reward calculations."
      */
-    function registerPool(address pool, address rewardToken) external override {
+      function registerPool(address pool, address rewardToken, uint256 loanAmount) external override returns (bool) {
         require(pool != address(0) && rewardToken != address(0), "Invalid addresses");
         rewardDetails[pool] = RewardDetails({
             rewardToken: IERC20(rewardToken),
             rewardsAccrued: 0,
             lastRewardBlock: block.number,
-            rewardRate: apyManager.getCurrentAPY(),
+            rewardRate: apyManager.calculateAPY(loanAmount, 30 days),
             lenderClaimedRewards: 0,
             isAccruing: true // Start accruing rewards immediately upon pool registration
         });
         emit PoolRegistered(pool);
+        return true;
     }
+
 
     /**
      * @notice Claims rewards for the lender from a specific pool.

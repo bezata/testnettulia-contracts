@@ -26,6 +26,11 @@
 						"internalType": "contract IFlashPoolRewardManager",
 						"name": "_flashPoolRewardManager",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_loanAmount",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -332,13 +337,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"name": "fundLoan",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -426,6 +425,19 @@
 						"internalType": "address",
 						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "loanAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -583,6 +595,7 @@
 						"_asset": "The ERC20 token asset used for flash loans",
 						"_flashLoanFeeRate": "The initial fee rate for flash loans issued by this pool",
 						"_flashPoolRewardManager": "The FlashPool Reward Manager contract",
+						"_loanAmount": "The amount of the loan to be funded",
 						"_poolOrganizer": "The Pool Organizer contract"
 					}
 				},
@@ -604,11 +617,6 @@
 					},
 					"returns": {
 						"_0": "true if the flash loan is paid back successfully within the same transaction"
-					}
-				},
-				"fundLoan(uint256)": {
-					"params": {
-						"amount": "The amount of tokens to fund"
 					}
 				},
 				"getFlashLoanState()": {
@@ -675,8 +683,8 @@
 				"flashLoanFeeRate()": {
 					"notice": "Initial fee rate for flash loans issued by this pool"
 				},
-				"fundLoan(uint256)": {
-					"notice": "Allows a lender to fund the pool and wait for a borrower"
+				"fundLoan()": {
+					"notice": "Allows a lender to fund the pool directly with the specified loan amount"
 				},
 				"getFlashLoanState()": {
 					"notice": "Returns the current state of the flash loan"
@@ -778,11 +786,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IFlashPoolRewardManager.sol": {
-			"keccak256": "0x6902028befafa85fa9125fbfb69270fb4b75de335abaade7c3297befc30cb0ac",
+			"keccak256": "0x9dd0d2b6a0a9561e31b724b73ad384a3d5525e8c9786e98f608e8a7b16052084",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6078bfa72d24c6c758246fd0bb3e16efafd14d74b298949f887b2327bc5a7a42",
-				"dweb:/ipfs/QmW95cMpCAzU9UKdtyHVzPqKRsmDoXkS178k4sXE9JB2v5"
+				"bzz-raw://a6e01c75eb15ad3ba0dd1b965df8188200177519c6fd7e6d9b624654da527fec",
+				"dweb:/ipfs/QmQdysNJH7hW9mXMcy22TMyfdMjJSNtzmRFMniGMYoAXAr"
 			]
 		},
 		"contracts/contracts/interfaces/IPoolOrganizer.sol": {
@@ -794,11 +802,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0x718113b8ab6c97d432910f4f515074a685a63ecfb96e5d0449fdd6a3de042bed",
+			"keccak256": "0x9d2c583da76d62f6d5e486ad759d5e2a44a9271696fd99b534a418e091905f42",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://38b27f4b4905f461253299d01354fdfe08c4c67f1a4f49305f960a5be8fda14c",
-				"dweb:/ipfs/QmXTyuchz257fz1gX2vAuWCh74umLxDAMKkkhP2kRVNeir"
+				"bzz-raw://0a8ceb74eb22ab356af5c8838829ad4145fb6f348dd078d4b4d2f7a3f38c7b22",
+				"dweb:/ipfs/QmQRCmifsHT33PYQo2PMXJupyuduist6tCrqTWZs5mBuTS"
 			]
 		}
 	},

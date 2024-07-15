@@ -54,7 +54,7 @@
 			"claimRewards(address)": "ef5cfb8c",
 			"deregisterPool(address)": "7e72c7d7",
 			"getRewardDetails(address)": "d919007e",
-			"registerPool(address,address)": "7286e5e5"
+			"registerPool(address,address,uint256)": "51c15721"
 		}
 	},
 	"abi": [
@@ -171,10 +171,21 @@
 					"internalType": "address",
 					"name": "rewardToken",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "loanAmount",
+					"type": "uint256"
 				}
 			],
 			"name": "registerPool",
-			"outputs": [],
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		}

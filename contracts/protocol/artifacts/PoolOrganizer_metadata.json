@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.20+commit.a1b79de6"
+		"version": "0.8.26+commit.8a97fa7a"
 	},
 	"language": "Solidity",
 	"output": {
@@ -1259,7 +1259,7 @@
 		"compilationTarget": {
 			"contracts/contracts/protocol/PoolOrganizer.sol": "PoolOrganizer"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "cancun",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1329,11 +1329,11 @@
 			]
 		},
 		"contracts/contracts/interfaces/IRewardManager.sol": {
-			"keccak256": "0xabecc155181d61f5aa35a0f84d78ce2d732ad21c3eb0be7b85bdf42210f532c7",
+			"keccak256": "0x7cc26fedce851c23bbb6543528c2341a9f482d4dbd914861c90c6f18ac2a758a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8f339fedbe7335b8b089d6cc864a85f58673a77e5c4216061bc96f1a59a3a109",
-				"dweb:/ipfs/QmdxJoLaTrUMKVD6TRAxABTwNNT4B5vzwbF9PwBTbqK55y"
+				"bzz-raw://ab650267dc4615bb32a41f3154a7fbce0b8b7a8f10ff67701f7ab1b0088d6af5",
+				"dweb:/ipfs/QmeJWqHULBijdCe3ZEHYZcEYZqtgbo4VrKiwsYi54LjPvP"
 			]
 		},
 		"contracts/contracts/interfaces/IVaultManager.sol": {

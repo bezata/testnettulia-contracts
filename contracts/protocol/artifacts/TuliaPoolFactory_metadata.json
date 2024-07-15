@@ -494,11 +494,11 @@
 			]
 		},
 		"contracts/contracts/protocol/TuliaFlashPool.sol": {
-			"keccak256": "0x1f58539f62ab809f4b6470113a6d5897b55b0b243be6d694695d4cc14830a559",
+			"keccak256": "0x3ef8642c434be4fb0f96bf1d41a63ff48a29f45fbac100a662580e164f356f2b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://522122c8c647df356ff0f1e91e4957eb6203925e97f2d916fba726040d35d3e2",
-				"dweb:/ipfs/QmbXYRSgbBoEdKmVG9PUpgmrusZX52dAjnKHpMTQUe6xkF"
+				"bzz-raw://e2d80fb10c84199cb35c92309b60287699f2d7f58dcecc9b58fe4c4c8bf96cbd",
+				"dweb:/ipfs/QmVCDFcDzADF83eNikbAGfm7iSS7mGQvSNqka4S9i7EALK"
 			]
 		},
 		"contracts/contracts/protocol/TuliaPool.sol": {

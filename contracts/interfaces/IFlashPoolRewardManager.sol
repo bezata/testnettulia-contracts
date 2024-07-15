@@ -5,7 +5,7 @@ interface IFlashPoolRewardManager {
     /// @notice Registers a pool to start accruing rewards, initializing the reward mechanism.
     /// @param pool The address of the pool to register.
     /// @param rewardToken The ERC20 token used as the reward token.
-    function registerPool(address pool, address rewardToken) external;
+    function registerPool(address pool, address rewardToken, uint256 loanAmount) external returns (bool);
 
     /// @notice Claims rewards for the lender from a specific pool.
     /// @param pool The address of the flash pool.
