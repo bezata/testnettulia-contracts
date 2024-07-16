@@ -52,6 +52,10 @@ module.exports = {
       url: `https://data-seed-prebsc-1-s1.binance.org:8545/`,
       accounts: [process.env.PRIVATE_KEY],
     },
+    optimismSepolia: {
+      url: `https://sepolia.optimism.io`,
+      accounts: [process.env.PRIVATE_KEY],
+    },
   },
   ignition: {
     strategyConfig: {
